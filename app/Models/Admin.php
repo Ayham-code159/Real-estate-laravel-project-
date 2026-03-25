@@ -13,8 +13,9 @@ class Admin extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
-        'status',
+        'is_super_admin',
+        'can_manage_users',
+        'can_manage_business_accounts',
         'last_login_at',
     ];
 
@@ -26,13 +27,43 @@ class Admin extends Authenticatable
     protected function casts(): array
     {
         return [
-            'last_login_at' => 'datetime',
             'password' => 'hashed',
+            'last_login_at' => 'datetime',
+            'is_super_admin' => 'boolean',
+            'can_manage_users' => 'boolean',
+            'can_manage_business_accounts' => 'boolean',
         ];
     }
 
     public function isSuperAdmin(): bool
     {
-        return $this->role === 'super_admin';
+        return $this->is_super_admin === true;
+    }
+
+    public function canManageUsers(): bool
+    {
+        return $this->is_super_admin || $this->can_manage_users;
+    }
+
+    public function canManageBusinessAccounts(): bool
+    {
+        return $this->is_super_admin || $this->can_manage_users || $this->can_manage_business_accounts;
+    }
+
+    public function permissionLabel(): string
+    {
+        if ($this->isSuperAdmin()) {
+            return 'Super Admin';
+        }
+
+        if ($this->canManageUsers()) {
+            return 'Manage Users';
+        }
+
+        if ($this->canManageBusinessAccounts()) {
+            return 'Manage Business Accounts';
+        }
+
+        return 'Basic Admin';
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\AdminAuthController;
 use App\Http\Controllers\Admin\BusinessAccount\AdminBusinessAccountController;
 use App\Http\Controllers\Admin\User\AdminUserController;
+use App\Http\Controllers\Admin\Admin\AdminManagementController;
 
 Route::prefix('admin')->group(function () {
 
@@ -12,32 +13,56 @@ Route::prefix('admin')->group(function () {
         Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
     });
 
+// Routes of the admins:
     Route::middleware('auth:admin')->group(function () {
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('admin.dashboard');
+    });
 
-    Route::get('/business-accounts', [AdminBusinessAccountController::class, 'index'])
-        ->name('admin.business-accounts.index');
+    Route::middleware(['auth:admin', 'admin.permission:manage_business_accounts'])->group(function () {
+        Route::get('/business-accounts', [AdminBusinessAccountController::class, 'index'])
+            ->name('admin.business-accounts.index');
 
-    Route::put('/business-accounts/{businessAccount}/status', [AdminBusinessAccountController::class, 'updateStatus'])
-        ->name('admin.business-accounts.update-status');
+        Route::put('/business-accounts/{businessAccount}/status', [AdminBusinessAccountController::class, 'updateStatus'])
+            ->name('admin.business-accounts.update-status');
+    });
 
-    Route::get('/users', [AdminUserController::class, 'index'])
-        ->name('admin.users.index');
+    Route::middleware(['auth:admin', 'admin.permission:manage_users'])->group(function () {
+        Route::get('/users', [AdminUserController::class, 'index'])
+            ->name('admin.users.index');
 
-    Route::get('/users/{user}', [AdminUserController::class, 'show'])
-        ->name('admin.users.show');
+        Route::get('/users/{user}', [AdminUserController::class, 'show'])
+            ->name('admin.users.show');
 
-    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])
-        ->name('admin.users.destroy');
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])
+            ->name('admin.users.destroy');
 
-    Route::delete('/users/business-accounts/{businessAccount}', [AdminUserController::class, 'destroyBusinessAccount'])
-        ->name('admin.users.business-accounts.destroy');
-});
+        Route::delete('/users/business-accounts/{businessAccount}', [AdminUserController::class, 'destroyBusinessAccount'])
+            ->name('admin.users.business-accounts.destroy');
+    });
 
+    Route::middleware(['auth:admin', 'admin.permission:super_admin'])->group(function () {
+        Route::get('/admins', [AdminManagementController::class, 'index'])
+        ->name('admin.admins.index');
+
+        Route::get('/admins/create', [AdminManagementController::class, 'create'])
+        ->name('admin.admins.create');
+
+        Route::post('/admins', [AdminManagementController::class, 'store'])
+        ->name('admin.admins.store');
+
+        Route::get('/admins/{admin}', [AdminManagementController::class, 'show'])
+        ->name('admin.admins.show');
+
+        Route::get('/admins/{admin}/edit', [AdminManagementController::class, 'edit'])
+        ->name('admin.admins.edit');
+
+        Route::put('/admins/{admin}', [AdminManagementController::class, 'update'])
+        ->name('admin.admins.update');
+    });
 
 
 
