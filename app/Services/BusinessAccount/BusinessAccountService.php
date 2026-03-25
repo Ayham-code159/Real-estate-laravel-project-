@@ -32,7 +32,7 @@ class BusinessAccountService
             'business_type_id' => $data['business_type_id'],
             'city_id' => $data['city_id'],
             'business_name' => trim($data['business_name']),
-            'status' => 'pending',
+            'status' => BusinessAccount::STATUS_PENDING,
         ]);
     }
 

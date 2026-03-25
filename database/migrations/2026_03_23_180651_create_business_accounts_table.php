@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('city_id')->constrained()->restrictOnDelete();
 
             $table->string('business_name');
-            $table->string('status')->default('pending');
+            $table->tinyInteger('status')->default(1);
             $table->text('rejection_reason')->nullable();
 
             $table->timestamps();

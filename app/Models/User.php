@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -17,6 +18,7 @@ class User extends Authenticatable
         'username',
         'email',
         'phone',
+        'active_business_account_id',
         'password',
         'status',
         'email_verified_at',
@@ -49,5 +51,8 @@ class User extends Authenticatable
         return $this->hasMany(BusinessAccount::class);
     }
 
-
+    public function activeBusinessAccount(): BelongsTo
+    {
+        return $this->belongsTo(BusinessAccount::class, 'active_business_account_id');
+    }
 }
