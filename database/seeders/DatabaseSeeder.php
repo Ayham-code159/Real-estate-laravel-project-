@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             BusinessTypeSeeder::class,
             CitySeeder::class,
             AdminSeeder::class,
+            SellServiceSubtypeSeeder::class,
+            RentServiceSubtypeSeeder::class,
         ]);
 
 

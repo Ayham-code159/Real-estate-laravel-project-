@@ -27,9 +27,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Role</div>
-                    <div class="stats-value" style="font-size: 24px;">{{ auth('admin')->user()->role }}</div>
-                    <div class="stats-meta">Highest access level detected</div>
+                    <div class="stats-label">Access Level</div>
+                    <div class="stats-value" style="font-size: 24px;">{{ auth('admin')->user()->permissionLabel() }}</div>
+                    <div class="stats-meta">Current permission profile</div>
                 </div>
                 <div class="stats-icon">🛡️</div>
             </div>
@@ -38,11 +38,13 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Status</div>
-                    <div class="stats-value" style="font-size: 24px;">Active</div>
-                    <div class="stats-meta">This account is currently enabled</div>
+                    <div class="stats-label">Approved Services</div>
+                    <div class="stats-value" style="font-size: 24px;">{{ $serviceCounts['total_approved_services'] }}</div>
+                    <div class="stats-meta">
+                        Sell: {{ $serviceCounts['approved_sell_services'] }} • Rent: {{ $serviceCounts['approved_rent_services'] }}
+                    </div>
                 </div>
-                <div class="stats-icon">✅</div>
+                <div class="stats-icon">🧰</div>
             </div>
         </div>
 
@@ -87,8 +89,18 @@
                 </div>
 
                 <div class="info-row">
-                    <div class="info-label">Role</div>
-                    <div class="info-value">{{ auth('admin')->user()->role }}</div>
+                    <div class="info-label">Permission Level</div>
+                    <div class="info-value">{{ auth('admin')->user()->permissionLabel() }}</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Approved Sell Services</div>
+                    <div class="info-value">{{ $serviceCounts['approved_sell_services'] }}</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Approved Rent Services</div>
+                    <div class="info-value">{{ $serviceCounts['approved_rent_services'] }}</div>
                 </div>
 
                 <div class="info-row">
@@ -129,16 +141,16 @@
                     <div class="activity-item">
                         <div class="activity-icon">🛡️</div>
                         <div class="activity-body">
-                            <h4>Role loaded</h4>
-                            <p>Your administrator role has been loaded and the dashboard is ready for moderation features.</p>
+                            <h4>Permissions loaded</h4>
+                            <p>Your administrator permissions were loaded successfully and the panel is ready for moderation tasks.</p>
                         </div>
                     </div>
 
                     <div class="activity-item">
-                        <div class="activity-icon">⚙️</div>
+                        <div class="activity-icon">🧰</div>
                         <div class="activity-body">
-                            <h4>System prepared</h4>
-                            <p>The panel structure is now ready to receive business account moderation, roles, and permissions.</p>
+                            <h4>Services moderation ready</h4>
+                            <p>The system is now prepared to review and moderate sell and rent services.</p>
                         </div>
                     </div>
                 </div>
@@ -154,7 +166,7 @@
                     <div class="empty-state-icon">✨</div>
                     <h3>More tools are coming</h3>
                     <p>
-                        Business moderation, role controls, and platform management pages will appear here as we continue building the system.
+                        More advanced service moderation, media handling, and deeper analytics can be added here next.
                     </p>
                 </div>
             </x-card>

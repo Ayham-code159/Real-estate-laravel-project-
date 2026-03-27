@@ -4,43 +4,43 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class BusinessAccount extends Model
+class RentService extends Model
 {
     public const STATUS_PENDING = 1;
     public const STATUS_APPROVED = 2;
     public const STATUS_REJECTED = 3;
 
     protected $fillable = [
-        'user_id',
-        'business_type_id',
-        'city_id',
-        'business_name',
+        'business_account_id',
+        'rent_service_subtype_id',
+        'title',
+        'description',
+        'price_usd',
+        'price_syp',
         'status',
         'rejection_reason',
+        'metadata',
     ];
 
     protected function casts(): array
     {
         return [
+            'price_usd' => 'decimal:2',
+            'price_syp' => 'decimal:2',
             'status' => 'integer',
+            'metadata' => 'array',
         ];
     }
 
-    public function user(): BelongsTo
+    public function businessAccount(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(BusinessAccount::class);
     }
 
-    public function businessType(): BelongsTo
+    public function subtype(): BelongsTo
     {
-        return $this->belongsTo(BusinessType::class);
-    }
-
-    public function city(): BelongsTo
-    {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(RentServiceSubtype::class, 'rent_service_subtype_id');
     }
 
     public function isPending(): bool
@@ -77,30 +77,4 @@ class BusinessAccount extends Model
             default => 'badge-primary',
         };
     }
-
-    public static function statuses(): array
-    {
-        return [
-            self::STATUS_PENDING => 'Pending',
-            self::STATUS_APPROVED => 'Approved',
-            self::STATUS_REJECTED => 'Rejected',
-        ];
-    }
-
-    public function offerings()
-    {
-        return $this->hasMany(offering::class);
-    }
-
-    public function sellServices(): HasMany
-    {
-        return $this->hasMany(SellService::class);
-    }
-
-    public function rentServices(): HasMany
-    {
-        return $this->hasMany(RentService::class);
-    }
-
-    
 }

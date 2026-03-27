@@ -14,6 +14,12 @@
                 <span class="nav-icon">🏢</span>
                 <span>Business Accounts</span>
             </a>
+
+            <a href="{{ route('admin.services.index') }}"
+               class="nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
+                <span class="nav-icon">🧰</span>
+                <span>Services</span>
+            </a>
         @endif
 
         @if(auth('admin')->user()?->canManageUsers())
