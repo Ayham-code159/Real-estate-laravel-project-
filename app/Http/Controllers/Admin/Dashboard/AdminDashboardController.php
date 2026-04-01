@@ -2,19 +2,31 @@
 
 namespace App\Http\Controllers\Admin\Dashboard;
 
+use App\Models\ServiceListing;
 use App\Http\Controllers\Controller;
-use App\Services\Admin\Service\AdminServiceManagementService;
 
 class AdminDashboardController extends Controller
 {
-    public function __construct(
-        private AdminServiceManagementService $adminServiceManagementService
-    ) {}
-
     public function index()
     {
-        $serviceCounts = $this->adminServiceManagementService->getApprovedServicesCount();
+        $listingCounts = [
+            'total' => ServiceListing::count(),
+            'pending' => ServiceListing::where('status', ServiceListing::STATUS_PENDING)->count(),
+            'approved' => ServiceListing::where('status', ServiceListing::STATUS_APPROVED)->count(),
+            'rejected' => ServiceListing::where('status', ServiceListing::STATUS_REJECTED)->count(),
+        ];
 
-        return view('admin.dashboard', compact('serviceCounts'));
+        $recentPendingListings = ServiceListing::query()
+            ->with([
+                'service',
+                'subcategory',
+                'businessAccount.user',
+            ])
+            ->where('status', ServiceListing::STATUS_PENDING)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('admin.dashboard', compact('listingCounts', 'recentPendingListings'));
     }
 }

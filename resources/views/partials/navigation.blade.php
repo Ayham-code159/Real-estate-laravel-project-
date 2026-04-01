@@ -14,12 +14,6 @@
                 <span class="nav-icon">🏢</span>
                 <span>Business Accounts</span>
             </a>
-
-            <a href="{{ route('admin.services.index') }}"
-               class="nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
-                <span class="nav-icon">🧰</span>
-                <span>Services</span>
-            </a>
         @endif
 
         @if(auth('admin')->user()?->canManageUsers())
@@ -35,6 +29,24 @@
                class="nav-link {{ request()->routeIs('admin.admins.*') ? 'active' : '' }}">
                 <span class="nav-icon">🛡️</span>
                 <span>Admins</span>
+            </a>
+
+            <a href="{{ route('admin.service-listings.index') }}"
+               class="nav-link {{ request()->routeIs('admin.service-listings.*') ? 'active' : '' }}">
+                <span class="nav-icon">📋</span>
+                <span>Listings</span>
+            </a>
+
+            <a href="{{ route('admin.master-data.business-types.index') }}"
+               class="nav-link {{ request()->routeIs('admin.master-data.business-types.*') ? 'active' : '' }}">
+                <span class="nav-icon">🏷️</span>
+                <span>Business Types</span>
+            </a>
+
+            <a href="{{ route('admin.master-data.services.index') }}"
+               class="nav-link {{ request()->routeIs('admin.master-data.services.*') ? 'active' : '' }}">
+                <span class="nav-icon">🧩</span>
+                <span>Services</span>
             </a>
         @endif
 

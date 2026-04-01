@@ -1,10 +1,11 @@
 <?php
 
+use App\Models\Service;
+use App\Models\BusinessAccount;
+use App\Models\ServiceSubcategory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\BusinessAccount;
-use App\Models\RentServiceSubtype;
 
 return new class extends Migration
 {
@@ -13,31 +14,34 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rent_services', function (Blueprint $table) {
+        Schema::create('service_listings', function (Blueprint $table) {
             $table->id();
 
             $table->foreignIdFor(BusinessAccount::class)
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->foreignIdFor(RentServiceSubtype::class)
+            $table->foreignIdFor(Service::class)
                 ->constrained()
-                ->restrictOnDelete();
+                ->cascadeOnDelete();
+
+            $table->foreignIdFor(ServiceSubcategory::class)
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->string('title');
             $table->text('description')->nullable();
 
+            $table->string('mode');
             $table->decimal('price_usd', 12, 2);
             $table->decimal('price_syp', 15, 2);
+
+            $table->json('metadata')->nullable();
 
             $table->tinyInteger('status')->default(1);
             $table->text('rejection_reason')->nullable();
 
-            $table->json('metadata')->nullable();
-
             $table->timestamps();
-
-            $table->unique(['business_account_id', 'rent_service_subtype_id'], 'rent_services_business_subtype_unique');
         });
     }
 
@@ -46,6 +50,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rent_services');
+        Schema::dropIfExists('service_listings');
     }
 };

@@ -14,28 +14,17 @@ class StoreBusinessAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'business_name' => [
-                'required',
-                'string',
-                'max:255',
-                'regex:/^[\pL\s]+$/u',
-            ],
-            'business_type_id' => [
-                'required',
-                'integer',
-                'exists:business_types,id',
-            ],
-            'city_id' => [
-                'required',
-                'integer',
-                'exists:cities,id',
-            ],
+            'business_type_id' => ['required', 'integer', 'exists:business_types,id'],
+            'city_id' => ['required', 'integer', 'exists:cities,id'],
+            'business_name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
         ];
     }
 
     public function messages(): array
     {
         return [
+            'business_type_id.required' => 'Business account type is required.',
+            'business_type_id.exists' => 'Selected business account type is invalid.',
             'business_name.regex' => 'Business name must contain letters only.',
         ];
     }

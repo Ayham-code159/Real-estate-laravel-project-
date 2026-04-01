@@ -7,12 +7,22 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Services\BusinessAccount\BusinessAccountService;
 use App\Http\Requests\BusinessAccount\StoreBusinessAccountRequest;
+use App\Models\BusinessAccount;
 
 class BusinessAccountController extends Controller
 {
     public function __construct(
         private BusinessAccountService $businessAccountService
     ) {}
+
+    public function index(Request $request): JsonResponse
+    {
+        $businessAccounts = $this->businessAccountService->listForUser($request->user());
+
+        return response()->json([
+            'business_accounts' => $businessAccounts,
+        ]);
+    }
 
     public function store(StoreBusinessAccountRequest $request): JsonResponse
     {
@@ -27,18 +37,9 @@ class BusinessAccountController extends Controller
         ], 201);
     }
 
-    public function index(Request $request): JsonResponse
+    public function destroy(Request $request, BusinessAccount $businessAccount): JsonResponse
     {
-        $businessAccounts = $this->businessAccountService->listForUser($request->user());
-
-        return response()->json([
-            'business_accounts' => $businessAccounts,
-        ]);
-    }
-
-    public function destroy(Request $request, int $id): JsonResponse
-    {
-        $this->businessAccountService->delete($request->user(), $id);
+        $this->businessAccountService->delete($request->user(), $businessAccount->id);
 
         return response()->json([
             'message' => 'Business account deleted successfully.',

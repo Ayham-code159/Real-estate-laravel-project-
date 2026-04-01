@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SellService extends Model
+class ServiceListing extends Model
 {
     public const STATUS_PENDING = 1;
     public const STATUS_APPROVED = 2;
@@ -13,14 +13,16 @@ class SellService extends Model
 
     protected $fillable = [
         'business_account_id',
-        'sell_service_subtype_id',
+        'service_id',
+        'service_subcategory_id',
         'title',
         'description',
+        'mode',
         'price_usd',
         'price_syp',
+        'metadata',
         'status',
         'rejection_reason',
-        'metadata',
     ];
 
     protected function casts(): array
@@ -28,8 +30,8 @@ class SellService extends Model
         return [
             'price_usd' => 'decimal:2',
             'price_syp' => 'decimal:2',
-            'status' => 'integer',
             'metadata' => 'array',
+            'status' => 'integer',
         ];
     }
 
@@ -38,9 +40,14 @@ class SellService extends Model
         return $this->belongsTo(BusinessAccount::class);
     }
 
-    public function subtype(): BelongsTo
+    public function service(): BelongsTo
     {
-        return $this->belongsTo(SellServiceSubtype::class, 'sell_service_subtype_id');
+        return $this->belongsTo(Service::class);
+    }
+
+    public function subcategory(): BelongsTo
+    {
+        return $this->belongsTo(ServiceSubcategory::class, 'service_subcategory_id');
     }
 
     public function isPending(): bool

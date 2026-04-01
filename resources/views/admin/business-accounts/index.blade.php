@@ -40,7 +40,7 @@
                 <div>
                     <div class="stats-label">Approved</div>
                     <div class="stats-value">{{ $counts['approved'] }}</div>
-                    <div class="stats-meta">Ready for service flow</div>
+                    <div class="stats-meta">Ready for listing flow</div>
                 </div>
                 <div class="stats-icon">✅</div>
             </div>
@@ -62,7 +62,7 @@
         <div style="margin-bottom: 20px;">
             <h2 class="section-title">All Business Accounts</h2>
             <p class="section-subtitle">
-                Each record shows the business owner, contact reference, type, city, and current moderation state.
+                Each record shows the owner, business type, city, moderation status, and related listings count.
             </p>
         </div>
 
@@ -84,7 +84,7 @@
                         </span>
                     </div>
 
-                    <div class="grid grid-2" style="margin-bottom: 18px;">
+                    <div class="grid grid-3" style="margin-bottom: 18px;">
                         <div>
                             <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Owner Name</div>
                             <div style="font-weight: 800;">
@@ -96,6 +96,13 @@
                             <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Owner Email / Phone</div>
                             <div style="font-weight: 800;">
                                 {{ $businessAccount->user->email ?? $businessAccount->user->phone ?? 'N/A' }}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Listings Count</div>
+                            <div style="font-weight: 800;">
+                                {{ $businessAccount->service_listings_count }}
                             </div>
                         </div>
                     </div>

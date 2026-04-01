@@ -7,35 +7,62 @@ use App\Models\BusinessAccount;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
-use App\Services\Admin\User\AdminUserService;
 
 class AdminUserController extends Controller
 {
-    public function __construct(
-        private AdminUserService $adminUserService
-    ) {}
-
     public function index(Request $request)
     {
-        $search = $request->query('search');
+        $search = trim((string) $request->query('search'));
 
-        $users = $this->adminUserService->paginateUsers($search);
-        $counts = $this->adminUserService->getUsersCounts();
+        $users = User::query()
+            ->withCount([
+                'businessAccounts',
+                'businessAccounts as approved_business_accounts_count' => function ($query) {
+                    $query->where('status', BusinessAccount::STATUS_APPROVED);
+                },
+            ])
+            ->withCount([
+                'businessAccounts as listings_count' => function ($query) {
+                    $query->join('service_listings', 'business_accounts.id', '=', 'service_listings.business_account_id');
+                },
+            ])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($innerQuery) use ($search) {
+                    $innerQuery->where('first_name', 'like', '%' . $search . '%')
+                        ->orWhere('last_name', 'like', '%' . $search . '%');
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $counts = [
+            'total_users' => User::count(),
+            'with_business_accounts' => User::has('businessAccounts')->count(),
+            'with_approved_accounts' => User::whereHas('businessAccounts', function ($query) {
+                $query->where('status', BusinessAccount::STATUS_APPROVED);
+            })->count(),
+            'total_listings' => \App\Models\ServiceListing::count(),
+        ];
 
         return view('admin.users.index', compact('users', 'counts', 'search'));
     }
 
     public function show(User $user)
     {
-        $user = $this->adminUserService->getUserDetails($user);
-        $counts = $this->adminUserService->getUserDetailsCounts($user);
+        $user->load([
+            'businessAccounts.businessType',
+            'businessAccounts.city',
+            'businessAccounts.serviceListings.service',
+            'businessAccounts.serviceListings.subcategory',
+        ]);
 
-        return view('admin.users.show', compact('user', 'counts'));
+        return view('admin.users.show', compact('user'));
     }
 
     public function destroy(User $user): RedirectResponse
     {
-        $this->adminUserService->deleteUser($user);
+        $user->delete();
 
         return redirect()
             ->route('admin.users.index')
@@ -44,12 +71,8 @@ class AdminUserController extends Controller
 
     public function destroyBusinessAccount(BusinessAccount $businessAccount): RedirectResponse
     {
-        $userId = $businessAccount->user_id;
+        $businessAccount->delete();
 
-        $this->adminUserService->deleteBusinessAccount($businessAccount);
-
-        return redirect()
-            ->route('admin.users.show', $userId)
-            ->with('success', 'Business account deleted successfully.');
+        return back()->with('success', 'Business account deleted successfully.');
     }
 }

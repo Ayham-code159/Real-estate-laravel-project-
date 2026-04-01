@@ -39,9 +39,7 @@
             <div class="stats-head">
                 <div>
                     <div class="stats-label">Approved Services</div>
-                    <div class="stats-value" style="font-size: 24px;">{{ $serviceCounts['total_approved_services'] }}</div>
                     <div class="stats-meta">
-                        Sell: {{ $serviceCounts['approved_sell_services'] }} • Rent: {{ $serviceCounts['approved_rent_services'] }}
                     </div>
                 </div>
                 <div class="stats-icon">🧰</div>
@@ -95,12 +93,10 @@
 
                 <div class="info-row">
                     <div class="info-label">Approved Sell Services</div>
-                    <div class="info-value">{{ $serviceCounts['approved_sell_services'] }}</div>
                 </div>
 
                 <div class="info-row">
                     <div class="info-label">Approved Rent Services</div>
-                    <div class="info-value">{{ $serviceCounts['approved_rent_services'] }}</div>
                 </div>
 
                 <div class="info-row">

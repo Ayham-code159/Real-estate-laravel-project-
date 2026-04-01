@@ -17,20 +17,10 @@ class BusinessAccountService
             ]);
         }
 
-        $alreadyHasSameType = $user->businessAccounts()
-            ->where('business_type_id', $data['business_type_id'])
-            ->exists();
-
-        if ($alreadyHasSameType) {
-            throw ValidationException::withMessages([
-                'business_type_id' => ['You already have a business account for this service type.'],
-            ]);
-        }
-
         return BusinessAccount::create([
             'user_id' => $user->id,
-            'business_type_id' => $data['business_type_id'],
-            'city_id' => $data['city_id'],
+            'business_type_id' => (int) $data['business_type_id'],
+            'city_id' => (int) $data['city_id'],
             'business_name' => trim($data['business_name']),
             'status' => BusinessAccount::STATUS_PENDING,
         ]);
