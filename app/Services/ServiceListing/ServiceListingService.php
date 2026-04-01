@@ -7,8 +7,10 @@ use App\Models\Service;
 use App\Models\ServiceListing;
 use App\Models\BusinessAccount;
 use App\Models\ServiceSubcategory;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Collection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ServiceListingService
 {
@@ -32,6 +34,7 @@ class ServiceListingService
     public function create(User $user, array $data): ServiceListing
     {
         $businessAccount = $this->getApprovedActiveBusinessAccount($user);
+
         $this->ensureSubcategoryBelongsToService(
             (int) $data['service_id'],
             (int) $data['service_subcategory_id']
@@ -40,7 +43,7 @@ class ServiceListingService
         $priceUsd = (float) $data['price_usd'];
         $priceSyp = $this->convertUsdToSyp($priceUsd);
 
-        return ServiceListing::create([
+        $serviceListing = ServiceListing::create([
             'business_account_id' => $businessAccount->id,
             'service_id' => (int) $data['service_id'],
             'service_subcategory_id' => (int) $data['service_subcategory_id'],
@@ -52,6 +55,15 @@ class ServiceListingService
             'metadata' => $data['metadata'] ?? null,
             'status' => ServiceListing::STATUS_PENDING,
             'rejection_reason' => null,
+        ]);
+
+        $this->syncMedia($serviceListing, $data);
+
+        return $serviceListing->fresh([
+            'service',
+            'subcategory',
+            'businessAccount.businessType',
+            'businessAccount.city',
         ]);
     }
 
@@ -88,6 +100,7 @@ class ServiceListingService
     public function update(User $user, ServiceListing $serviceListing, array $data): ServiceListing
     {
         $this->ensureListingBelongsToUser($user, $serviceListing);
+
         $this->ensureSubcategoryBelongsToService(
             (int) $data['service_id'],
             (int) $data['service_subcategory_id']
@@ -107,6 +120,8 @@ class ServiceListingService
             'metadata' => $data['metadata'] ?? null,
         ]);
 
+        $this->syncMedia($serviceListing, $data);
+
         return $serviceListing->fresh([
             'service',
             'subcategory',
@@ -120,6 +135,88 @@ class ServiceListingService
         $this->ensureListingBelongsToUser($user, $serviceListing);
 
         $serviceListing->delete();
+    }
+
+    public function addSubPhotos(User $user, ServiceListing $serviceListing, array $photos): ServiceListing
+    {
+        $this->ensureListingBelongsToUser($user, $serviceListing);
+
+        foreach ($photos as $photo) {
+            if ($photo instanceof UploadedFile) {
+                $serviceListing
+                    ->addMedia($photo)
+                    ->toMediaCollection('sub_photos');
+            }
+        }
+
+        return $serviceListing->fresh([
+            'service',
+            'subcategory',
+            'businessAccount.businessType',
+            'businessAccount.city',
+        ]);
+    }
+
+    public function replaceMainPhoto(User $user, ServiceListing $serviceListing, UploadedFile $photo): ServiceListing
+    {
+        $this->ensureListingBelongsToUser($user, $serviceListing);
+
+        $serviceListing->clearMediaCollection('main_photo');
+
+        $serviceListing
+            ->addMedia($photo)
+            ->toMediaCollection('main_photo');
+
+        return $serviceListing->fresh([
+            'service',
+            'subcategory',
+            'businessAccount.businessType',
+            'businessAccount.city',
+        ]);
+    }
+
+    public function deleteSubPhoto(User $user, ServiceListing $serviceListing, int $mediaId): ServiceListing
+    {
+        $this->ensureListingBelongsToUser($user, $serviceListing);
+
+        $media = $serviceListing->media()
+            ->where('id', $mediaId)
+            ->where('collection_name', 'sub_photos')
+            ->first();
+
+        if (! $media) {
+            throw ValidationException::withMessages([
+                'media' => ['The selected sub photo was not found for this listing.'],
+            ]);
+        }
+
+        $media->delete();
+
+        return $serviceListing->fresh([
+            'service',
+            'subcategory',
+            'businessAccount.businessType',
+            'businessAccount.city',
+        ]);
+    }
+
+    private function syncMedia(ServiceListing $serviceListing, array $data): void
+    {
+        if (isset($data['main_photo']) && $data['main_photo'] instanceof UploadedFile) {
+            $serviceListing
+                ->addMedia($data['main_photo'])
+                ->toMediaCollection('main_photo');
+        }
+
+        if (isset($data['sub_photos']) && is_array($data['sub_photos'])) {
+            foreach ($data['sub_photos'] as $photo) {
+                if ($photo instanceof UploadedFile) {
+                    $serviceListing
+                        ->addMedia($photo)
+                        ->toMediaCollection('sub_photos');
+                }
+            }
+        }
     }
 
     private function getApprovedActiveBusinessAccount(User $user): BusinessAccount

@@ -21,6 +21,10 @@ class StoreServiceListingRequest extends FormRequest
             'mode' => ['required', 'string', 'in:sell,rent'],
             'price_usd' => ['required', 'numeric', 'min:0'],
             'metadata' => ['nullable', 'array'],
+
+            'main_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'sub_photos' => ['nullable', 'array'],
+            'sub_photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }
 }

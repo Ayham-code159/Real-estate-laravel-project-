@@ -29,6 +29,40 @@
             </span>
         </div>
 
+        @if($serviceListing->main_photo_url)
+            <div style="margin-bottom: 24px;">
+                <h3 style="margin: 0 0 14px; font-size: 20px;">Main Photo</h3>
+
+                <div class="card" style="overflow: hidden; background: rgba(255,255,255,0.72);">
+                    <img
+                        src="{{ $serviceListing->main_photo_url }}"
+                        alt="Main photo"
+                        style="width: 100%; max-height: 420px; object-fit: cover; display: block;"
+                    >
+                </div>
+            </div>
+        @endif
+
+        @if(!empty($serviceListing->sub_photo_urls))
+            <div style="margin-bottom: 24px;">
+                <h3 style="margin: 0 0 14px; font-size: 20px;">Sub Photos</h3>
+
+                <div class="grid grid-3">
+                    @foreach($serviceListing->sub_photo_urls as $photo)
+                        <div class="card" style="overflow: hidden; background: rgba(255,255,255,0.72);">
+                            <a href="{{ $photo['url'] }}" target="_blank" style="display: block;">
+                                <img
+                                    src="{{ $photo['url'] }}"
+                                    alt="Sub photo"
+                                    style="width: 100%; height: 220px; object-fit: cover; display: block; cursor: pointer;"
+                                >
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <div class="info-list">
             <div class="info-row">
                 <div class="info-label">Title</div>
@@ -91,7 +125,7 @@
             </div>
 
             <div class="info-row">
-                <div class="info-label">Extra information</div>
+                <div class="info-label">Metadata</div>
                 <div class="info-value" style="text-align: left;">
                     @if(!empty($serviceListing->metadata))
                         <div class="grid" style="gap: 10px;">

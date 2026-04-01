@@ -8,7 +8,9 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Services\ServiceListing\ServiceListingService;
 use App\Http\Requests\ServiceListing\StoreServiceListingRequest;
+use App\Http\Requests\ServiceListing\StoreServiceListingImagesRequest;
 use App\Http\Requests\ServiceListing\UpdateServiceListingRequest;
+use App\Http\Requests\ServiceListing\UpdateServiceListingMainImageRequest;
 
 class ServiceListingController extends Controller
 {
@@ -61,12 +63,7 @@ class ServiceListingController extends Controller
 
         return response()->json([
             'message' => 'Service listing created successfully.',
-            'service_listing' => $serviceListing->load([
-                'service',
-                'subcategory',
-                'businessAccount.businessType',
-                'businessAccount.city',
-            ]),
+            'service_listing' => $serviceListing,
         ], 201);
     }
 
@@ -92,6 +89,55 @@ class ServiceListingController extends Controller
 
         return response()->json([
             'message' => 'Service listing deleted successfully.',
+        ]);
+    }
+
+    public function addSubPhotos(
+        StoreServiceListingImagesRequest $request,
+        ServiceListing $serviceListing
+    ): JsonResponse {
+        $updatedServiceListing = $this->serviceListingService->addSubPhotos(
+            $request->user(),
+            $serviceListing,
+            $request->validated()['sub_photos']
+        );
+
+        return response()->json([
+            'message' => 'Sub photos added successfully.',
+            'service_listing' => $updatedServiceListing,
+        ]);
+    }
+
+    public function replaceMainPhoto(
+        UpdateServiceListingMainImageRequest $request,
+        ServiceListing $serviceListing
+    ): JsonResponse {
+        $updatedServiceListing = $this->serviceListingService->replaceMainPhoto(
+            $request->user(),
+            $serviceListing,
+            $request->validated()['main_photo']
+        );
+
+        return response()->json([
+            'message' => 'Main photo updated successfully.',
+            'service_listing' => $updatedServiceListing,
+        ]);
+    }
+
+    public function deleteSubPhoto(
+        Request $request,
+        ServiceListing $serviceListing,
+        int $mediaId
+    ): JsonResponse {
+        $updatedServiceListing = $this->serviceListingService->deleteSubPhoto(
+            $request->user(),
+            $serviceListing,
+            $mediaId
+        );
+
+        return response()->json([
+            'message' => 'Sub photo deleted successfully.',
+            'service_listing' => $updatedServiceListing,
         ]);
     }
 }

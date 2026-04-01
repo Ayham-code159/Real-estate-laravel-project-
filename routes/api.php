@@ -70,6 +70,9 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/', [ServiceListingController::class, 'store']);
         Route::put('/{serviceListing}', [ServiceListingController::class, 'update']);
         Route::delete('/{serviceListing}', [ServiceListingController::class, 'destroy']);
+        Route::post('/{serviceListing}/sub-photos', [ServiceListingController::class, 'addSubPhotos']);
+        Route::post('/{serviceListing}/main-photo', [ServiceListingController::class, 'replaceMainPhoto']);
+        Route::delete('/{serviceListing}/sub-photos/{mediaId}', [ServiceListingController::class, 'deleteSubPhoto']);
     });
 });
 
