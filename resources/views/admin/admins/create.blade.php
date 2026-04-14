@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Create Admin')
+@section('title', __('messages.create_admin'))
 
 @section('content')
     <x-page-title
-        title="Create Admin"
-        subtitle="Create a new admin account and assign permissions."
+        :title="__('messages.create_admin')"
+        :subtitle="__('messages.create_admin_subtitle')"
     >
         <x-slot:actions>
             <a href="{{ route('admin.admins.index') }}" class="btn btn-outline">
                 <span>←</span>
-                <span>Back</span>
+                <span>{{ __('messages.back') }}</span>
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -20,44 +20,81 @@
             @csrf
 
             <div class="grid grid-2">
-                <x-input label="Name" name="name" type="text" placeholder="Enter admin name" required />
-                <x-input label="Email" name="email" type="email" placeholder="Enter admin email" required />
-            </div>
+                <div class="form-group">
+                    <label class="form-label">{{ __('messages.name') }}</label>
+                    <input
+                        type="text"
+                        name="name"
+                        class="form-input"
+                        value="{{ old('name') }}"
+                        placeholder="{{ __('messages.enter_admin_name') }}"
+                    >
+                    @error('name')
+                        <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
+                    @enderror
+                </div>
 
-            <div class="grid grid-2">
-                <x-input label="Password" name="password" type="password" placeholder="Enter password" required />
-                <x-input label="Confirm Password" name="password_confirmation" type="password" placeholder="Confirm password" required />
-            </div>
-
-            <div style="margin-top: 24px;">
-                <h3 class="section-title" style="font-size: 20px;">Permissions</h3>
-                <p class="section-subtitle" style="margin-bottom: 16px;">
-                    Super Admin grants all permissions. Manage Users also grants Business Accounts access.
-                </p>
-
-                <div class="grid">
-                    <label class="card" style="padding: 16px; display: flex; gap: 12px; align-items: center;">
-                        <input type="checkbox" name="is_super_admin" value="1" {{ old('is_super_admin') ? 'checked' : '' }}>
-                        <span><strong>Make Super Admin</strong></span>
-                    </label>
-
-                    <label class="card" style="padding: 16px; display: flex; gap: 12px; align-items: center;">
-                        <input type="checkbox" name="can_manage_users" value="1" {{ old('can_manage_users') ? 'checked' : '' }}>
-                        <span><strong>Can Manage Users</strong></span>
-                    </label>
-
-                    <label class="card" style="padding: 16px; display: flex; gap: 12px; align-items: center;">
-                        <input type="checkbox" name="can_manage_business_accounts" value="1" {{ old('can_manage_business_accounts') ? 'checked' : '' }}>
-                        <span><strong>Can Manage Business Accounts</strong></span>
-                    </label>
+                <div class="form-group">
+                    <label class="form-label">{{ __('messages.email') }}</label>
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-input"
+                        value="{{ old('email') }}"
+                        placeholder="{{ __('messages.enter_admin_email') }}"
+                    >
+                    @error('email')
+                        <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="form-label">{{ __('messages.password') }}</label>
+                <input
+                    type="password"
+                    name="password"
+                    class="form-input"
+                    placeholder="{{ __('messages.enter_admin_password') }}"
+                >
+                @error('password')
+                    <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div style="margin-top: 24px; margin-bottom: 18px;">
+                <h2 class="section-title">{{ __('messages.permissions') }}</h2>
+                <p class="section-subtitle">{{ __('messages.permissions_form_subtitle') }}</p>
+            </div>
+
+            <div class="grid grid-3">
+                <label class="card" style="background: rgba(255,255,255,0.72); cursor: pointer;">
+                    <div class="card-body">
+                        <input type="checkbox" name="is_super_admin" value="1" {{ old('is_super_admin') ? 'checked' : '' }}>
+                        <div style="margin-top: 10px; font-weight: 800;">{{ __('messages.make_super_admin') }}</div>
+                    </div>
+                </label>
+
+                <label class="card" style="background: rgba(255,255,255,0.72); cursor: pointer;">
+                    <div class="card-body">
+                        <input type="checkbox" name="can_manage_users" value="1" {{ old('can_manage_users') ? 'checked' : '' }}>
+                        <div style="margin-top: 10px; font-weight: 800;">{{ __('messages.can_manage_users') }}</div>
+                    </div>
+                </label>
+
+                <label class="card" style="background: rgba(255,255,255,0.72); cursor: pointer;">
+                    <div class="card-body">
+                        <input type="checkbox" name="can_manage_business_accounts" value="1" {{ old('can_manage_business_accounts') ? 'checked' : '' }}>
+                        <div style="margin-top: 10px; font-weight: 800;">{{ __('messages.can_manage_business_accounts') }}</div>
+                    </div>
+                </label>
+            </div>
+
             <div style="margin-top: 24px;">
-                <x-button type="submit" variant="primary">
+                <button type="submit" class="btn btn-primary">
                     <span>💾</span>
-                    <span>Create Admin</span>
-                </x-button>
+                    <span>{{ __('messages.create_admin_account') }}</span>
+                </button>
             </div>
         </form>
     </x-card>

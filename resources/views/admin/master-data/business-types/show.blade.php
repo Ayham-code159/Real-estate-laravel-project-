@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Business Type Details')
+@section('title', __('messages.business_type_details'))
 
 @section('content')
     <x-page-title
-        title="Business Type Details"
-        subtitle="View, update, or delete this business account type."
+        :title="__('messages.business_type_details')"
+        :subtitle="__('messages.business_type_details_subtitle')"
     >
         <x-slot:actions>
             <a href="{{ route('admin.master-data.business-types.index') }}" class="btn btn-outline">
                 <span>←</span>
-                <span>Back to Business Types</span>
+                <span>{{ __('messages.back_to_business_types') }}</span>
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -18,17 +18,22 @@
     <x-card class="subtle-panel" style="margin-bottom: 24px;">
         <div class="info-list">
             <div class="info-row">
-                <div class="info-label">Type Name</div>
-                <div class="info-value">{{ $businessType->name }}</div>
+                <div class="info-label">{{ __('messages.name_english') }}</div>
+                <div class="info-value">{{ $businessType->name_en }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Related Business Accounts</div>
+                <div class="info-label">{{ __('messages.name_arabic') }}</div>
+                <div class="info-value">{{ $businessType->name_ar }}</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">{{ __('messages.related_business_accounts') }}</div>
                 <div class="info-value">{{ $businessType->business_accounts_count }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Created At</div>
+                <div class="info-label">{{ __('messages.created_at') }}</div>
                 <div class="info-value">{{ $businessType->created_at->format('Y-m-d h:i A') }}</div>
             </div>
         </div>
@@ -36,9 +41,9 @@
 
     <x-card class="subtle-panel" style="margin-bottom: 24px;">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">Edit Business Type</h2>
+            <h2 class="section-title">{{ __('messages.edit_business_type') }}</h2>
             <p class="section-subtitle">
-                Updating the name only changes the label. The underlying system structure stays the same.
+                {{ __('messages.edit_business_type_subtitle') }}
             </p>
         </div>
 
@@ -46,34 +51,46 @@
             @csrf
             @method('PUT')
 
-            <div class="grid grid-2" style="align-items: end;">
+            <div class="grid grid-2" style="align-items: end; margin-bottom: 16px;">
                 <div>
-                    <label class="form-label">Business Type Name</label>
+                    <label class="form-label">{{ __('messages.name_english') }}</label>
                     <input
                         type="text"
-                        name="name"
+                        name="name_en"
                         class="form-input"
-                        value="{{ old('name', $businessType->name) }}"
-                        placeholder="Enter business type name"
+                        value="{{ old('name_en', $businessType->name_en) }}"
+                        placeholder="{{ __('messages.enter_name_in_english') }}"
                         required
                     >
                 </div>
 
                 <div>
-                    <x-button type="submit" variant="primary">
-                        <span>💾</span>
-                        <span>Update Type</span>
-                    </x-button>
+                    <label class="form-label">{{ __('messages.name_arabic') }}</label>
+                    <input
+                        type="text"
+                        name="name_ar"
+                        class="form-input"
+                        value="{{ old('name_ar', $businessType->name_ar) }}"
+                        placeholder="{{ __('messages.enter_name_in_arabic') }}"
+                        required
+                    >
                 </div>
+            </div>
+
+            <div>
+                <x-button type="submit" variant="primary">
+                    <span>💾</span>
+                    <span>{{ __('messages.update_type') }}</span>
+                </x-button>
             </div>
         </form>
     </x-card>
 
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">Danger Zone</h2>
+            <h2 class="section-title">{{ __('messages.danger_zone') }}</h2>
             <p class="section-subtitle">
-                Deleting this business type will also delete all business accounts that use it.
+                {{ __('messages.delete_business_type_warning') }}
             </p>
         </div>
 
@@ -83,7 +100,7 @@
 
             <x-button type="submit" variant="danger">
                 <span>🗑</span>
-                <span>Delete Business Type</span>
+                <span>{{ __('messages.delete_business_type') }}</span>
             </x-button>
         </form>
     </x-card>

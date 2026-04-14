@@ -17,11 +17,16 @@ class BusinessAccountService
             ]);
         }
 
+        $businessNameEn = trim($data['business_name_en']);
+        $businessNameAr = isset($data['business_name_ar']) ? trim((string) $data['business_name_ar']) : null;
+
         return BusinessAccount::create([
             'user_id' => $user->id,
             'business_type_id' => (int) $data['business_type_id'],
             'city_id' => (int) $data['city_id'],
-            'business_name' => trim($data['business_name']),
+            'business_name' => $businessNameEn,
+            'business_name_en' => $businessNameEn,
+            'business_name_ar' => $businessNameAr ?: null,
             'status' => BusinessAccount::STATUS_PENDING,
         ]);
     }

@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Business Accounts')
+@section('title', __('messages.business_accounts'))
 
 @section('content')
     <x-page-title
-        title="Business Accounts"
-        subtitle="Review user-created business accounts, inspect their details, and update moderation status."
+        :title="__('messages.business_accounts')"
+        :subtitle="__('messages.business_accounts_page_subtitle')"
     >
         <x-slot:actions>
-            <span class="badge badge-primary">Management Area</span>
+            <span class="badge badge-primary">{{ __('messages.management_area') }}</span>
         </x-slot:actions>
     </x-page-title>
 
@@ -16,9 +16,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Total Accounts</div>
+                    <div class="stats-label">{{ __('messages.total_accounts') }}</div>
                     <div class="stats-value">{{ $counts['total'] }}</div>
-                    <div class="stats-meta">All business accounts</div>
+                    <div class="stats-meta">{{ __('messages.business_accounts') }}</div>
                 </div>
                 <div class="stats-icon">📦</div>
             </div>
@@ -27,9 +27,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Pending</div>
+                    <div class="stats-label">{{ __('messages.pending') }}</div>
                     <div class="stats-value">{{ $counts['pending'] }}</div>
-                    <div class="stats-meta">Waiting for review</div>
+                    <div class="stats-meta">{{ __('messages.waiting_for_review') }}</div>
                 </div>
                 <div class="stats-icon">⏳</div>
             </div>
@@ -38,9 +38,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Approved</div>
+                    <div class="stats-label">{{ __('messages.approved') }}</div>
                     <div class="stats-value">{{ $counts['approved'] }}</div>
-                    <div class="stats-meta">Ready for listing flow</div>
+                    <div class="stats-meta">{{ __('messages.ready_for_listing_flow') }}</div>
                 </div>
                 <div class="stats-icon">✅</div>
             </div>
@@ -49,9 +49,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Rejected</div>
+                    <div class="stats-label">{{ __('messages.rejected') }}</div>
                     <div class="stats-value">{{ $counts['rejected'] }}</div>
-                    <div class="stats-meta">Needs correction</div>
+                    <div class="stats-meta">{{ __('messages.needs_correction') }}</div>
                 </div>
                 <div class="stats-icon">❌</div>
             </div>
@@ -60,9 +60,9 @@
 
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">All Business Accounts</h2>
+            <h2 class="section-title">{{ __('messages.all_business_accounts') }}</h2>
             <p class="section-subtitle">
-                Each record shows the owner, business type, city, moderation status, and related listings count.
+                {{ __('messages.all_business_accounts_subtitle') }}
             </p>
         </div>
 
@@ -86,21 +86,21 @@
 
                     <div class="grid grid-3" style="margin-bottom: 18px;">
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Owner Name</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.owner_name') }}</div>
                             <div style="font-weight: 800;">
                                 {{ $businessAccount->user->full_name }}
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Owner Email / Phone</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.email_or_phone') }}</div>
                             <div style="font-weight: 800;">
-                                {{ $businessAccount->user->email ?? $businessAccount->user->phone ?? 'N/A' }}
+                                {{ $businessAccount->user->email ?? $businessAccount->user->phone ?? __('messages.not_available') }}
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Listings Count</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.listings_count') }}</div>
                             <div style="font-weight: 800;">
                                 {{ $businessAccount->service_listings_count }}
                             </div>
@@ -109,7 +109,7 @@
 
                     @if($businessAccount->isRejected() && $businessAccount->rejection_reason)
                         <div class="alert alert-danger" style="margin-top: 6px;">
-                            <strong>Rejection reason:</strong> {{ $businessAccount->rejection_reason }}
+                            <strong>{{ __('messages.rejection_reason') }}:</strong> {{ $businessAccount->rejection_reason }}
                         </div>
                     @endif
 
@@ -121,7 +121,7 @@
 
                         <div class="grid grid-2" style="align-items: end;">
                             <div>
-                                <label class="form-label">Update Status</label>
+                                <label class="form-label">{{ __('messages.update_status') }}</label>
                                 <select name="status" class="form-input">
                                     @foreach(\App\Models\BusinessAccount::statuses() as $value => $label)
                                         <option value="{{ $value }}" {{ $businessAccount->status == $value ? 'selected' : '' }}>
@@ -132,13 +132,13 @@
                             </div>
 
                             <div>
-                                <label class="form-label">Rejection Reason (optional)</label>
+                                <label class="form-label">{{ __('messages.rejection_reason_optional') }}</label>
                                 <input
                                     type="text"
                                     name="rejection_reason"
                                     class="form-input"
                                     value="{{ old('rejection_reason', $businessAccount->rejection_reason) }}"
-                                    placeholder="Add a reason if rejecting this account"
+                                    placeholder="{{ __('messages.add_reason_if_rejecting_business_account') }}"
                                 >
                             </div>
                         </div>
@@ -146,7 +146,7 @@
                         <div style="margin-top: 16px;">
                             <x-button type="submit" variant="primary">
                                 <span>💾</span>
-                                <span>Update Status</span>
+                                <span>{{ __('messages.update') }}</span>
                             </x-button>
                         </div>
                     </form>
@@ -155,9 +155,9 @@
         @empty
             <div class="empty-state">
                 <div class="empty-state-icon">🏢</div>
-                <h3>No Business Accounts Yet</h3>
+                <h3>{{ __('messages.no_business_accounts_yet') }}</h3>
                 <p>
-                    User-created business accounts will appear here once they are submitted.
+                    {{ __('messages.no_business_accounts_yet_subtitle') }}
                 </p>
             </div>
         @endforelse

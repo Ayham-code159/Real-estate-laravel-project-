@@ -10,8 +10,10 @@ class BusinessTypeController extends Controller
 {
     public function index(): JsonResponse
     {
+        $orderColumn = app()->getLocale() === 'ar' ? 'name_ar' : 'name_en';
+
         $businessTypes = BusinessType::query()
-            ->orderBy('name')
+            ->orderBy($orderColumn)
             ->get();
 
         return response()->json([

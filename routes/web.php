@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\BusinessAccount\AdminBusinessAccountController;
 use App\Http\Controllers\Admin\MasterData\AdminMasterDataController;
 use App\Http\Controllers\Admin\ServiceListing\AdminServiceListingManagementController;
 
+
 // admin login
 Route::prefix('admin')->group(function () {
 
@@ -41,12 +42,15 @@ Route::prefix('admin')->group(function () {
         Route::get('/users/{user}', [AdminUserController::class, 'show'])
             ->name('admin.users.show');
 
+        Route::get('/users/{user}/business-accounts/{businessAccount}', [AdminUserController::class, 'showBusinessAccount'])
+            ->name('admin.users.business-accounts.show');
+
         Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])
             ->name('admin.users.destroy');
 
         Route::delete('/users/business-accounts/{businessAccount}', [AdminUserController::class, 'destroyBusinessAccount'])
             ->name('admin.users.business-accounts.destroy');
-    });
+});
 // the super admin
     Route::middleware(['auth:admin', 'admin.permission:super_admin'])->group(function () {
         Route::get('/admins', [AdminManagementController::class, 'index'])
@@ -118,5 +122,17 @@ Route::prefix('admin')->group(function () {
         Route::put('/service-listings/{serviceListing}/status', [AdminServiceListingManagementController::class, 'updateStatus'])
             ->name('admin.service-listings.update-status');
     });
+
+    Route::get('/locale/{locale}', function (string $locale) {
+        $supportedLocales = ['en', 'ar'];
+
+        if (! in_array($locale, $supportedLocales, true)) {
+            abort(404);
+        }
+
+        session(['locale' => $locale]);
+
+        return back();
+    })->name('locale.switch');
 
 });

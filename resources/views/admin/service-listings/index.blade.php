@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Service Listings')
+@section('title', __('messages.listings'))
 
 @section('content')
     <x-page-title
-        title="Service Listings"
-        subtitle="Review submitted listings, search by title, and filter by mode before opening the full details."
+        :title="__('messages.listings')"
+        :subtitle="__('messages.listings_page_subtitle')"
     >
         <x-slot:actions>
-            <span class="badge badge-primary">Super Admin Only</span>
+            <span class="badge badge-primary">{{ __('messages.super_admin_only') }}</span>
         </x-slot:actions>
     </x-page-title>
 
@@ -16,9 +16,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Total Listings</div>
+                    <div class="stats-label">{{ __('messages.total_listings') }}</div>
                     <div class="stats-value">{{ $counts['total'] }}</div>
-                    <div class="stats-meta">All submitted listings</div>
+                    <div class="stats-meta">{{ __('messages.all_submitted_listings') }}</div>
                 </div>
                 <div class="stats-icon">📋</div>
             </div>
@@ -27,9 +27,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Pending</div>
+                    <div class="stats-label">{{ __('messages.pending') }}</div>
                     <div class="stats-value">{{ $counts['pending'] }}</div>
-                    <div class="stats-meta">Waiting for review</div>
+                    <div class="stats-meta">{{ __('messages.waiting_for_review') }}</div>
                 </div>
                 <div class="stats-icon">⏳</div>
             </div>
@@ -38,9 +38,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Approved</div>
+                    <div class="stats-label">{{ __('messages.approved') }}</div>
                     <div class="stats-value">{{ $counts['approved'] }}</div>
-                    <div class="stats-meta">Approved listings</div>
+                    <div class="stats-meta">{{ __('messages.approved_listings_meta') }}</div>
                 </div>
                 <div class="stats-icon">✅</div>
             </div>
@@ -49,9 +49,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Rejected</div>
+                    <div class="stats-label">{{ __('messages.rejected') }}</div>
                     <div class="stats-value">{{ $counts['rejected'] }}</div>
-                    <div class="stats-meta">Rejected listings</div>
+                    <div class="stats-meta">{{ __('messages.rejected_listings_meta') }}</div>
                 </div>
                 <div class="stats-icon">❌</div>
             </div>
@@ -62,22 +62,22 @@
         <form method="GET" action="{{ route('admin.service-listings.index') }}">
             <div class="grid grid-2" style="align-items: end;">
                 <div>
-                    <label class="form-label">Search by Title</label>
+                    <label class="form-label">{{ __('messages.search_by_title') }}</label>
                     <input
                         type="text"
                         name="search"
                         class="form-input"
                         value="{{ $search }}"
-                        placeholder="Search listing by title"
+                        placeholder="{{ __('messages.search_listing_by_title') }}"
                     >
                 </div>
 
                 <div>
-                    <label class="form-label">Filter by Mode</label>
+                    <label class="form-label">{{ __('messages.filter_by_mode') }}</label>
                     <select name="mode" class="form-input">
-                        <option value="">All Modes</option>
-                        <option value="sell" {{ $mode === 'sell' ? 'selected' : '' }}>Sell</option>
-                        <option value="rent" {{ $mode === 'rent' ? 'selected' : '' }}>Rent</option>
+                        <option value="">{{ __('messages.all_modes') }}</option>
+                        <option value="sell" {{ $mode === 'sell' ? 'selected' : '' }}>{{ __('messages.sell') }}</option>
+                        <option value="rent" {{ $mode === 'rent' ? 'selected' : '' }}>{{ __('messages.rent') }}</option>
                     </select>
                 </div>
             </div>
@@ -85,12 +85,12 @@
             <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
                 <x-button type="submit" variant="primary">
                     <span>🔍</span>
-                    <span>Search</span>
+                    <span>{{ __('messages.search') }}</span>
                 </x-button>
 
                 <a href="{{ route('admin.service-listings.index') }}" class="btn btn-outline">
                     <span>↺</span>
-                    <span>Reset</span>
+                    <span>{{ __('messages.reset') }}</span>
                 </a>
             </div>
         </form>
@@ -98,9 +98,9 @@
 
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">All Listings</h2>
+            <h2 class="section-title">{{ __('messages.all_listings') }}</h2>
             <p class="section-subtitle">
-                This page shows only brief listing information. Click any listing to open full details and moderate its status.
+                {{ __('messages.all_listings_subtitle') }}
             </p>
         </div>
 
@@ -116,14 +116,14 @@
                         </div>
 
                         <p style="margin-top: 8px;">
-                            {{ ucfirst($listing->mode) }} •
-                            {{ $listing->service?->name ?? 'N/A' }} •
-                            {{ $listing->subcategory?->name ?? 'N/A' }}
+                            {{ $listing->mode === 'sell' ? __('messages.sell') : __('messages.rent') }} •
+                            {{ $listing->service?->name ?? __('messages.not_available') }} •
+                            {{ $listing->subcategory?->name ?? __('messages.not_available') }}
                         </p>
 
                         <p style="margin-top: 6px;">
-                            Owner: {{ $listing->businessAccount?->user?->full_name ?? 'N/A' }} •
-                            Business: {{ $listing->businessAccount?->business_name ?? 'N/A' }}
+                            {{ __('messages.owner') }}: {{ $listing->businessAccount?->user?->full_name ?? __('messages.not_available') }} •
+                            {{ __('messages.business_account') }}: {{ $listing->businessAccount?->business_name ?? __('messages.not_available') }}
                         </p>
                     </div>
                 </div>
@@ -131,9 +131,9 @@
         @empty
             <div class="empty-state">
                 <div class="empty-state-icon">📋</div>
-                <h3>No Listings Found</h3>
+                <h3>{{ __('messages.no_listings_found') }}</h3>
                 <p>
-                    No service listings matched the current search or filter.
+                    {{ __('messages.no_listings_found_subtitle') }}
                 </p>
             </div>
         @endforelse

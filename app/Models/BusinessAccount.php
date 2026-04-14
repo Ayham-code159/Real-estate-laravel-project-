@@ -17,8 +17,14 @@ class BusinessAccount extends Model
         'business_type_id',
         'city_id',
         'business_name',
+        'business_name_en',
+        'business_name_ar',
         'status',
         'rejection_reason',
+    ];
+
+    protected $appends = [
+        'translated_business_name',
     ];
 
     protected function casts(): array
@@ -85,5 +91,25 @@ class BusinessAccount extends Model
             self::STATUS_REJECTED => 'badge-danger',
             default => 'badge-primary',
         };
+    }
+
+    public function getBusinessNameAttribute($value): string
+    {
+        if (app()->getLocale() === 'ar') {
+            return $this->attributes['business_name_ar']
+                ?: $this->attributes['business_name_en']
+                ?: $value
+                ?: '';
+        }
+
+        return $this->attributes['business_name_en']
+            ?: $this->attributes['business_name_ar']
+            ?: $value
+            ?: '';
+    }
+
+    public function getTranslatedBusinessNameAttribute(): string
+    {
+        return $this->business_name;
     }
 }

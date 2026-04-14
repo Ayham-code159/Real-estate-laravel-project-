@@ -18,16 +18,20 @@ class ServiceListingService
 
     public function getAllServices(): Collection
     {
+        $orderColumn = app()->getLocale() === 'ar' ? 'name_ar' : 'name_en';
+
         return Service::query()
-            ->orderBy('name')
+            ->orderBy($orderColumn)
             ->get();
     }
 
     public function getSubcategoriesByService(int $serviceId): Collection
     {
+        $orderColumn = app()->getLocale() === 'ar' ? 'name_ar' : 'name_en';
+
         return ServiceSubcategory::query()
             ->where('service_id', $serviceId)
-            ->orderBy('name')
+            ->orderBy($orderColumn)
             ->get();
     }
 
@@ -43,12 +47,24 @@ class ServiceListingService
         $priceUsd = (float) $data['price_usd'];
         $priceSyp = $this->convertUsdToSyp($priceUsd);
 
+        $titleEn = trim($data['title_en']);
+        $titleAr = isset($data['title_ar']) ? trim((string) $data['title_ar']) : null;
+        $descriptionEn = $data['description_en'] ?? null;
+        $descriptionAr = $data['description_ar'] ?? null;
+
         $serviceListing = ServiceListing::create([
             'business_account_id' => $businessAccount->id,
             'service_id' => (int) $data['service_id'],
             'service_subcategory_id' => (int) $data['service_subcategory_id'],
-            'title' => trim($data['title']),
-            'description' => $data['description'] ?? null,
+
+            'title' => $titleEn,
+            'title_en' => $titleEn,
+            'title_ar' => $titleAr ?: null,
+
+            'description' => $descriptionEn,
+            'description_en' => $descriptionEn,
+            'description_ar' => $descriptionAr,
+
             'mode' => $data['mode'],
             'price_usd' => $priceUsd,
             'price_syp' => $priceSyp,
@@ -109,11 +125,23 @@ class ServiceListingService
         $priceUsd = (float) $data['price_usd'];
         $priceSyp = $this->convertUsdToSyp($priceUsd);
 
+        $titleEn = trim($data['title_en']);
+        $titleAr = isset($data['title_ar']) ? trim((string) $data['title_ar']) : null;
+        $descriptionEn = $data['description_en'] ?? null;
+        $descriptionAr = $data['description_ar'] ?? null;
+
         $serviceListing->update([
             'service_id' => (int) $data['service_id'],
             'service_subcategory_id' => (int) $data['service_subcategory_id'],
-            'title' => trim($data['title']),
-            'description' => $data['description'] ?? null,
+
+            'title' => $titleEn,
+            'title_en' => $titleEn,
+            'title_ar' => $titleAr ?: null,
+
+            'description' => $descriptionEn,
+            'description_en' => $descriptionEn,
+            'description_ar' => $descriptionAr,
+
             'mode' => $data['mode'],
             'price_usd' => $priceUsd,
             'price_syp' => $priceSyp,

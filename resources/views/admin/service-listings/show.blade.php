@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Listing Details')
+@section('title', __('messages.listing_details'))
 
 @section('content')
     <x-page-title
-        title="Listing Details"
-        subtitle="Review the full listing information and update its moderation status."
+        :title="__('messages.listing_details')"
+        :subtitle="__('messages.listing_details_subtitle')"
     >
         <x-slot:actions>
             <a href="{{ route('admin.service-listings.index') }}" class="btn btn-outline">
                 <span>←</span>
-                <span>Back to Listings</span>
+                <span>{{ __('messages.back_to_listings') }}</span>
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -20,7 +20,9 @@
             <div>
                 <h2 class="section-title">{{ $serviceListing->title }}</h2>
                 <p class="section-subtitle">
-                    {{ ucfirst($serviceListing->mode) }} listing under {{ $serviceListing->service?->name ?? 'N/A' }}
+                    {{ $serviceListing->mode === 'sell' ? __('messages.sell') : __('messages.rent') }}
+                    {{ __('messages.listing_under') }}
+                    {{ $serviceListing->service?->name ?? __('messages.not_available') }}
                 </p>
             </div>
 
@@ -31,12 +33,12 @@
 
         @if($serviceListing->main_photo_url)
             <div style="margin-bottom: 24px;">
-                <h3 style="margin: 0 0 14px; font-size: 20px;">Main Photo</h3>
+                <h3 style="margin: 0 0 14px; font-size: 20px;">{{ __('messages.main_photo') }}</h3>
 
                 <div class="card" style="overflow: hidden; background: rgba(255,255,255,0.72);">
                     <img
                         src="{{ $serviceListing->main_photo_url }}"
-                        alt="Main photo"
+                        alt="{{ __('messages.main_photo') }}"
                         style="width: 100%; max-height: 420px; object-fit: cover; display: block;"
                     >
                 </div>
@@ -45,7 +47,7 @@
 
         @if(!empty($serviceListing->sub_photo_urls))
             <div style="margin-bottom: 24px;">
-                <h3 style="margin: 0 0 14px; font-size: 20px;">Sub Photos</h3>
+                <h3 style="margin: 0 0 14px; font-size: 20px;">{{ __('messages.sub_photos') }}</h3>
 
                 <div class="grid grid-3">
                     @foreach($serviceListing->sub_photo_urls as $photo)
@@ -53,7 +55,7 @@
                             <a href="{{ $photo['url'] }}" target="_blank" style="display: block;">
                                 <img
                                     src="{{ $photo['url'] }}"
-                                    alt="Sub photo"
+                                    alt="{{ __('messages.sub_photo') }}"
                                     style="width: 100%; height: 220px; object-fit: cover; display: block; cursor: pointer;"
                                 >
                             </a>
@@ -65,67 +67,67 @@
 
         <div class="info-list">
             <div class="info-row">
-                <div class="info-label">Title</div>
+                <div class="info-label">{{ __('messages.title') }}</div>
                 <div class="info-value">{{ $serviceListing->title }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Description</div>
-                <div class="info-value">{{ $serviceListing->description ?? 'No description provided.' }}</div>
+                <div class="info-label">{{ __('messages.description') }}</div>
+                <div class="info-value">{{ $serviceListing->description ?? __('messages.no_description') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Mode</div>
-                <div class="info-value">{{ ucfirst($serviceListing->mode) }}</div>
+                <div class="info-label">{{ __('messages.mode') }}</div>
+                <div class="info-value">{{ $serviceListing->mode === 'sell' ? __('messages.sell') : __('messages.rent') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Main Service</div>
-                <div class="info-value">{{ $serviceListing->service?->name ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.main_service') }}</div>
+                <div class="info-value">{{ $serviceListing->service?->name ?? __('messages.not_available') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Subcategory</div>
-                <div class="info-value">{{ $serviceListing->subcategory?->name ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.subcategory') }}</div>
+                <div class="info-value">{{ $serviceListing->subcategory?->name ?? __('messages.not_available') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Price (USD)</div>
+                <div class="info-label">{{ __('messages.price_usd') }}</div>
                 <div class="info-value">${{ number_format((float) $serviceListing->price_usd, 2) }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Price (SYP)</div>
+                <div class="info-label">{{ __('messages.price_syp') }}</div>
                 <div class="info-value">{{ number_format((float) $serviceListing->price_syp, 2) }} SYP</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">User</div>
-                <div class="info-value">{{ $serviceListing->businessAccount?->user?->full_name ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.user') }}</div>
+                <div class="info-value">{{ $serviceListing->businessAccount?->user?->full_name ?? __('messages.not_available') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Business Account</div>
-                <div class="info-value">{{ $serviceListing->businessAccount?->business_name ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.business_account') }}</div>
+                <div class="info-value">{{ $serviceListing->businessAccount?->business_name ?? __('messages.not_available') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Business Type</div>
-                <div class="info-value">{{ $serviceListing->businessAccount?->businessType?->name ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.business_type') }}</div>
+                <div class="info-value">{{ $serviceListing->businessAccount?->businessType?->name ?? __('messages.not_available') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">City</div>
-                <div class="info-value">{{ $serviceListing->businessAccount?->city?->name ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.city') }}</div>
+                <div class="info-value">{{ $serviceListing->businessAccount?->city?->name ?? __('messages.not_available') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Created At</div>
+                <div class="info-label">{{ __('messages.created_at') }}</div>
                 <div class="info-value">{{ $serviceListing->created_at->format('Y-m-d h:i A') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Metadata</div>
+                <div class="info-label">{{ __('messages.extra_information') }}</div>
                 <div class="info-value" style="text-align: left;">
                     @if(!empty($serviceListing->metadata))
                         <div class="grid" style="gap: 10px;">
@@ -145,14 +147,14 @@
                             @endforeach
                         </div>
                     @else
-                        <span>No metadata available.</span>
+                        <span>{{ __('messages.no_metadata') }}</span>
                     @endif
                 </div>
             </div>
 
             @if($serviceListing->isRejected() && $serviceListing->rejection_reason)
                 <div class="info-row">
-                    <div class="info-label">Rejection Reason</div>
+                    <div class="info-label">{{ __('messages.rejection_reason') }}</div>
                     <div class="info-value">{{ $serviceListing->rejection_reason }}</div>
                 </div>
             @endif
@@ -161,9 +163,9 @@
 
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">Moderation</h2>
+            <h2 class="section-title">{{ __('messages.moderation') }}</h2>
             <p class="section-subtitle">
-                Approve, reject, or return this listing to pending.
+                {{ __('messages.moderation_subtitle') }}
             </p>
         </div>
 
@@ -173,22 +175,22 @@
 
             <div class="grid grid-2" style="align-items: end;">
                 <div>
-                    <label class="form-label">Status</label>
+                    <label class="form-label">{{ __('messages.status') }}</label>
                     <select name="status" class="form-input">
-                        <option value="1" {{ $serviceListing->status == 1 ? 'selected' : '' }}>Pending</option>
-                        <option value="2" {{ $serviceListing->status == 2 ? 'selected' : '' }}>Approved</option>
-                        <option value="3" {{ $serviceListing->status == 3 ? 'selected' : '' }}>Rejected</option>
+                        <option value="1" {{ $serviceListing->status == 1 ? 'selected' : '' }}>{{ __('messages.pending') }}</option>
+                        <option value="2" {{ $serviceListing->status == 2 ? 'selected' : '' }}>{{ __('messages.approved') }}</option>
+                        <option value="3" {{ $serviceListing->status == 3 ? 'selected' : '' }}>{{ __('messages.rejected') }}</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="form-label">Rejection Reason (optional)</label>
+                    <label class="form-label">{{ __('messages.rejection_reason_optional') }}</label>
                     <input
                         type="text"
                         name="rejection_reason"
                         class="form-input"
                         value="{{ old('rejection_reason', $serviceListing->rejection_reason) }}"
-                        placeholder="Add a reason if rejecting this listing"
+                        placeholder="{{ __('messages.add_reason_if_rejecting_listing') }}"
                     >
                 </div>
             </div>
@@ -196,7 +198,7 @@
             <div style="margin-top: 18px;">
                 <x-button type="submit" variant="primary">
                     <span>💾</span>
-                    <span>Update Status</span>
+                    <span>{{ __('messages.update_status') }}</span>
                 </x-button>
             </div>
         </form>

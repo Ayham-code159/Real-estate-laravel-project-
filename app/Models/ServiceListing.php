@@ -21,7 +21,11 @@ class ServiceListing extends Model implements HasMedia
         'service_id',
         'service_subcategory_id',
         'title',
+        'title_en',
+        'title_ar',
         'description',
+        'description_en',
+        'description_ar',
         'mode',
         'price_usd',
         'price_syp',
@@ -36,6 +40,8 @@ class ServiceListing extends Model implements HasMedia
         'main_photo_url',
         'main_photo_thumb_url',
         'sub_photo_urls',
+        'translated_title',
+        'translated_description',
     ];
 
     protected function casts(): array
@@ -100,6 +106,44 @@ class ServiceListing extends Model implements HasMedia
             self::STATUS_REJECTED => 'badge-danger',
             default => 'badge-primary',
         };
+    }
+
+    public function getTitleAttribute($value): string
+    {
+        if (app()->getLocale() === 'ar') {
+            return $this->attributes['title_ar']
+                ?: $this->attributes['title_en']
+                ?: $value
+                ?: '';
+        }
+
+        return $this->attributes['title_en']
+            ?: $this->attributes['title_ar']
+            ?: $value
+            ?: '';
+    }
+
+    public function getDescriptionAttribute($value): ?string
+    {
+        if (app()->getLocale() === 'ar') {
+            return $this->attributes['description_ar']
+                ?: $this->attributes['description_en']
+                ?: $value;
+        }
+
+        return $this->attributes['description_en']
+            ?: $this->attributes['description_ar']
+            ?: $value;
+    }
+
+    public function getTranslatedTitleAttribute(): string
+    {
+        return $this->title;
+    }
+
+    public function getTranslatedDescriptionAttribute(): ?string
+    {
+        return $this->description;
     }
 
     public function registerMediaCollections(): void

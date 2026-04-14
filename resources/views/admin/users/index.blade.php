@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Users')
+@section('title', __('messages.users'))
 
 @section('content')
     <x-page-title
-        title="Users"
-        subtitle="Browse all users, search by first or last name, and inspect their business accounts and offerings."
+        :title="__('messages.users')"
+        :subtitle="__('messages.users_subtitle')"
     >
         <x-slot:actions>
-            <span class="badge badge-primary">User Management</span>
+            <span class="badge badge-primary">{{ __('messages.user_management') }}</span>
         </x-slot:actions>
     </x-page-title>
 
@@ -16,9 +16,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Total Users</div>
+                    <div class="stats-label">{{ __('messages.total_users') }}</div>
                     <div class="stats-value">{{ $counts['total_users'] }}</div>
-                    <div class="stats-meta">Registered platform users</div>
+                    <div class="stats-meta">{{ __('messages.registered_platform_users') }}</div>
                 </div>
                 <div class="stats-icon">👥</div>
             </div>
@@ -27,9 +27,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">With Business Accounts</div>
-                    <div class="stats-value">{{ $counts['users_with_business_accounts'] }}</div>
-                    <div class="stats-meta">Users owning at least one business account</div>
+                    <div class="stats-label">{{ __('messages.with_business_accounts') }}</div>
+                    <div class="stats-value">{{ $counts['with_business_accounts'] }}</div>
+                    <div class="stats-meta">{{ __('messages.users_with_business_accounts') }}</div>
                 </div>
                 <div class="stats-icon">🏢</div>
             </div>
@@ -38,9 +38,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">With Approved Accounts</div>
-                    <div class="stats-value">{{ $counts['users_with_approved_business_accounts'] }}</div>
-                    <div class="stats-meta">Users ready to use offerings</div>
+                    <div class="stats-label">{{ __('messages.with_approved_accounts') }}</div>
+                    <div class="stats-value">{{ $counts['with_approved_accounts'] }}</div>
+                    <div class="stats-meta">{{ __('messages.users_ready_to_publish') }}</div>
                 </div>
                 <div class="stats-icon">✅</div>
             </div>
@@ -49,9 +49,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Total Offerings</div>
-                    <div class="stats-value">{{ $counts['total_offerings'] }}</div>
-                    <div class="stats-meta">Products, services, and rentals</div>
+                    <div class="stats-label">{{ __('messages.total_listings') }}</div>
+                    <div class="stats-value">{{ $counts['total_listings'] }}</div>
+                    <div class="stats-meta">{{ __('messages.all_submitted_listings') }}</div>
                 </div>
                 <div class="stats-icon">📦</div>
             </div>
@@ -62,25 +62,25 @@
         <form method="GET" action="{{ route('admin.users.index') }}">
             <div class="grid grid-2" style="align-items: end;">
                 <div>
-                    <label class="form-label">Search User</label>
+                    <label class="form-label">{{ __('messages.search_user') }}</label>
                     <input
                         type="text"
                         name="search"
                         class="form-input"
                         value="{{ $search }}"
-                        placeholder="Search by first name or last name"
+                        placeholder="{{ __('messages.search_user_placeholder') }}"
                     >
                 </div>
 
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                     <x-button type="submit" variant="primary">
                         <span>🔍</span>
-                        <span>Search</span>
+                        <span>{{ __('messages.search') }}</span>
                     </x-button>
 
                     <a href="{{ route('admin.users.index') }}" class="btn btn-outline">
                         <span>↺</span>
-                        <span>Reset</span>
+                        <span>{{ __('messages.reset') }}</span>
                     </a>
                 </div>
             </div>
@@ -89,9 +89,9 @@
 
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">All Users</h2>
+            <h2 class="section-title">{{ __('messages.all_users') }}</h2>
             <p class="section-subtitle">
-                View user summaries, related business accounts, and quick profile details.
+                {{ __('messages.all_users_subtitle') }}
             </p>
         </div>
 
@@ -104,25 +104,25 @@
                                 {{ $user->full_name }}
                             </h3>
                             <p class="text-muted" style="margin: 0;">
-                                Username: {{ $user->username }}
+                                {{ __('messages.username') }}: {{ $user->username ?? __('messages.not_available') }}
                             </p>
                         </div>
 
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <a href="{{ route('admin.users.show', $user) }}" class="btn btn-primary">
                                 <span>👁</span>
-                                <span>View Details</span>
+                                <span>{{ __('messages.view_details') }}</span>
                             </a>
 
                             <form method="POST"
                                   action="{{ route('admin.users.destroy', $user) }}"
-                                  onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                  onsubmit="return confirm('{{ __('messages.confirm_delete_user') }}');">
                                 @csrf
                                 @method('DELETE')
 
                                 <x-button type="submit" variant="danger">
                                     <span>🗑</span>
-                                    <span>Delete</span>
+                                    <span>{{ __('messages.delete') }}</span>
                                 </x-button>
                             </form>
                         </div>
@@ -130,21 +130,21 @@
 
                     <div class="grid grid-3">
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Email / Phone</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.email_or_phone') }}</div>
                             <div style="font-weight: 800;">
-                                {{ $user->email ?? $user->phone ?? 'N/A' }}
+                                {{ $user->email ?? $user->phone ?? __('messages.not_available') }}
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Business Accounts</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.business_accounts') }}</div>
                             <div style="font-weight: 800;">
                                 {{ $user->business_accounts_count }}
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Approved Accounts</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.approved_accounts') }}</div>
                             <div style="font-weight: 800;">
                                 {{ $user->approved_business_accounts_count }}
                             </div>
@@ -155,9 +155,9 @@
         @empty
             <div class="empty-state">
                 <div class="empty-state-icon">👤</div>
-                <h3>No Users Found</h3>
+                <h3>{{ __('messages.no_users_found') }}</h3>
                 <p>
-                    No users matched your current search.
+                    {{ __('messages.no_users_found_subtitle') }}
                 </p>
             </div>
         @endforelse

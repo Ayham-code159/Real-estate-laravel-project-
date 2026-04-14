@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Dashboard')
+@section('title', __('messages.admin_dashboard'))
 
 @section('content')
     <x-page-title
-        title="Admin Dashboard"
-        subtitle="Welcome back. Here is a real overview of the current listings moderation flow and your admin session."
+        :title="__('messages.admin_dashboard')"
+        :subtitle="__('messages.dashboard_subtitle')"
     >
         <x-slot:actions>
-            <span class="badge badge-success">System Online</span>
+            <span class="badge badge-success">{{ __('messages.system_online') }}</span>
         </x-slot:actions>
     </x-page-title>
 
@@ -16,9 +16,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Admin Name</div>
+                    <div class="stats-label">{{ __('messages.admin_name') }}</div>
                     <div class="stats-value" style="font-size: 24px;">{{ auth('admin')->user()->name }}</div>
-                    <div class="stats-meta">Current active admin session</div>
+                    <div class="stats-meta">{{ __('messages.current_active_admin_session') }}</div>
                 </div>
                 <div class="stats-icon">👤</div>
             </div>
@@ -27,9 +27,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Access Level</div>
+                    <div class="stats-label">{{ __('messages.access_level') }}</div>
                     <div class="stats-value" style="font-size: 22px;">{{ auth('admin')->user()->permissionLabel() }}</div>
-                    <div class="stats-meta">Current permission profile</div>
+                    <div class="stats-meta">{{ __('messages.current_permission_profile') }}</div>
                 </div>
                 <div class="stats-icon">🛡️</div>
             </div>
@@ -38,9 +38,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Pending Listings</div>
+                    <div class="stats-label">{{ __('messages.pending_listings') }}</div>
                     <div class="stats-value" style="font-size: 24px;">{{ $listingCounts['pending'] }}</div>
-                    <div class="stats-meta">Need moderation review</div>
+                    <div class="stats-meta">{{ __('messages.need_moderation_review') }}</div>
                 </div>
                 <div class="stats-icon">⏳</div>
             </div>
@@ -49,12 +49,12 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Last Login</div>
+                    <div class="stats-label">{{ __('messages.last_login') }}</div>
                     <div class="stats-value" style="font-size: 20px;">
-                        {{ optional(auth('admin')->user()->last_login_at)->format('M d, Y') ?? 'First login' }}
+                        {{ optional(auth('admin')->user()->last_login_at)->format('M d, Y') ?? __('messages.first_login') }}
                     </div>
                     <div class="stats-meta">
-                        {{ optional(auth('admin')->user()->last_login_at)->format('h:i A') ?? 'No previous login' }}
+                        {{ optional(auth('admin')->user()->last_login_at)->format('h:i A') ?? __('messages.no_previous_login') }}
                     </div>
                 </div>
                 <div class="stats-icon">🕒</div>
@@ -66,9 +66,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Total Listings</div>
+                    <div class="stats-label">{{ __('messages.total_listings') }}</div>
                     <div class="stats-value" style="font-size: 24px;">{{ $listingCounts['total'] }}</div>
-                    <div class="stats-meta">All submitted listings</div>
+                    <div class="stats-meta">{{ __('messages.all_submitted_listings') }}</div>
                 </div>
                 <div class="stats-icon">📋</div>
             </div>
@@ -77,9 +77,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Approved</div>
+                    <div class="stats-label">{{ __('messages.approved') }}</div>
                     <div class="stats-value" style="font-size: 24px;">{{ $listingCounts['approved'] }}</div>
-                    <div class="stats-meta">Approved listings</div>
+                    <div class="stats-meta">{{ __('messages.approved_listings_meta') }}</div>
                 </div>
                 <div class="stats-icon">✅</div>
             </div>
@@ -88,9 +88,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Rejected</div>
+                    <div class="stats-label">{{ __('messages.rejected') }}</div>
                     <div class="stats-value" style="font-size: 24px;">{{ $listingCounts['rejected'] }}</div>
-                    <div class="stats-meta">Rejected listings</div>
+                    <div class="stats-meta">{{ __('messages.rejected_listings_meta') }}</div>
                 </div>
                 <div class="stats-icon">❌</div>
             </div>
@@ -99,9 +99,9 @@
         <div class="card stats-card glass-accent">
             <div class="stats-head">
                 <div>
-                    <div class="stats-label">Status</div>
-                    <div class="stats-value" style="font-size: 24px;">Active</div>
-                    <div class="stats-meta">This account is currently enabled</div>
+                    <div class="stats-label">{{ __('messages.status') }}</div>
+                    <div class="stats-value" style="font-size: 24px;">{{ __('messages.active') }}</div>
+                    <div class="stats-meta">{{ __('messages.account_enabled') }}</div>
                 </div>
                 <div class="stats-icon">⚡</div>
             </div>
@@ -112,35 +112,35 @@
         <x-card class="subtle-panel">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
                 <div>
-                    <h2 class="section-title">Account Overview</h2>
+                    <h2 class="section-title">{{ __('messages.account_overview') }}</h2>
                     <p class="section-subtitle">
-                        This section summarizes your current admin profile and session details.
+                        {{ __('messages.account_overview_subtitle') }}
                     </p>
                 </div>
 
-                <span class="badge badge-success">Active</span>
+                <span class="badge badge-success">{{ __('messages.active') }}</span>
             </div>
 
             <div class="info-list">
                 <div class="info-row">
-                    <div class="info-label">Full Name</div>
+                    <div class="info-label">{{ __('messages.full_name') }}</div>
                     <div class="info-value">{{ auth('admin')->user()->name }}</div>
                 </div>
 
                 <div class="info-row">
-                    <div class="info-label">Email</div>
+                    <div class="info-label">{{ __('messages.email') }}</div>
                     <div class="info-value">{{ auth('admin')->user()->email }}</div>
                 </div>
 
                 <div class="info-row">
-                    <div class="info-label">Permission Level</div>
+                    <div class="info-label">{{ __('messages.permission_level') }}</div>
                     <div class="info-value">{{ auth('admin')->user()->permissionLabel() }}</div>
                 </div>
 
                 <div class="info-row">
-                    <div class="info-label">Last Login</div>
+                    <div class="info-label">{{ __('messages.last_login') }}</div>
                     <div class="info-value">
-                        {{ optional(auth('admin')->user()->last_login_at)->format('Y-m-d h:i A') ?? 'First login' }}
+                        {{ optional(auth('admin')->user()->last_login_at)->format('Y-m-d h:i A') ?? __('messages.first_login') }}
                     </div>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                     @csrf
                     <x-button type="submit" variant="danger">
                         <span>↩</span>
-                        <span>Logout</span>
+                        <span>{{ __('messages.logout') }}</span>
                     </x-button>
                 </form>
             </div>
@@ -158,9 +158,9 @@
 
         <div class="grid">
             <x-card class="subtle-panel">
-                <h2 class="section-title">Recent Pending Listings</h2>
+                <h2 class="section-title">{{ __('messages.recent_pending_listings') }}</h2>
                 <p class="section-subtitle">
-                    The latest listings waiting for moderation review.
+                    {{ __('messages.recent_pending_listings_subtitle') }}
                 </p>
 
                 <div class="activity-list">
@@ -181,9 +181,9 @@
                     @empty
                         <div class="empty-state">
                             <div class="empty-state-icon">✅</div>
-                            <h3>No Pending Listings</h3>
+                            <h3>{{ __('messages.no_pending_listings') }}</h3>
                             <p>
-                                There are currently no listings waiting for moderation.
+                                {{ __('messages.no_pending_listings_subtitle') }}
                             </p>
                         </div>
                     @endforelse
@@ -191,29 +191,29 @@
             </x-card>
 
             <x-card class="subtle-panel">
-                <h2 class="section-title">Quick Area</h2>
+                <h2 class="section-title">{{ __('messages.quick_area') }}</h2>
                 <p class="section-subtitle" style="margin-bottom: 18px;">
-                    Fast insight into the current moderation workload.
+                    {{ __('messages.quick_area_subtitle') }}
                 </p>
 
                 <div class="info-list">
                     <div class="info-row">
-                        <div class="info-label">Total listings in system</div>
+                        <div class="info-label">{{ __('messages.total_listings_in_system') }}</div>
                         <div class="info-value">{{ $listingCounts['total'] }}</div>
                     </div>
 
                     <div class="info-row">
-                        <div class="info-label">Listings waiting review</div>
+                        <div class="info-label">{{ __('messages.listings_waiting_review') }}</div>
                         <div class="info-value">{{ $listingCounts['pending'] }}</div>
                     </div>
 
                     <div class="info-row">
-                        <div class="info-label">Approved listings</div>
+                        <div class="info-label">{{ __('messages.approved') }}</div>
                         <div class="info-value">{{ $listingCounts['approved'] }}</div>
                     </div>
 
                     <div class="info-row">
-                        <div class="info-label">Rejected listings</div>
+                        <div class="info-label">{{ __('messages.rejected') }}</div>
                         <div class="info-value">{{ $listingCounts['rejected'] }}</div>
                     </div>
                 </div>

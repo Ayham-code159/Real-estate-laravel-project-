@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'User Details')
+@section('title', __('messages.user_details'))
 
 @section('content')
     <x-page-title
-        title="User Details"
-        subtitle="Review this user, their business accounts, and all listings created under those accounts."
+        :title="__('messages.user_details')"
+        :subtitle="__('messages.user_details_subtitle')"
     >
         <x-slot:actions>
             <a href="{{ route('admin.users.index') }}" class="btn btn-outline">
                 <span>←</span>
-                <span>Back to Users</span>
+                <span>{{ __('messages.back') }}</span>
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -18,32 +18,32 @@
     <x-card class="subtle-panel" style="margin-bottom: 24px;">
         <div class="info-list">
             <div class="info-row">
-                <div class="info-label">Full Name</div>
+                <div class="info-label">{{ __('messages.full_name') }}</div>
                 <div class="info-value">{{ $user->full_name }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Username</div>
-                <div class="info-value">{{ $user->username ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.username') }}</div>
+                <div class="info-value">{{ $user->username ?? __('messages.not_available') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Email</div>
-                <div class="info-value">{{ $user->email ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.email') }}</div>
+                <div class="info-value">{{ $user->email ?? __('messages.not_available') }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Phone</div>
-                <div class="info-value">{{ $user->phone ?? 'N/A' }}</div>
+                <div class="info-label">{{ __('messages.phone') }}</div>
+                <div class="info-value">{{ $user->phone ?? __('messages.not_available') }}</div>
             </div>
         </div>
     </x-card>
 
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">Business Accounts and Listings</h2>
+            <h2 class="section-title">{{ __('messages.business_accounts') }}</h2>
             <p class="section-subtitle">
-                Each business account appears with its service listings underneath it.
+                {{ __('messages.business_accounts_only_subtitle') }}
             </p>
         </div>
 
@@ -65,64 +65,38 @@
                         </span>
                     </div>
 
-                    @if($businessAccount->serviceListings->count())
-                        <div style="margin-top: 18px;">
-                            <h4 style="margin: 0 0 12px;">Listings</h4>
-
-                            @foreach($businessAccount->serviceListings as $listing)
-                                <div class="activity-item" style="margin-bottom: 10px;">
-                                    <div class="activity-icon">📦</div>
-                                    <div class="activity-body" style="width: 100%;">
-                                        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center;">
-                                            <h4 style="margin: 0;">{{ $listing->title }}</h4>
-                                            <span class="badge {{ $listing->status_badge_class }}">
-                                                {{ $listing->status_label }}
-                                            </span>
-                                        </div>
-
-                                        <p style="margin-top: 6px;">
-                                            {{ ucfirst($listing->mode) }} •
-                                            {{ $listing->service?->name ?? 'N/A' }} •
-                                            {{ $listing->subcategory?->name ?? 'N/A' }}
-                                        </p>
-
-                                        <p style="margin-top: 4px;">
-                                            ${{ number_format((float) $listing->price_usd, 2) }} •
-                                            {{ number_format((float) $listing->price_syp, 2) }} SYP
-                                        </p>
-                                    </div>
-                                </div>
-                            @endforeach
+                    <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center;">
+                        <div class="text-muted">
+                            {{ __('messages.open_this_business_account_to_view_its_listings') }}
                         </div>
-                    @else
-                        <div class="empty-state" style="margin-top: 16px;">
-                            <div class="empty-state-icon">📭</div>
-                            <h3>No Listings Yet</h3>
-                            <p>
-                                This business account does not have any listings yet.
-                            </p>
+
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a href="{{ route('admin.users.business-accounts.show', [$user, $businessAccount]) }}" class="btn btn-primary">
+                                <span>📂</span>
+                                <span>{{ __('messages.open_business_account') }}</span>
+                            </a>
+
+                            <form method="POST"
+                                  action="{{ route('admin.users.business-accounts.destroy', $businessAccount) }}"
+                                  onsubmit="return confirm('{{ __('messages.confirm_delete_business_account') }}');">
+                                @csrf
+                                @method('DELETE')
+
+                                <x-button type="submit" variant="danger">
+                                    <span>🗑</span>
+                                    <span>{{ __('messages.delete_business_account') }}</span>
+                                </x-button>
+                            </form>
                         </div>
-                    @endif
-
-                    <form method="POST"
-                          action="{{ route('admin.users.business-accounts.destroy', $businessAccount) }}"
-                          style="margin-top: 16px;">
-                        @csrf
-                        @method('DELETE')
-
-                        <x-button type="submit" variant="danger">
-                            <span>🗑</span>
-                            <span>Delete Business Account</span>
-                        </x-button>
-                    </form>
+                    </div>
                 </div>
             </div>
         @empty
             <div class="empty-state">
                 <div class="empty-state-icon">👤</div>
-                <h3>No Business Accounts</h3>
+                <h3>{{ __('messages.no_business_accounts') }}</h3>
                 <p>
-                    This user has not created any business accounts yet.
+                    {{ __('messages.no_business_accounts_subtitle') }}
                 </p>
             </div>
         @endforelse

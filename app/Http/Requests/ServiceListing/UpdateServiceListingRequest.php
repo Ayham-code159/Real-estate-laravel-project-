@@ -16,8 +16,13 @@ class UpdateServiceListingRequest extends FormRequest
         return [
             'service_id' => ['required', 'integer', 'exists:services,id'],
             'service_subcategory_id' => ['required', 'integer', 'exists:service_subcategories,id'],
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+
+            'title_en' => ['required', 'string', 'max:255'],
+            'title_ar' => ['nullable', 'string', 'max:255'],
+
+            'description_en' => ['nullable', 'string'],
+            'description_ar' => ['nullable', 'string'],
+
             'mode' => ['required', 'string', 'in:sell,rent'],
             'price_usd' => ['required', 'numeric', 'min:0'],
             'metadata' => ['nullable', 'array'],

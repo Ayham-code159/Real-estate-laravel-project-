@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Services')
+@section('title', __('messages.services'))
 
 @section('content')
     <x-page-title
-        title="Main Service Categories"
-        subtitle="Manage the main service categories that service listings will belong to."
+        :title="__('messages.main_service_categories')"
+        :subtitle="__('messages.main_services_page_subtitle')"
     >
         <x-slot:actions>
-            <span class="badge badge-primary">Super Admin Only</span>
+            <span class="badge badge-primary">{{ __('messages.super_admin_only') }}</span>
         </x-slot:actions>
     </x-page-title>
 
@@ -16,34 +16,46 @@
         <form method="POST" action="{{ route('admin.master-data.services.store') }}">
             @csrf
 
-            <div class="grid grid-2" style="align-items: end;">
+            <div class="grid grid-2" style="align-items: end; margin-bottom: 16px;">
                 <div>
-                    <label class="form-label">New Main Service</label>
+                    <label class="form-label">{{ __('messages.name_english') }}</label>
                     <input
                         type="text"
-                        name="name"
+                        name="name_en"
                         class="form-input"
-                        value="{{ old('name') }}"
-                        placeholder="Enter main service category"
+                        value="{{ old('name_en') }}"
+                        placeholder="{{ __('messages.enter_name_in_english') }}"
                         required
                     >
                 </div>
 
                 <div>
-                    <x-button type="submit" variant="primary">
-                        <span>＋</span>
-                        <span>Add Service</span>
-                    </x-button>
+                    <label class="form-label">{{ __('messages.name_arabic') }}</label>
+                    <input
+                        type="text"
+                        name="name_ar"
+                        class="form-input"
+                        value="{{ old('name_ar') }}"
+                        placeholder="{{ __('messages.enter_name_in_arabic') }}"
+                        required
+                    >
                 </div>
+            </div>
+
+            <div>
+                <x-button type="submit" variant="primary">
+                    <span>＋</span>
+                    <span>{{ __('messages.add_service') }}</span>
+                </x-button>
             </div>
         </form>
     </x-card>
 
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">All Main Services</h2>
+            <h2 class="section-title">{{ __('messages.all_main_services') }}</h2>
             <p class="section-subtitle">
-                Click on a service to manage its details, update its name, or delete it.
+                {{ __('messages.all_main_services_subtitle') }}
             </p>
         </div>
 
@@ -54,12 +66,18 @@
 
                     <div class="activity-body" style="width: 100%;">
                         <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center;">
-                            <h4 style="margin: 0;">{{ $service->name }}</h4>
-                            <span class="badge badge-primary">{{ $service->subcategories_count }} subcategories</span>
+                            <h4 style="margin: 0;">{{ $service->translated_name }}</h4>
+                            <span class="badge badge-primary">
+                                {{ $service->subcategories_count }} {{ __('messages.subcategories') }}
+                            </span>
                         </div>
 
                         <p style="margin-top: 8px;">
-                            Created at {{ $service->created_at->format('Y-m-d h:i A') }}
+                            EN: {{ $service->name_en }} • AR: {{ $service->name_ar }}
+                        </p>
+
+                        <p style="margin-top: 8px;">
+                            {{ __('messages.created_at_label') }} {{ $service->created_at->format('Y-m-d h:i A') }}
                         </p>
                     </div>
                 </div>
@@ -67,10 +85,8 @@
         @empty
             <div class="empty-state">
                 <div class="empty-state-icon">🧩</div>
-                <h3>No Main Services</h3>
-                <p>
-                    No main service categories found.
-                </p>
+                <h3>{{ __('messages.no_main_services') }}</h3>
+                <p>{{ __('messages.no_main_services_subtitle') }}</p>
             </div>
         @endforelse
     </x-card>

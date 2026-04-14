@@ -18,23 +18,13 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-//Business account routes(delete those )
-Route::middleware('auth:api')->prefix('business-accounts')->group(function () {
-    Route::get('/', [BusinessAccountController::class, 'index']);
-    Route::post('/', [BusinessAccountController::class, 'store']);
-    Route::delete('/{businessAccount}', [BusinessAccountController::class, 'destroy']);
+// //Business account routes(delete those )
+// Route::middleware('auth:api')->prefix('business-accounts')->group(function () {
+//     Route::get('/', [BusinessAccountController::class, 'index']);
+//     Route::post('/', [BusinessAccountController::class, 'store']);
+//     Route::delete('/{businessAccount}', [BusinessAccountController::class, 'destroy']);
 
-});
-
-//offerings (delete those)
-Route::middleware('auth:api')->prefix('offerings')->group(function () {
-    Route::get('/', [OfferingController::class, 'index']);
-    Route::get('/active-business-account', [OfferingController::class, 'activeBusinessAccountOfferings']);
-    Route::post('/', [OfferingController::class, 'store']);
-    Route::put('/{offering}', [OfferingController::class, 'update']);
-    Route::delete('/{offering}', [OfferingController::class, 'destroy']);
-});
-
+// });
 
 //business context (switching)
 Route::middleware('auth:api')->prefix('business-context')->group(function () {

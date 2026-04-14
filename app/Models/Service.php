@@ -9,6 +9,12 @@ class Service extends Model
 {
     protected $fillable = [
         'name',
+        'name_en',
+        'name_ar',
+    ];
+
+    protected $appends = [
+        'translated_name',
     ];
 
     public function subcategories(): HasMany
@@ -19,5 +25,25 @@ class Service extends Model
     public function serviceListings(): HasMany
     {
         return $this->hasMany(ServiceListing::class);
+    }
+
+    public function getNameAttribute($value): string
+    {
+        if (app()->getLocale() === 'ar') {
+            return $this->attributes['name_ar']
+                ?? $this->attributes['name_en']
+                ?? $value
+                ?? '';
+        }
+
+        return $this->attributes['name_en']
+            ?? $this->attributes['name_ar']
+            ?? $value
+            ?? '';
+    }
+
+    public function getTranslatedNameAttribute(): string
+    {
+        return $this->name;
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,16 +71,9 @@
         .admin-main {
             flex: 1;
             display: flex;
+            flex-direction: row;
             position: relative;
         }
-
-        /*
-        =========================
-        MAIN DASHBOARD CANVAS
-        =========================
-        This is where the "real"
-        purple atmosphere lives.
-        */
 
         .admin-content {
             flex: 1;
@@ -95,9 +88,6 @@
                 linear-gradient(135deg, #f3efff 0%, #f7f4ff 45%, #f3f0ff 75%, #f7f8fc 100%);
         }
 
-        /*
-        soft white mist
-        */
         .admin-content::before {
             content: "";
             position: absolute;
@@ -110,9 +100,6 @@
             z-index: 0;
         }
 
-        /*
-        particles / subtle sparkles
-        */
         .admin-content::after {
             content: "";
             position: absolute;
@@ -456,9 +443,6 @@
             text-align: right;
         }
 
-        /*
-        CLEANER TOPBAR + SIDEBAR
-        */
         .topbar {
             background: rgba(255, 255, 255, 0.74);
             backdrop-filter: blur(14px);
@@ -520,6 +504,7 @@
             padding: 28px 14px;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         .sidebar-title {
@@ -582,9 +567,6 @@
             z-index: 1;
         }
 
-        /*
-        AUTH PAGE
-        */
         .auth-page {
             min-height: 100vh;
             display: flex;
@@ -783,6 +765,90 @@
             flex-wrap: wrap;
         }
 
+        /*
+        =========================
+        RTL SUPPORT ONLY
+        =========================
+        */
+
+        body[dir="rtl"] {
+            direction: rtl;
+        }
+
+        body[dir="rtl"] .admin-main {
+            display: flex !important;
+            flex-direction: row-reverse !important;
+        }
+
+        body[dir="rtl"] .sidebar {
+            border-right: none;
+            border-left: 1px solid rgba(231, 234, 243, 0.88);
+        }
+
+        body[dir="rtl"] .nav-link {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+
+        body[dir="rtl"] .sidebar-title,
+        body[dir="rtl"] .section-title,
+        body[dir="rtl"] .section-subtitle,
+        body[dir="rtl"] .form-label,
+        body[dir="rtl"] .text-muted,
+        body[dir="rtl"] .activity-body,
+        body[dir="rtl"] .page-title,
+        body[dir="rtl"] .card-body,
+        body[dir="rtl"] .empty-state {
+            text-align: right;
+        }
+
+        body[dir="rtl"] .info-row {
+            flex-direction: row-reverse;
+        }
+
+        body[dir="rtl"] .info-value {
+            text-align: left;
+        }
+
+        body[dir="rtl"] .stats-head {
+            flex-direction: row-reverse;
+        }
+
+        body[dir="rtl"] .page-title-top,
+        body[dir="rtl"] .topbar-inner,
+        body[dir="rtl"] .brand,
+        body[dir="rtl"] .section-actions {
+            flex-direction: row-reverse;
+        }
+
+        body[dir="rtl"] .brand-text {
+            text-align: right;
+        }
+
+        body[dir="rtl"] .form-input,
+        body[dir="rtl"] input,
+        body[dir="rtl"] textarea,
+        body[dir="rtl"] select {
+            text-align: right;
+        }
+
+        body[dir="rtl"] .btn {
+            flex-direction: row-reverse;
+        }
+
+        body[dir="rtl"] .grid,
+        body[dir="rtl"] .overview-grid {
+            direction: rtl;
+        }
+
+        body[dir="rtl"] .nav-menu {
+            direction: rtl;
+        }
+
+        body[dir="rtl"] .container {
+            direction: rtl;
+        }
+
         @media (max-width: 1100px) {
             .overview-grid,
             .grid-4,
@@ -837,12 +903,28 @@
             .info-value {
                 text-align: left;
             }
+
+            body[dir="rtl"] .info-value {
+                text-align: right;
+            }
         }
     </style>
 
     @stack('styles')
 </head>
-<body>
+<body dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+    <div style="display: flex; gap: 10px; align-items: center; padding: 10px 16px;">
+        <span class="text-muted">{{ __('messages.language') }}:</span>
+
+        <a href="{{ route('locale.switch', 'en') }}" class="btn btn-outline">
+            {{ __('messages.english') }}
+        </a>
+
+        <a href="{{ route('locale.switch', 'ar') }}" class="btn btn-outline">
+            {{ __('messages.arabic') }}
+        </a>
+    </div>
+
     @hasSection('auth')
         @yield('auth')
     @else

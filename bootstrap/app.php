@@ -15,6 +15,17 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin.permission'=>\App\Http\Middleware\EnsureAdminHasPermission::class,
         ]);
+
+        $middleware->web(append:[
+            \App\Http\Middleware\SetLocale::class,
+
+        ]);
+
+        $middleware->api(append:[
+            \App\Http\Middleware\SetLocale::class,
+
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

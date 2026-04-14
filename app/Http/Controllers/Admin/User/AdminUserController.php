@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\User;
 
 use App\Models\User;
 use App\Models\BusinessAccount;
+use App\Models\ServiceListing;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
@@ -19,11 +20,6 @@ class AdminUserController extends Controller
                 'businessAccounts',
                 'businessAccounts as approved_business_accounts_count' => function ($query) {
                     $query->where('status', BusinessAccount::STATUS_APPROVED);
-                },
-            ])
-            ->withCount([
-                'businessAccounts as listings_count' => function ($query) {
-                    $query->join('service_listings', 'business_accounts.id', '=', 'service_listings.business_account_id');
                 },
             ])
             ->when($search !== '', function ($query) use ($search) {
@@ -42,7 +38,7 @@ class AdminUserController extends Controller
             'with_approved_accounts' => User::whereHas('businessAccounts', function ($query) {
                 $query->where('status', BusinessAccount::STATUS_APPROVED);
             })->count(),
-            'total_listings' => \App\Models\ServiceListing::count(),
+            'total_listings' => ServiceListing::count(),
         ];
 
         return view('admin.users.index', compact('users', 'counts', 'search'));
@@ -53,11 +49,23 @@ class AdminUserController extends Controller
         $user->load([
             'businessAccounts.businessType',
             'businessAccounts.city',
-            'businessAccounts.serviceListings.service',
-            'businessAccounts.serviceListings.subcategory',
         ]);
 
         return view('admin.users.show', compact('user'));
+    }
+
+    public function showBusinessAccount(User $user, BusinessAccount $businessAccount)
+    {
+        abort_if($businessAccount->user_id !== $user->id, 404);
+
+        $businessAccount->load([
+            'businessType',
+            'city',
+            'serviceListings.service',
+            'serviceListings.subcategory',
+        ]);
+
+        return view('admin.users.business-account-show', compact('user', 'businessAccount'));
     }
 
     public function destroy(User $user): RedirectResponse

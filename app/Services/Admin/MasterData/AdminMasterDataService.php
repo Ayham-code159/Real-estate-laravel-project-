@@ -26,8 +26,24 @@ class AdminMasterDataService
 
     public function createBusinessType(array $data): BusinessType
     {
+        $nameEn = trim($data['name_en']);
+        $nameAr = trim($data['name_ar']);
+
+        $exists = BusinessType::query()
+            ->where('name_en', $nameEn)
+            ->orWhere('name_ar', $nameAr)
+            ->exists();
+
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'name_en' => ['This business type already exists in one of the selected languages.'],
+            ]);
+        }
+
         return BusinessType::create([
-            'name' => trim($data['name']),
+            'name' => $nameEn,
+            'name_en' => $nameEn,
+            'name_ar' => $nameAr,
         ]);
     }
 
@@ -35,19 +51,27 @@ class AdminMasterDataService
     {
         $businessType = BusinessType::query()->findOrFail($businessTypeId);
 
+        $nameEn = trim($data['name_en']);
+        $nameAr = trim($data['name_ar']);
+
         $exists = BusinessType::query()
-            ->where('name', trim($data['name']))
             ->where('id', '!=', $businessType->id)
+            ->where(function ($query) use ($nameEn, $nameAr) {
+                $query->where('name_en', $nameEn)
+                    ->orWhere('name_ar', $nameAr);
+            })
             ->exists();
 
         if ($exists) {
             throw ValidationException::withMessages([
-                'name' => ['This business type already exists.'],
+                'name_en' => ['This business type already exists in one of the selected languages.'],
             ]);
         }
 
         $businessType->update([
-            'name' => trim($data['name']),
+            'name' => $nameEn,
+            'name_en' => $nameEn,
+            'name_ar' => $nameAr,
         ]);
 
         return $businessType->fresh();
@@ -78,8 +102,24 @@ class AdminMasterDataService
 
     public function createService(array $data): Service
     {
+        $nameEn = trim($data['name_en']);
+        $nameAr = trim($data['name_ar']);
+
+        $exists = Service::query()
+            ->where('name_en', $nameEn)
+            ->orWhere('name_ar', $nameAr)
+            ->exists();
+
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'name_en' => ['This service already exists in one of the selected languages.'],
+            ]);
+        }
+
         return Service::create([
-            'name' => trim($data['name']),
+            'name' => $nameEn,
+            'name_en' => $nameEn,
+            'name_ar' => $nameAr,
         ]);
     }
 
@@ -87,19 +127,27 @@ class AdminMasterDataService
     {
         $service = Service::query()->findOrFail($serviceId);
 
+        $nameEn = trim($data['name_en']);
+        $nameAr = trim($data['name_ar']);
+
         $exists = Service::query()
-            ->where('name', trim($data['name']))
             ->where('id', '!=', $service->id)
+            ->where(function ($query) use ($nameEn, $nameAr) {
+                $query->where('name_en', $nameEn)
+                    ->orWhere('name_ar', $nameAr);
+            })
             ->exists();
 
         if ($exists) {
             throw ValidationException::withMessages([
-                'name' => ['This service already exists.'],
+                'name_en' => ['This service already exists in one of the selected languages.'],
             ]);
         }
 
         $service->update([
-            'name' => trim($data['name']),
+            'name' => $nameEn,
+            'name_en' => $nameEn,
+            'name_ar' => $nameAr,
         ]);
 
         return $service->fresh();
@@ -113,20 +161,29 @@ class AdminMasterDataService
 
     public function createServiceSubcategory(array $data): ServiceSubcategory
     {
+        $serviceId = (int) $data['service_id'];
+        $nameEn = trim($data['name_en']);
+        $nameAr = trim($data['name_ar']);
+
         $exists = ServiceSubcategory::query()
-            ->where('service_id', (int) $data['service_id'])
-            ->where('name', trim($data['name']))
+            ->where('service_id', $serviceId)
+            ->where(function ($query) use ($nameEn, $nameAr) {
+                $query->where('name_en', $nameEn)
+                    ->orWhere('name_ar', $nameAr);
+            })
             ->exists();
 
         if ($exists) {
             throw ValidationException::withMessages([
-                'name' => ['This subcategory already exists for the selected service.'],
+                'name_en' => ['This subcategory already exists for the selected service in one of the selected languages.'],
             ]);
         }
 
         return ServiceSubcategory::create([
-            'service_id' => (int) $data['service_id'],
-            'name' => trim($data['name']),
+            'service_id' => $serviceId,
+            'name' => $nameEn,
+            'name_en' => $nameEn,
+            'name_ar' => $nameAr,
         ]);
     }
 
@@ -141,20 +198,28 @@ class AdminMasterDataService
     {
         $subcategory = ServiceSubcategory::query()->findOrFail($subcategoryId);
 
+        $nameEn = trim($data['name_en']);
+        $nameAr = trim($data['name_ar']);
+
         $exists = ServiceSubcategory::query()
             ->where('service_id', $subcategory->service_id)
-            ->where('name', trim($data['name']))
             ->where('id', '!=', $subcategory->id)
+            ->where(function ($query) use ($nameEn, $nameAr) {
+                $query->where('name_en', $nameEn)
+                    ->orWhere('name_ar', $nameAr);
+            })
             ->exists();
 
         if ($exists) {
             throw ValidationException::withMessages([
-                'name' => ['This subcategory already exists for the selected service.'],
+                'name_en' => ['This subcategory already exists for the selected service in one of the selected languages.'],
             ]);
         }
 
         $subcategory->update([
-            'name' => trim($data['name']),
+            'name' => $nameEn,
+            'name_en' => $nameEn,
+            'name_ar' => $nameAr,
         ]);
 
         return $subcategory->fresh('service');
