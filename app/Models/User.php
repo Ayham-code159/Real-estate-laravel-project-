@@ -55,4 +55,24 @@ class User extends Authenticatable
     {
         return $this->belongsTo(BusinessAccount::class, 'active_business_account_id');
     }
+
+    public function sentListingRequests(): HasMany
+    {
+        return $this->hasMany(ListingRequest::class, 'buyer_user_id');
+    }
+
+    public function receivedListingRequests(): HasMany
+    {
+        return $this->hasMany(ListingRequest::class, 'seller_user_id');
+    }
+
+    public function cancelledListingRequests(): HasMany
+    {
+        return $this->hasMany(ListingRequest::class, 'cancelled_by_user_id');
+    }
+
+    public function listingRequestRatings(): HasMany
+    {
+        return $this->hasMany(ListingRequestRating::class, 'buyer_user_id');
+    }
 }

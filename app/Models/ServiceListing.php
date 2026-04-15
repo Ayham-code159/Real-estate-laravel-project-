@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -67,6 +68,16 @@ class ServiceListing extends Model implements HasMedia
     public function subcategory(): BelongsTo
     {
         return $this->belongsTo(ServiceSubcategory::class, 'service_subcategory_id');
+    }
+
+    public function listingRequests(): HasMany
+    {
+        return $this->hasMany(ListingRequest::class);
+    }
+
+    public function listingRequestRatings(): HasMany
+    {
+        return $this->hasMany(ListingRequestRating::class);
     }
 
     public static function statuses(): array

@@ -54,6 +54,16 @@ class BusinessAccount extends Model
         return $this->hasMany(ServiceListing::class);
     }
 
+    public function buyerListingRequests(): HasMany
+    {
+        return $this->hasMany(ListingRequest::class, 'buyer_business_account_id');
+    }
+
+    public function sellerListingRequests(): HasMany
+    {
+        return $this->hasMany(ListingRequest::class, 'seller_business_account_id');
+    }
+
     public static function statuses(): array
     {
         return [

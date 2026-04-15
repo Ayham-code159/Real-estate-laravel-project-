@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Offering\OfferingController;
 use App\Http\Controllers\Api\BusinessContext\BusinessContextController;
 use App\Http\Controllers\Api\BusinessType\BusinessTypeController;
 use App\Http\Controllers\Api\ServiceListing\ServiceListingController;
+use App\Http\Controllers\Api\ListingRequest\ListingRequestController;
 
 // UserAuth routes
 Route::prefix('auth')->group(function () {
@@ -18,24 +19,13 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-// //Business account routes(delete those )
-// Route::middleware('auth:api')->prefix('business-accounts')->group(function () {
-//     Route::get('/', [BusinessAccountController::class, 'index']);
-//     Route::post('/', [BusinessAccountController::class, 'store']);
-//     Route::delete('/{businessAccount}', [BusinessAccountController::class, 'destroy']);
-
-// });
-
-//business context (switching)
+// business context (switching)
 Route::middleware('auth:api')->prefix('business-context')->group(function () {
     Route::get('/approved-business-accounts', [BusinessContextController::class, 'approvedBusinessAccounts']);
     Route::post('/switch', [BusinessContextController::class, 'switch']);
     Route::get('/current', [BusinessContextController::class, 'current']);
     Route::delete('/clear', [BusinessContextController::class, 'clear']);
-
 });
-
-//
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/business-types', [BusinessTypeController::class, 'index']);
@@ -47,9 +37,7 @@ Route::middleware('auth:api')->group(function () {
     });
 });
 
-
-//services
-
+// services
 Route::middleware('auth:api')->group(function () {
     Route::get('/services', [ServiceListingController::class, 'services']);
     Route::get('/services/{service}/subcategories', [ServiceListingController::class, 'subcategories']);
@@ -66,4 +54,16 @@ Route::middleware('auth:api')->group(function () {
     });
 });
 
+// listing requests
+Route::middleware('auth:api')->prefix('listing-requests')->group(function () {
+    Route::post('/', [ListingRequestController::class, 'store']);
 
+    Route::get('/seller', [ListingRequestController::class, 'sellerRequests']);
+    Route::get('/seller/listings/{serviceListing}', [ListingRequestController::class, 'sellerRequestsForListing']);
+    Route::put('/{listingRequest}/status', [ListingRequestController::class, 'updateStatus']);
+
+    Route::get('/buyer', [ListingRequestController::class, 'buyerRequests']);
+    Route::get('/buyer/by-seller', [ListingRequestController::class, 'buyerRequestsBySeller']);
+
+    Route::post('/{listingRequest}/rating', [ListingRequestController::class, 'storeRating']);
+});
