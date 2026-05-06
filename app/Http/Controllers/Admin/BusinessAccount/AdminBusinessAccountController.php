@@ -6,9 +6,14 @@ use App\Models\BusinessAccount;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
+use App\Services\Notification\AppNotificationService;
 
 class AdminBusinessAccountController extends Controller
 {
+    public function __construct(
+        private AppNotificationService $appNotificationService
+    ) {}
+
     public function index()
     {
         $businessAccounts = BusinessAccount::query()
@@ -38,7 +43,10 @@ class AdminBusinessAccountController extends Controller
             'rejection_reason' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $businessAccount->status = (int) $validated['status'];
+        $oldStatus = $businessAccount->status;
+        $newStatus = (int) $validated['status'];
+
+        $businessAccount->status = $newStatus;
 
         if ($businessAccount->status === BusinessAccount::STATUS_REJECTED) {
             $businessAccount->rejection_reason = $validated['rejection_reason'] ?? null;
@@ -47,6 +55,18 @@ class AdminBusinessAccountController extends Controller
         }
 
         $businessAccount->save();
+
+        $businessAccount->load('user');
+
+        if ($oldStatus !== $newStatus) {
+            if ($newStatus === BusinessAccount::STATUS_APPROVED) {
+                $this->appNotificationService->sendBusinessAccountAccepted($businessAccount);
+            }
+
+            if ($newStatus === BusinessAccount::STATUS_REJECTED) {
+                $this->appNotificationService->sendBusinessAccountRejected($businessAccount);
+            }
+        }
 
         return back()->with('success', 'Business account status updated successfully.');
     }

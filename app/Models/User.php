@@ -75,4 +75,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(ListingRequestRating::class, 'buyer_user_id');
     }
+
+    public function deviceTokens()
+    {
+        return $this->hasMany(\App\Models\DeviceToken::class);
+    }
+
+    public function appNotifications(): HasMany
+    {
+        return $this->hasMany(AppNotification::class);
+    }
+
 }

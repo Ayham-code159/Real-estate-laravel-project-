@@ -8,6 +8,9 @@ use App\Http\Controllers\Api\BusinessContext\BusinessContextController;
 use App\Http\Controllers\Api\BusinessType\BusinessTypeController;
 use App\Http\Controllers\Api\ServiceListing\ServiceListingController;
 use App\Http\Controllers\Api\ListingRequest\ListingRequestController;
+use App\Http\Controllers\Api\Notification\DeviceTokenController;
+use App\Http\Controllers\Api\Notification\FirebaseNotificationController;
+use App\Http\Controllers\Api\Notification\AppNotificationController;
 
 // UserAuth routes
 Route::prefix('auth')->group(function () {
@@ -66,4 +69,20 @@ Route::middleware('auth:api')->prefix('listing-requests')->group(function () {
     Route::get('/buyer/by-seller', [ListingRequestController::class, 'buyerRequestsBySeller']);
 
     Route::post('/{listingRequest}/rating', [ListingRequestController::class, 'storeRating']);
+});
+
+//notification
+Route::middleware('auth:api')->prefix('device-tokens')->group(function () {
+    Route::post('/', [DeviceTokenController::class, 'store']);
+    Route::delete('/', [DeviceTokenController::class, 'destroy']);
+});
+
+Route::middleware('auth:api')->prefix('notifications')->group(function () {
+    Route::get('/', [AppNotificationController::class, 'index']);
+    Route::get('/unread-count', [AppNotificationController::class, 'unreadCount']);
+    Route::put('/{notification}/read', [AppNotificationController::class, 'markAsRead']);
+    Route::put('/read-all', [AppNotificationController::class, 'markAllAsRead']);
+
+    Route::post('/send-to-me', [FirebaseNotificationController::class, 'sendToAuthenticatedUser']);
+    Route::post('/send-to-user/{userId}', [FirebaseNotificationController::class, 'sendToUserById']);
 });

@@ -11,10 +11,12 @@
     "require": {
         "php": "^8.3",
         "doctrine/dbal": "^4.4",
+        "kreait/laravel-firebase": "^7.1",
         "laravel/framework": "^13.0",
         "laravel/passport": "^13.6",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
+        "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-medialibrary": "^11.21"
     },
     "require-dev": {

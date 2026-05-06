@@ -3,10 +3,15 @@
 namespace App\Services\Admin\ServiceListing;
 
 use App\Models\ServiceListing;
+use App\Services\Notification\AppNotificationService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AdminServiceListingManagementService
 {
+    public function __construct(
+        private AppNotificationService $appNotificationService
+    ) {}
+
     public function getPaginatedListings(?string $search = null, ?string $mode = null): LengthAwarePaginator
     {
         return ServiceListing::query()
@@ -53,9 +58,14 @@ class AdminServiceListingManagementService
 
     public function updateListingStatus(int $listingId, array $data): ServiceListing
     {
-        $listing = ServiceListing::query()->findOrFail($listingId);
+        $listing = ServiceListing::query()
+            ->with('businessAccount.user')
+            ->findOrFail($listingId);
 
-        $listing->status = (int) $data['status'];
+        $oldStatus = $listing->status;
+        $newStatus = (int) $data['status'];
+
+        $listing->status = $newStatus;
 
         if ($listing->status === ServiceListing::STATUS_REJECTED) {
             $listing->rejection_reason = $data['rejection_reason'] ?? null;
@@ -65,12 +75,24 @@ class AdminServiceListingManagementService
 
         $listing->save();
 
-        return $listing->fresh([
+        $listing = $listing->fresh([
             'service',
             'subcategory',
             'businessAccount.user',
             'businessAccount.businessType',
             'businessAccount.city',
         ]);
+
+        if ($oldStatus !== $newStatus) {
+            if ($newStatus === ServiceListing::STATUS_APPROVED) {
+                $this->appNotificationService->sendListingAccepted($listing);
+            }
+
+            if ($newStatus === ServiceListing::STATUS_REJECTED) {
+                $this->appNotificationService->sendListingRejected($listing);
+            }
+        }
+
+        return $listing;
     }
 }

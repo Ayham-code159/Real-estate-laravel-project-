@@ -9,9 +9,14 @@ use App\Models\ServiceListing;
 use App\Models\ListingRequestRating;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\ValidationException;
+use App\Services\Notification\AppNotificationService;
 
 class ListingRequestService
 {
+    public function __construct(
+        private AppNotificationService $appNotificationService
+    ) {}
+
     public function create(User $buyer, array $data): ListingRequest
     {
         $buyerBusinessAccount = $this->getApprovedActiveBusinessAccount($buyer);
@@ -72,6 +77,8 @@ class ListingRequestService
             'price_syp_snapshot' => (float) $serviceListing->price_syp,
             'status' => ListingRequest::STATUS_PENDING,
         ]);
+
+        $this->appNotificationService->sendNewListingRequest($serviceListing, $buyer);
 
         return $listingRequest->fresh([
             'serviceListing.service',
@@ -156,6 +163,7 @@ class ListingRequestService
             ]);
         }
 
+        $oldStatus = $listingRequest->status;
         $newStatus = (int) $data['status'];
 
         $this->ensureStatusTransitionIsAllowed($listingRequest, $newStatus);
@@ -177,7 +185,7 @@ class ListingRequestService
 
         $listingRequest->save();
 
-        return $listingRequest->fresh([
+        $listingRequest = $listingRequest->fresh([
             'serviceListing.service',
             'serviceListing.subcategory',
             'buyerUser',
@@ -188,7 +196,34 @@ class ListingRequestService
             'sellerBusinessAccount.city',
             'rating',
         ]);
+
+        if ($oldStatus !== $newStatus) {
+            if ($newStatus === ListingRequest::STATUS_ACCEPTED) {
+                    $this->appNotificationService->sendListingRequestAccepted(
+                        $listingRequest->buyerUser,
+                        $listingRequest->serviceListing
+                    );
+                }
+
+        if ($newStatus === ListingRequest::STATUS_REJECTED) {
+            $this->appNotificationService->sendListingRequestRejected(
+                $listingRequest->buyerUser,
+                $listingRequest->serviceListing
+            );
+        }
+
+        if ($newStatus === ListingRequest::STATUS_COMPLETED) {
+            $this->appNotificationService->sendListingRequestCompleted(
+                $listingRequest->buyerUser,
+                $listingRequest->serviceListing
+            );
+        }
     }
+
+        return $listingRequest;
+    }
+
+
 
     public function getBuyerRequests(User $buyer, ?string $search = null): Collection
     {
