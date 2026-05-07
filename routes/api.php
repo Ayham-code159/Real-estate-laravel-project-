@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\ListingRequest\ListingRequestController;
 use App\Http\Controllers\Api\Notification\DeviceTokenController;
 use App\Http\Controllers\Api\Notification\FirebaseNotificationController;
 use App\Http\Controllers\Api\Notification\AppNotificationController;
-
+use App\Http\Controllers\Api\Chat\ChatController;
 // UserAuth routes
 Route::prefix('auth')->group(function () {
     Route::post('/register', [UserAuthController::class, 'register']);
@@ -85,4 +85,12 @@ Route::middleware('auth:api')->prefix('notifications')->group(function () {
 
     Route::post('/send-to-me', [FirebaseNotificationController::class, 'sendToAuthenticatedUser']);
     Route::post('/send-to-user/{userId}', [FirebaseNotificationController::class, 'sendToUserById']);
+});
+
+Route::middleware('auth:api')->prefix('chat')->group(function () {
+    Route::get('/conversations', [ChatController::class, 'conversations']);
+    Route::post('/conversations/users/{userId}', [ChatController::class, 'startConversation']);
+    Route::get('/conversations/{conversationId}/messages', [ChatController::class, 'messages']);
+    Route::post('/conversations/{conversationId}/messages', [ChatController::class, 'sendMessage']);
+    Route::put('/conversations/{conversationId}/read', [ChatController::class, 'markAsRead']);
 });

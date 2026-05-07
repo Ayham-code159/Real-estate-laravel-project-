@@ -9,6 +9,9 @@ use App\Http\Controllers\Admin\BusinessAccount\AdminBusinessAccountController;
 use App\Http\Controllers\Admin\MasterData\AdminMasterDataController;
 use App\Http\Controllers\Admin\ServiceListing\AdminServiceListingManagementController;
 
+  Route::get('/chat-test', function () {
+        return view('chat-test');
+    });
 
 // admin login
 Route::prefix('admin')->group(function () {
@@ -50,7 +53,7 @@ Route::prefix('admin')->group(function () {
 
         Route::delete('/users/business-accounts/{businessAccount}', [AdminUserController::class, 'destroyBusinessAccount'])
             ->name('admin.users.business-accounts.destroy');
-});
+    });
 // the super admin
     Route::middleware(['auth:admin', 'admin.permission:super_admin'])->group(function () {
         Route::get('/admins', [AdminManagementController::class, 'index'])
@@ -134,5 +137,7 @@ Route::prefix('admin')->group(function () {
 
         return back();
     })->name('locale.switch');
+
+
 
 });
