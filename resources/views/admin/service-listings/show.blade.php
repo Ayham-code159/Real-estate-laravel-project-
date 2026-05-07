@@ -102,6 +102,21 @@
             </div>
 
             <div class="info-row">
+                <div class="info-label">Location</div>
+                <div class="info-value">
+                    {{ $serviceListing->location_label ?? __('messages.not_available') }}
+
+                    @if($serviceListing->google_maps_url)
+                        <div style="margin-top: 10px;">
+                            <a href="{{ $serviceListing->google_maps_url }}" target="_blank" class="btn btn-outline">
+                                🗺 Open in Google Maps
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="info-row">
                 <div class="info-label">{{ __('messages.user') }}</div>
                 <div class="info-value">{{ $serviceListing->businessAccount?->user?->full_name ?? __('messages.not_available') }}</div>
             </div>

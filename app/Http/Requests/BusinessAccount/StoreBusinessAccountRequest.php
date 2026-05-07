@@ -19,6 +19,10 @@ class StoreBusinessAccountRequest extends FormRequest
 
             'business_name_en' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'business_name_ar' => ['nullable', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'location_label' => ['nullable', 'string', 'max:255'],
         ];
     }
 

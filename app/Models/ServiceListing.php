@@ -30,6 +30,9 @@ class ServiceListing extends Model implements HasMedia
         'mode',
         'price_usd',
         'price_syp',
+        'latitude',
+        'longitude',
+        'location_label',
         'metadata',
         'status',
         'rejection_reason',
@@ -43,6 +46,7 @@ class ServiceListing extends Model implements HasMedia
         'sub_photo_urls',
         'translated_title',
         'translated_description',
+        'google_maps_url',
     ];
 
     protected function casts(): array
@@ -50,6 +54,8 @@ class ServiceListing extends Model implements HasMedia
         return [
             'price_usd' => 'decimal:2',
             'price_syp' => 'decimal:2',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
             'metadata' => 'array',
             'status' => 'integer',
         ];
@@ -155,6 +161,15 @@ class ServiceListing extends Model implements HasMedia
     public function getTranslatedDescriptionAttribute(): ?string
     {
         return $this->description;
+    }
+
+    public function getGoogleMapsUrlAttribute(): ?string
+    {
+        if (! $this->latitude || ! $this->longitude) {
+            return null;
+        }
+
+        return 'https://www.google.com/maps?q=' . $this->latitude . ',' . $this->longitude;
     }
 
     public function registerMediaCollections(): void

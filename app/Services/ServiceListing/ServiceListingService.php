@@ -10,12 +10,9 @@ use App\Models\ServiceSubcategory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Collection;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ServiceListingService
 {
-    private const USD_TO_SYP_RATE = 12000;
-
     public function getAllServices(): Collection
     {
         $orderColumn = app()->getLocale() === 'ar' ? 'name_ar' : 'name_en';
@@ -45,7 +42,7 @@ class ServiceListingService
         );
 
         $priceUsd = (float) $data['price_usd'];
-        $priceSyp = $this->convertUsdToSyp($priceUsd);
+        $priceSyp = (float) $data['price_syp'];
 
         $titleEn = trim($data['title_en']);
         $titleAr = isset($data['title_ar']) ? trim((string) $data['title_ar']) : null;
@@ -68,6 +65,11 @@ class ServiceListingService
             'mode' => $data['mode'],
             'price_usd' => $priceUsd,
             'price_syp' => $priceSyp,
+
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
+            'location_label' => isset($data['location_label']) ? trim((string) $data['location_label']) : null,
+
             'metadata' => $data['metadata'] ?? null,
             'status' => ServiceListing::STATUS_PENDING,
             'rejection_reason' => null,
@@ -123,7 +125,7 @@ class ServiceListingService
         );
 
         $priceUsd = (float) $data['price_usd'];
-        $priceSyp = $this->convertUsdToSyp($priceUsd);
+        $priceSyp = (float) $data['price_syp'];
 
         $titleEn = trim($data['title_en']);
         $titleAr = isset($data['title_ar']) ? trim((string) $data['title_ar']) : null;
@@ -145,6 +147,11 @@ class ServiceListingService
             'mode' => $data['mode'],
             'price_usd' => $priceUsd,
             'price_syp' => $priceSyp,
+
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
+            'location_label' => isset($data['location_label']) ? trim((string) $data['location_label']) : null,
+
             'metadata' => $data['metadata'] ?? null,
         ]);
 
@@ -303,10 +310,5 @@ class ServiceListingService
                 'service_listing' => ['This listing does not belong to you.'],
             ]);
         }
-    }
-
-    private function convertUsdToSyp(float $priceUsd): float
-    {
-        return $priceUsd * self::USD_TO_SYP_RATE;
     }
 }

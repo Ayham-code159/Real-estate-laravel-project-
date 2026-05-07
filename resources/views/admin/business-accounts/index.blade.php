@@ -84,7 +84,7 @@
                         </span>
                     </div>
 
-                    <div class="grid grid-3" style="margin-bottom: 18px;">
+                    <div class="grid grid-4" style="margin-bottom: 18px;">
                         <div>
                             <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.owner_name') }}</div>
                             <div style="font-weight: 800;">
@@ -104,6 +104,19 @@
                             <div style="font-weight: 800;">
                                 {{ $businessAccount->service_listings_count }}
                             </div>
+                        </div>
+
+                        <div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Location</div>
+                            <div style="font-weight: 800;">
+                                {{ $businessAccount->location_label ?? __('messages.not_available') }}
+                            </div>
+
+                            @if($businessAccount->google_maps_url)
+                                <a href="{{ $businessAccount->google_maps_url }}" target="_blank" class="btn btn-outline" style="margin-top: 8px; padding: 9px 12px;">
+                                    🗺 Open Map
+                                </a>
+                            @endif
                         </div>
                     </div>
 

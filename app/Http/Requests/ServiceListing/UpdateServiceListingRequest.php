@@ -25,6 +25,12 @@ class UpdateServiceListingRequest extends FormRequest
 
             'mode' => ['required', 'string', 'in:sell,rent'],
             'price_usd' => ['required', 'numeric', 'min:0'],
+            'price_syp' => ['required', 'numeric', 'min:0'],
+
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'location_label' => ['nullable', 'string', 'max:255'],
+
             'metadata' => ['nullable', 'array'],
 
             'main_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],

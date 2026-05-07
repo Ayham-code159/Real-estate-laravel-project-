@@ -19,18 +19,24 @@ class BusinessAccount extends Model
         'business_name',
         'business_name_en',
         'business_name_ar',
+        'latitude',
+        'longitude',
+        'location_label',
         'status',
         'rejection_reason',
     ];
 
     protected $appends = [
         'translated_business_name',
+        'google_maps_url',
     ];
 
     protected function casts(): array
     {
         return [
             'status' => 'integer',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
         ];
     }
 
@@ -121,5 +127,14 @@ class BusinessAccount extends Model
     public function getTranslatedBusinessNameAttribute(): string
     {
         return $this->business_name;
+    }
+
+    public function getGoogleMapsUrlAttribute(): ?string
+    {
+        if (! $this->latitude || ! $this->longitude) {
+            return null;
+        }
+
+        return 'https://www.google.com/maps?q=' . $this->latitude . ',' . $this->longitude;
     }
 }

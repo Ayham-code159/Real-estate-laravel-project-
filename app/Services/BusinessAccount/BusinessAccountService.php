@@ -27,6 +27,9 @@ class BusinessAccountService
             'business_name' => $businessNameEn,
             'business_name_en' => $businessNameEn,
             'business_name_ar' => $businessNameAr ?: null,
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
+            'location_label' => isset($data['location_label']) ? trim((string) $data['location_label']) : null,
             'status' => BusinessAccount::STATUS_PENDING,
         ]);
     }

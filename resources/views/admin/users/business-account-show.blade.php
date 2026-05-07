@@ -54,6 +54,21 @@
                 <div class="info-label">{{ __('messages.city') }}</div>
                 <div class="info-value">{{ $businessAccount->city->name }}</div>
             </div>
+
+            <div class="info-row">
+                <div class="info-label">Location</div>
+                <div class="info-value">
+                    {{ $businessAccount->location_label ?? __('messages.not_available') }}
+
+                    @if($businessAccount->google_maps_url)
+                        <div style="margin-top: 10px;">
+                            <a href="{{ $businessAccount->google_maps_url }}" target="_blank" class="btn btn-outline">
+                                🗺 Open in Google Maps
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </x-card>
 
@@ -87,6 +102,10 @@
                         <p style="margin-top: 4px;">
                             ${{ number_format((float) $listing->price_usd, 2) }} •
                             {{ number_format((float) $listing->price_syp, 2) }} SYP
+                        </p>
+
+                        <p style="margin-top: 4px;">
+                            Location: {{ $listing->location_label ?? __('messages.not_available') }}
                         </p>
                     </div>
                 </div>
