@@ -34,8 +34,12 @@ Route::prefix('admin')->group(function () {
         Route::get('/business-accounts', [AdminBusinessAccountController::class, 'index'])
             ->name('admin.business-accounts.index');
 
+
         Route::put('/business-accounts/{businessAccount}/status', [AdminBusinessAccountController::class, 'updateStatus'])
             ->name('admin.business-accounts.update-status');
+
+        Route::get('/business-accounts/{businessAccount}', [AdminBusinessAccountController::class, 'show'])
+            ->name('admin.business-accounts.show');
     });
 // admin that can manage the users
     Route::middleware(['auth:admin', 'admin.permission:manage_users'])->group(function () {

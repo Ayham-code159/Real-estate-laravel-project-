@@ -6,14 +6,9 @@ use App\Models\BusinessAccount;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
-use App\Services\Notification\AppNotificationService;
 
 class AdminBusinessAccountController extends Controller
 {
-    public function __construct(
-        private AppNotificationService $appNotificationService
-    ) {}
-
     public function index()
     {
         $businessAccounts = BusinessAccount::query()
@@ -24,7 +19,7 @@ class AdminBusinessAccountController extends Controller
             ])
             ->withCount('serviceListings')
             ->latest()
-            ->paginate(10);
+            ->paginate(15);
 
         $counts = [
             'total' => BusinessAccount::count(),
@@ -36,6 +31,19 @@ class AdminBusinessAccountController extends Controller
         return view('admin.business-accounts.index', compact('businessAccounts', 'counts'));
     }
 
+    public function show(BusinessAccount $businessAccount)
+    {
+        $businessAccount->load([
+            'user',
+            'businessType',
+            'city',
+            'serviceListings.service',
+            'serviceListings.subcategory',
+        ]);
+
+        return view('admin.business-accounts.show', compact('businessAccount'));
+    }
+
     public function updateStatus(Request $request, BusinessAccount $businessAccount): RedirectResponse
     {
         $validated = $request->validate([
@@ -43,10 +51,7 @@ class AdminBusinessAccountController extends Controller
             'rejection_reason' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $oldStatus = $businessAccount->status;
-        $newStatus = (int) $validated['status'];
-
-        $businessAccount->status = $newStatus;
+        $businessAccount->status = (int) $validated['status'];
 
         if ($businessAccount->status === BusinessAccount::STATUS_REJECTED) {
             $businessAccount->rejection_reason = $validated['rejection_reason'] ?? null;
@@ -55,18 +60,6 @@ class AdminBusinessAccountController extends Controller
         }
 
         $businessAccount->save();
-
-        $businessAccount->load('user');
-
-        if ($oldStatus !== $newStatus) {
-            if ($newStatus === BusinessAccount::STATUS_APPROVED) {
-                $this->appNotificationService->sendBusinessAccountAccepted($businessAccount);
-            }
-
-            if ($newStatus === BusinessAccount::STATUS_REJECTED) {
-                $this->appNotificationService->sendBusinessAccountRejected($businessAccount);
-            }
-        }
 
         return back()->with('success', 'Business account status updated successfully.');
     }
