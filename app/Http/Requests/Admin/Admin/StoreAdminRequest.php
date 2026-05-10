@@ -23,7 +23,7 @@ class StoreAdminRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:admins,email'],
-            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()],
+            'password' => ['required',  Password::min(8)->letters()->numbers()],
             'is_super_admin' => ['nullable', 'boolean'],
             'can_manage_users' => ['nullable', 'boolean'],
             'can_manage_business_accounts' => ['nullable', 'boolean'],

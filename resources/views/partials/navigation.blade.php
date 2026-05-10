@@ -2,6 +2,7 @@
     <div class="sidebar-title">{{ __('messages.navigation') }}</div>
 
     <nav class="nav-menu">
+
         <a href="{{ route('admin.dashboard') }}"
            class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <span class="nav-icon">🏠</span>
@@ -25,10 +26,17 @@
         @endif
 
         @if(auth('admin')->user()?->isSuperAdmin())
+
             <a href="{{ route('admin.admins.index') }}"
                class="nav-link {{ request()->routeIs('admin.admins.*') ? 'active' : '' }}">
                 <span class="nav-icon">🛡️</span>
                 <span>{{ __('messages.admins') }}</span>
+            </a>
+
+            <a href="{{ route('admin.categories.index') }}"
+               class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                <span class="nav-icon">🗂️</span>
+                <span>Categories</span>
             </a>
 
             <a href="{{ route('admin.service-listings.index') }}"
@@ -48,6 +56,13 @@
                 <span class="nav-icon">🧩</span>
                 <span>{{ __('messages.services') }}</span>
             </a>
+
+            <a href="{{ route('admin.items.index') }}"
+                class="nav-link {{ request()->routeIs('admin.items.*') ? 'active' : '' }}">
+                 <span class="nav-icon">📦</span>
+                 <span>Items</span>
+            </a>
+
         @endif
 
         <a href="#"
@@ -55,5 +70,6 @@
             <span class="nav-icon">⚙️</span>
             <span>{{ __('messages.settings') }}</span>
         </a>
+
     </nav>
 </aside>

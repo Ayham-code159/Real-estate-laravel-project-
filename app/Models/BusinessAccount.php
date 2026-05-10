@@ -137,4 +137,9 @@ class BusinessAccount extends Model
 
         return 'https://www.google.com/maps?q=' . $this->latitude . ',' . $this->longitude;
     }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class);
+    }
 }

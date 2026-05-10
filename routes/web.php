@@ -8,10 +8,12 @@ use App\Http\Controllers\Admin\Dashboard\AdminDashboardController;
 use App\Http\Controllers\Admin\BusinessAccount\AdminBusinessAccountController;
 use App\Http\Controllers\Admin\MasterData\AdminMasterDataController;
 use App\Http\Controllers\Admin\ServiceListing\AdminServiceListingManagementController;
+use App\Http\Controllers\Admin\CategoryManagementController;
+use App\Http\Controllers\Admin\ItemManagementController;
 
-  Route::get('/chat-test', function () {
-        return view('chat-test');
-    });
+Route::get('/chat-test', function () {
+    return view('chat-test');
+});
 
 // admin login
 Route::prefix('admin')->group(function () {
@@ -28,12 +30,9 @@ Route::prefix('admin')->group(function () {
             ->name('admin.dashboard');
     });
 
-// admin that can manage the business_accounts
-
     Route::middleware(['auth:admin', 'admin.permission:manage_business_accounts'])->group(function () {
         Route::get('/business-accounts', [AdminBusinessAccountController::class, 'index'])
             ->name('admin.business-accounts.index');
-
 
         Route::put('/business-accounts/{businessAccount}/status', [AdminBusinessAccountController::class, 'updateStatus'])
             ->name('admin.business-accounts.update-status');
@@ -41,7 +40,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/business-accounts/{businessAccount}', [AdminBusinessAccountController::class, 'show'])
             ->name('admin.business-accounts.show');
     });
-// admin that can manage the users
+
     Route::middleware(['auth:admin', 'admin.permission:manage_users'])->group(function () {
         Route::get('/users', [AdminUserController::class, 'index'])
             ->name('admin.users.index');
@@ -58,7 +57,7 @@ Route::prefix('admin')->group(function () {
         Route::delete('/users/business-accounts/{businessAccount}', [AdminUserController::class, 'destroyBusinessAccount'])
             ->name('admin.users.business-accounts.destroy');
     });
-// the super admin
+
     Route::middleware(['auth:admin', 'admin.permission:super_admin'])->group(function () {
         Route::get('/admins', [AdminManagementController::class, 'index'])
             ->name('admin.admins.index');
@@ -128,6 +127,79 @@ Route::prefix('admin')->group(function () {
 
         Route::put('/service-listings/{serviceListing}/status', [AdminServiceListingManagementController::class, 'updateStatus'])
             ->name('admin.service-listings.update-status');
+
+        /*
+        |--------------------------------------------------------------------------
+        | New Category / Subcategory / Dynamic Fields System
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/categories', [CategoryManagementController::class, 'index'])
+            ->name('admin.categories.index');
+
+
+        Route::get('/categories/create', [CategoryManagementController::class, 'createCategory'])
+            ->name('admin.categories.create');
+
+        Route::get('/categories/{category}', [CategoryManagementController::class, 'showCategory'])
+            ->name('admin.categories.show');
+
+        Route::post('/categories', [CategoryManagementController::class, 'storeCategory'])
+            ->name('admin.categories.store');
+
+        Route::get('/categories/{category}/edit', [CategoryManagementController::class, 'editCategory'])
+            ->name('admin.categories.edit');
+
+        Route::put('/categories/{category}', [CategoryManagementController::class, 'updateCategory'])
+            ->name('admin.categories.update');
+
+        Route::delete('/categories/{category}', [CategoryManagementController::class, 'deleteCategory'])
+            ->name('admin.categories.delete');
+
+        Route::get('/categories/{category}/subcategories/create', [CategoryManagementController::class, 'createSubcategory'])
+            ->name('admin.categories.subcategories.create');
+
+        Route::post('/categories/{category}/subcategories', [CategoryManagementController::class, 'storeSubcategory'])
+            ->name('admin.categories.subcategories.store');
+
+        Route::get('/subcategories/{subcategory}', [CategoryManagementController::class, 'showSubcategory'])
+            ->name('admin.categories.subcategories.show');
+
+        Route::get('/subcategories/{subcategory}/edit', [CategoryManagementController::class, 'editSubcategory'])
+            ->name('admin.categories.subcategories.edit');
+
+        Route::put('/subcategories/{subcategory}', [CategoryManagementController::class, 'updateSubcategory'])
+            ->name('admin.categories.subcategories.update');
+
+        Route::delete('/subcategories/{subcategory}', [CategoryManagementController::class, 'deleteSubcategory'])
+            ->name('admin.categories.subcategories.delete');
+
+        Route::get('/subcategories/{subcategory}/fields/create', [CategoryManagementController::class, 'createField'])
+            ->name('admin.categories.fields.create');
+
+        Route::post('/subcategories/{subcategory}/fields', [CategoryManagementController::class, 'storeField'])
+            ->name('admin.categories.fields.store');
+
+        Route::get('/fields/{field}/edit', [CategoryManagementController::class, 'editField'])
+            ->name('admin.categories.fields.edit');
+
+        Route::put('/fields/{field}', [CategoryManagementController::class, 'updateField'])
+            ->name('admin.categories.fields.update');
+
+        Route::delete('/fields/{field}', [CategoryManagementController::class, 'deleteField'])
+            ->name('admin.categories.fields.delete');
+// manage items
+        Route::get('/items', [ItemManagementController::class, 'index'])
+            ->name('admin.items.index');
+
+        Route::get('/items/{item}', [ItemManagementController::class, 'show'])
+            ->name('admin.items.show');
+
+        Route::put('/items/{item}/status', [ItemManagementController::class, 'updateStatus'])
+            ->name('admin.items.update-status');
+
+        Route::delete('/items/{item}', [ItemManagementController::class, 'destroy'])
+            ->name('admin.items.destroy');
     });
 
     Route::get('/locale/{locale}', function (string $locale) {
@@ -141,7 +213,4 @@ Route::prefix('admin')->group(function () {
 
         return back();
     })->name('locale.switch');
-
-
-
 });

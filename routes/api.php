@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Notification\DeviceTokenController;
 use App\Http\Controllers\Api\Notification\FirebaseNotificationController;
 use App\Http\Controllers\Api\Notification\AppNotificationController;
 use App\Http\Controllers\Api\Chat\ChatController;
+use App\Http\Controllers\Api\Item\ItemController;
 // UserAuth routes
 Route::prefix('auth')->group(function () {
     Route::post('/register', [UserAuthController::class, 'register']);
@@ -93,4 +94,20 @@ Route::middleware('auth:api')->prefix('chat')->group(function () {
     Route::get('/conversations/{conversationId}/messages', [ChatController::class, 'messages']);
     Route::post('/conversations/{conversationId}/messages', [ChatController::class, 'sendMessage']);
     Route::put('/conversations/{conversationId}/read', [ChatController::class, 'markAsRead']);
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/item-categories', [ItemController::class, 'categories']);
+    Route::get('/item-categories/{categoryId}/subcategories', [ItemController::class, 'subcategories']);
+
+    Route::prefix('items')->group(function () {
+        Route::get('/', [ItemController::class, 'index']);
+        Route::post('/', [ItemController::class, 'store']);
+        Route::get('/{item}', [ItemController::class, 'show']);
+        Route::put('/{item}', [ItemController::class, 'update']);
+        Route::delete('/{item}', [ItemController::class, 'destroy']);
+
+        Route::post('/{item}/sub-photos', [ItemController::class, 'addSubPhotos']);
+        Route::post('/{item}/main-photo', [ItemController::class, 'replaceMainPhoto']);
+    });
 });
