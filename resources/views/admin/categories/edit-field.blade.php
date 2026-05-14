@@ -51,11 +51,10 @@
     <x-page-title
             :title="__('messages.edit_dynamic_field')"
 
-        subtitle="Update this field and its validation rules."
     >
         <x-slot:actions>
             <a href="{{ route('admin.categories.show', $field->subcategory->category) }}" class="btn btn-outline">
-                ← Back
+                ← {{ __('messages.back') }}
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -95,9 +94,7 @@
                         value="{{ old('label_en', $field->label_en) }}"
                         placeholder="Example: Fuel Type"
                     >
-                    <p class="text-muted" style="font-size: 13px; margin-top: 8px;">
-                        The system will automatically update the internal code from this name.
-                    </p>
+
 
                     @error('label_en')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
@@ -113,9 +110,7 @@
                         value="{{ old('sort_order', $field->sort_order) }}"
                         min="0"
                     >
-                    <p class="text-muted" style="font-size: 13px; margin-top: 8px;">
-                        Lower numbers appear first. Example: 0 appears before 1.
-                    </p>
+
 
                     @error('sort_order')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
@@ -152,12 +147,10 @@
                             {{ old('is_required', $field->is_required ? '1' : '0') == '1' ? 'checked' : '' }}
                         >
                         <span class="switch-slider"></span>
-                        <span style="font-weight: 800;">Users must fill this field</span>
+                        <span style="font-weight: 800;">{{ __('messages.user_must_fill_this_field') }}</span>
                     </label>
 
-                    <p class="text-muted" style="font-size: 13px; margin-top: 8px;">
-                        Turn this on if the item cannot be created without this field.
-                    </p>
+
 
                     @error('is_required')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
@@ -166,7 +159,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Field Type</label>
+                <label class="form-label">{{ __('messages.field_type') }}</label>
                 <select id="fieldType" name="field_type" class="form-input">
                     <option value="text" {{ old('field_type', $field->field_type) === 'text' ? 'selected' : '' }}>{{ __('messages.text') }}</option>
                     <option value="number" {{ old('field_type', $field->field_type) === 'number' ? 'selected' : '' }}>{{ __('messages.number') }}</option>
@@ -199,7 +192,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Maximum Number</label>
+                    <label class="form-label">{{ __('messages.maximum_number') }}</label>
                     <input
                         type="number"
                         step="0.01"
@@ -251,10 +244,10 @@
             <div id="textRules" class="form-group" style="display: none;">
                 <label class="form-label">{{ __('messages.text_rule') }}</label>
                 <select id="textRule" name="text_rule" class="form-input">
-                    <option value="none" {{ old('text_rule', $field->text_rule ?? 'none') === 'none' ? 'selected' : '' }}>{{ __('messages.no_special_rule') }}</option>
-                    <option value="letters_only" {{ old('text_rule', $field->text_rule) === 'letters_only' ? 'selected' : '' }}>{{ __('messages.letters_onlyF') }}</option>
-                    <option value="letters_spaces_only" {{ old('text_rule', $field->text_rule) === 'letters_spaces_only' ? 'selected' : '' }}>Letters and spaces only</option>
-                    <option value="alpha_numeric" {{ old('text_rule', $field->text_rule) === 'alpha_numeric' ? 'selected' : '' }}>Letters and numbers</option>
+                    <option value="none" {{ old('text_rule', $field->text_rule ?? 'none') === 'none' ? 'selected' : '' }}>{{ __('messages.no_special_rules') }}</option>
+                    <option value="letters_only" {{ old('text_rule', $field->text_rule) === 'letters_only' ? 'selected' : '' }}>{{ __('messages.letters_only') }}</option>
+                    <option value="letters_spaces_only" {{ old('text_rule', $field->text_rule) === 'letters_spaces_only' ? 'selected' : '' }}>{{ __('messages.letters_and_spaces_only') }}</option>
+                    <option value="alpha_numeric" {{ old('text_rule', $field->text_rule) === 'alpha_numeric' ? 'selected' : '' }}>{{ __('messages.letters_and_numbers') }}</option>
                 </select>
 
                 @error('text_rule')
@@ -289,7 +282,7 @@
             <div style="margin-top: 18px;">
                 <x-button type="submit" variant="primary">
                     <span>💾</span>
-                    <span>{{ __('messages.edit_fields') }}</span>
+                    <span>{{ __('messages.edit_field') }}</span>
                 </x-button>
             </div>
         </form>
@@ -297,9 +290,7 @@
 
     <x-card class="subtle-panel">
         <h2 class="section-title">{{ __('messages.danger_zone') }}</h2>
-        <p class="section-subtitle" style="margin-bottom: 18px;">
-            Delete this dynamic field completely.
-        </p>
+
 
         <form method="POST"
               action="{{ route('admin.categories.fields.delete', $field) }}"

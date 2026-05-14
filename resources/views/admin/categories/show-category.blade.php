@@ -43,11 +43,10 @@
 
     <x-page-title
         :title="__('messages.category_details')"
-        subtitle="View category information and its subcategories."
     >
         <x-slot:actions>
             <a href="{{ route('admin.categories.index') }}" class="btn btn-outline">
-                ← Back
+                ← {{ __('messages.back') }}
             </a>
 
             <a href="{{ route('admin.categories.subcategories.create', $category) }}" class="btn btn-primary">
@@ -91,9 +90,7 @@
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
             <h2 class="section-title">{{ __('messages.subcategories') }}</h2>
-            <p class="section-subtitle">
-                Showing 10 subcategories per page. Open details to view and manage dynamic fields.
-            </p>
+          
         </div>
 
         @forelse($subcategories as $subcategory)
@@ -114,11 +111,11 @@
                             </span>
 
                             <a href="{{ route('admin.categories.subcategories.show', $subcategory) }}" class="btn btn-primary">
-                                👁 View Details
+                                👁 {{ __('messages.view_details') }}
                             </a>
 
                             <a href="{{ route('admin.categories.subcategories.edit', $subcategory) }}" class="btn btn-outline">
-                                ✏️ Edit
+                                ✏️ {{ __('messages.edit') }}
                             </a>
                         </div>
                     </div>

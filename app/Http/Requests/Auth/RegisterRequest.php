@@ -42,6 +42,16 @@ class RegisterRequest extends FormRequest
                 'required',
                 'accepted'
             ],
+            'device_token' => [
+                'nullable',
+                'string',
+                'max:1000'
+            ],
+            'device_type' => [
+                'nullable',
+                'string',
+                'max:50'
+            ],
         ];
     }
 

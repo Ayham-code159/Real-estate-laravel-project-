@@ -13,6 +13,9 @@ use App\Http\Controllers\Api\Notification\FirebaseNotificationController;
 use App\Http\Controllers\Api\Notification\AppNotificationController;
 use App\Http\Controllers\Api\Chat\ChatController;
 use App\Http\Controllers\Api\Item\ItemController;
+use App\Http\Controllers\Api\ItemRequest\BuyerItemRequestController;
+use App\Http\Controllers\Api\ItemRequest\SellerItemRequestController;
+
 // UserAuth routes
 Route::prefix('auth')->group(function () {
     Route::post('/register', [UserAuthController::class, 'register']);
@@ -23,7 +26,7 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-// business context (switching)
+// business context
 Route::middleware('auth:api')->prefix('business-context')->group(function () {
     Route::get('/approved-business-accounts', [BusinessContextController::class, 'approvedBusinessAccounts']);
     Route::post('/switch', [BusinessContextController::class, 'switch']);
@@ -39,10 +42,8 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/', [BusinessAccountController::class, 'store']);
         Route::delete('/{businessAccount}', [BusinessAccountController::class, 'destroy']);
     });
-});
 
-// services
-Route::middleware('auth:api')->group(function () {
+    // services
     Route::get('/services', [ServiceListingController::class, 'services']);
     Route::get('/services/{service}/subcategories', [ServiceListingController::class, 'subcategories']);
 
@@ -56,47 +57,47 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/{serviceListing}/main-photo', [ServiceListingController::class, 'replaceMainPhoto']);
         Route::delete('/{serviceListing}/sub-photos/{mediaId}', [ServiceListingController::class, 'deleteSubPhoto']);
     });
-});
 
-// listing requests
-Route::middleware('auth:api')->prefix('listing-requests')->group(function () {
-    Route::post('/', [ListingRequestController::class, 'store']);
+    // listing requests
+    Route::prefix('listing-requests')->group(function () {
+        Route::post('/', [ListingRequestController::class, 'store']);
 
-    Route::get('/seller', [ListingRequestController::class, 'sellerRequests']);
-    Route::get('/seller/listings/{serviceListing}', [ListingRequestController::class, 'sellerRequestsForListing']);
-    Route::put('/{listingRequest}/status', [ListingRequestController::class, 'updateStatus']);
+        Route::get('/seller', [ListingRequestController::class, 'sellerRequests']);
+        Route::get('/seller/listings/{serviceListing}', [ListingRequestController::class, 'sellerRequestsForListing']);
+        Route::put('/{listingRequest}/status', [ListingRequestController::class, 'updateStatus']);
 
-    Route::get('/buyer', [ListingRequestController::class, 'buyerRequests']);
-    Route::get('/buyer/by-seller', [ListingRequestController::class, 'buyerRequestsBySeller']);
+        Route::get('/buyer', [ListingRequestController::class, 'buyerRequests']);
+        Route::get('/buyer/by-seller', [ListingRequestController::class, 'buyerRequestsBySeller']);
 
-    Route::post('/{listingRequest}/rating', [ListingRequestController::class, 'storeRating']);
-});
+        Route::post('/{listingRequest}/rating', [ListingRequestController::class, 'storeRating']);
+    });
 
-//notification
-Route::middleware('auth:api')->prefix('device-tokens')->group(function () {
-    Route::post('/', [DeviceTokenController::class, 'store']);
-    Route::delete('/', [DeviceTokenController::class, 'destroy']);
-});
+    // notification
+    Route::prefix('device-tokens')->group(function () {
+        Route::post('/', [DeviceTokenController::class, 'store']);
+        Route::delete('/', [DeviceTokenController::class, 'destroy']);
+    });
 
-Route::middleware('auth:api')->prefix('notifications')->group(function () {
-    Route::get('/', [AppNotificationController::class, 'index']);
-    Route::get('/unread-count', [AppNotificationController::class, 'unreadCount']);
-    Route::put('/{notification}/read', [AppNotificationController::class, 'markAsRead']);
-    Route::put('/read-all', [AppNotificationController::class, 'markAllAsRead']);
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [AppNotificationController::class, 'index']);
+        Route::get('/unread-count', [AppNotificationController::class, 'unreadCount']);
+        Route::put('/{notification}/read', [AppNotificationController::class, 'markAsRead']);
+        Route::put('/read-all', [AppNotificationController::class, 'markAllAsRead']);
 
-    Route::post('/send-to-me', [FirebaseNotificationController::class, 'sendToAuthenticatedUser']);
-    Route::post('/send-to-user/{userId}', [FirebaseNotificationController::class, 'sendToUserById']);
-});
+        Route::post('/send-to-me', [FirebaseNotificationController::class, 'sendToAuthenticatedUser']);
+        Route::post('/send-to-user/{userId}', [FirebaseNotificationController::class, 'sendToUserById']);
+    });
 
-Route::middleware('auth:api')->prefix('chat')->group(function () {
-    Route::get('/conversations', [ChatController::class, 'conversations']);
-    Route::post('/conversations/users/{userId}', [ChatController::class, 'startConversation']);
-    Route::get('/conversations/{conversationId}/messages', [ChatController::class, 'messages']);
-    Route::post('/conversations/{conversationId}/messages', [ChatController::class, 'sendMessage']);
-    Route::put('/conversations/{conversationId}/read', [ChatController::class, 'markAsRead']);
-});
+    // chat
+    Route::prefix('chat')->group(function () {
+        Route::get('/conversations', [ChatController::class, 'conversations']);
+        Route::post('/conversations/users/{userId}', [ChatController::class, 'startConversation']);
+        Route::get('/conversations/{conversationId}/messages', [ChatController::class, 'messages']);
+        Route::post('/conversations/{conversationId}/messages', [ChatController::class, 'sendMessage']);
+        Route::put('/conversations/{conversationId}/read', [ChatController::class, 'markAsRead']);
+    });
 
-Route::middleware('auth:api')->group(function () {
+    // items
     Route::get('/item-categories', [ItemController::class, 'categories']);
     Route::get('/item-categories/{categoryId}/subcategories', [ItemController::class, 'subcategories']);
 
@@ -109,5 +110,20 @@ Route::middleware('auth:api')->group(function () {
 
         Route::post('/{item}/sub-photos', [ItemController::class, 'addSubPhotos']);
         Route::post('/{item}/main-photo', [ItemController::class, 'replaceMainPhoto']);
+    });
+
+    // buyer item requests
+    Route::prefix('item-requests')->group(function () {
+        Route::post('/', [BuyerItemRequestController::class, 'store']);
+        Route::get('/my', [BuyerItemRequestController::class, 'myRequests']);
+        Route::get('/my/search-by-seller-business-account', [BuyerItemRequestController::class, 'searchBySellerBusinessAccount']);
+        Route::post('/{itemRequestId}/rate', [BuyerItemRequestController::class, 'rate']);
+    });
+
+    // seller item requests
+    Route::prefix('seller/item-requests')->group(function () {
+        Route::get('/', [SellerItemRequestController::class, 'receivedRequests']);
+        Route::get('/search-by-buyer-business-account', [SellerItemRequestController::class, 'searchByBuyerBusinessAccount']);
+        Route::put('/{itemRequestId}/status', [SellerItemRequestController::class, 'updateStatus']);
     });
 });

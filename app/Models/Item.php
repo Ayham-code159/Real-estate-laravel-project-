@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Item extends Model implements HasMedia
 {
@@ -220,5 +221,10 @@ class Item extends Model implements HasMedia
         }
 
         return 'https://www.google.com/maps?q=' . $this->lat . ',' . $this->lng;
+    }
+
+    public function itemRequests(): HasMany
+    {
+        return $this->hasMany(ItemRequest::class);
     }
 }

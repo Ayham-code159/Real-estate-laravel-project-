@@ -359,13 +359,13 @@ return [
     'edit_category' => 'Edit Category',
     'create_subcategory' => 'Create Subcategory',
     'edit_subcategory' => 'Edit Subcategory',
-    'create_dynamic_field' => 'Create Dynamic Field',
-    'edit_dynamic_field' => 'Edit Dynamic Field',
+    'create_a_new_field' => 'Create a new field',
+    'edit_dynamic_field' => 'Edit Field',
 
     'add_category' => 'Add Category',
     'add_subcategory' => 'Add Subcategory',
     'add_field' => 'Add Field',
-    'edit_fieFd' => 'Edit Field',
+    'edit_field' => 'Edit Field',
     'view_details' => 'View Details',
 
     'field_name_en' => 'Field Name in English',
@@ -465,4 +465,11 @@ return [
     'sell' => 'Sell',
     'rent' => 'Rent',
     'not_available' => 'N/A',
+
+    'user_must_fill_this_field'=>'User must fill this field',
+
+    'no_special_rules' => 'No special rules',
+    'letters_only'=>'Letters only ',
+    'letters_and_spaces_only'=>'Letters and spaces only',
+    'letters_and_numbers'=>'letters and numbers',
 ];

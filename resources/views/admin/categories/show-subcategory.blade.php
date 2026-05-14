@@ -43,15 +43,14 @@
 
     <x-page-title
         :title="__('messages.subcategory_details')"
-        subtitle="View and manage this subcategory dynamic fields."
     >
         <x-slot:actions>
             <a href="{{ route('admin.categories.show', $subcategory->category) }}" class="btn btn-outline">
-                ← Back
+                ←{{ __('messages.back') }}
             </a>
 
             <a href="{{ route('admin.categories.fields.create', $subcategory) }}" class="btn btn-primary">
-                ＋ Add Field
+                ＋ {{ __('messages.add_field') }}
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -60,9 +59,7 @@
         <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center;">
             <div>
                 <h2 class="section-title">{{ $subcategory->name }}</h2>
-                <p class="section-subtitle">
-                    Parent category: <strong>{{ $subcategory->category->name }}</strong>
-                </p>
+
             </div>
 
             <span class="badge {{ $subcategory->is_active ? 'badge-success' : 'badge-danger' }}">
@@ -99,9 +96,7 @@
         <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 20px;">
             <div>
                 <h2 class="section-title">{{ __('messages.dynamic_fields') }}</h2>
-                <p class="section-subtitle">
-                    These fields will later appear when users create items under this subcategory.
-                </p>
+              
             </div>
 
             <a href="{{ route('admin.categories.fields.create', $subcategory) }}" class="btn btn-primary">

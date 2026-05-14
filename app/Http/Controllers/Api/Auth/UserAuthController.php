@@ -8,16 +8,28 @@ use App\Http\Controllers\Controller;
 use App\Services\Auth\UserAuthService;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Services\Notification\DeviceTokenService;
 
 class UserAuthController extends Controller
 {
     public function __construct(
-        private UserAuthService $userAuthService
+        private UserAuthService $userAuthService,
+        private DeviceTokenService $deviceTokenService
     ) {}
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $result = $this->userAuthService->register($request->validated());
+        $data = $request->validated();
+
+        $result = $this->userAuthService->register($data);
+
+        if (! empty($data['device_token'])) {
+            $this->deviceTokenService->store(
+                $result['user'],
+                $data['device_token'],
+                $data['device_type'] ?? null
+            );
+        }
 
         return response()->json([
             'message' => 'User registered successfully.',
@@ -29,7 +41,17 @@ class UserAuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $result = $this->userAuthService->login($request->validated());
+        $data = $request->validated();
+
+        $result = $this->userAuthService->login($data);
+
+        if (! empty($data['device_token'])) {
+            $this->deviceTokenService->store(
+                $result['user'],
+                $data['device_token'],
+                $data['device_type'] ?? null
+            );
+        }
 
         return response()->json([
             'message' => 'Login successful.',
@@ -40,13 +62,17 @@ class UserAuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
+        if ($request->filled('device_token')) {
+            $this->deviceTokenService->delete(
+                $request->user(),
+                $request->input('device_token')
+            );
+        }
+
         $this->userAuthService->logout($request->user());
 
         return response()->json([
             'message' => 'Logged out successfully.',
         ]);
     }
-
-
-    // note: clean the functions from the return type
 }

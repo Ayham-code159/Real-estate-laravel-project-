@@ -49,8 +49,7 @@
     </style>
 
     <x-page-title
-        :title="__('messages.create_dynamic_field')"
-        subtitle="Add a custom field for this subcategory."
+        :title="__('messages.create_a_new_field')"
     >
         <x-slot:actions>
             <a href="{{ route('admin.categories.show', $subcategory->category) }}" class="btn btn-outline">
@@ -63,9 +62,7 @@
         <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center;">
             <div>
                 <h2 class="section-title">{{ $subcategory->name }}</h2>
-                <p class="section-subtitle">
-                    Parent category: <strong>{{ $subcategory->category->name }}</strong>
-                </p>
+
             </div>
 
             <span class="badge {{ $subcategory->is_active ? 'badge-success' : 'badge-danger' }}">
@@ -89,9 +86,7 @@
                         value="{{ old('label_en') }}"
                         placeholder="Example: Fuel Type"
                     >
-                    <p class="text-muted" style="font-size: 13px; margin-top: 8px;">
-                        The system will automatically create an internal code from this name. Example: Fuel Type becomes fuel_type.
-                    </p>
+
 
                     @error('label_en')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
@@ -100,7 +95,7 @@
 
                 <div class="form-group">
                     <label class="form-label">{{ __('messages.display_order') }}
-</label>
+                    </label>
                     <input
                         type="number"
                         name="sort_order"
@@ -108,9 +103,7 @@
                         value="{{ old('sort_order', 0) }}"
                         min="0"
                     >
-                    <p class="text-muted" style="font-size: 13px; margin-top: 8px;">
-                        Lower numbers appear first. Example: 0 appears before 1.
-                    </p>
+
 
                     @error('sort_order')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
@@ -149,12 +142,10 @@
                             {{ old('is_required', '0') == '1' ? 'checked' : '' }}
                         >
                         <span class="switch-slider"></span>
-                        <span style="font-weight: 800;">Users must fill this field</span>
+                        <span style="font-weight: 800;">{{ __('messages.user_must_fill_this_field') }}</span>
                     </label>
 
-                    <p class="text-muted" style="font-size: 13px; margin-top: 8px;">
-                        Turn this on if the item cannot be created without this field.
-                    </p>
+
 
                     @error('is_required')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
@@ -258,10 +249,10 @@
                 <label class="form-label">{{ __('messages.text_rule') }}
 </label>
                 <select id="textRule" name="text_rule" class="form-input">
-                    <option value="none" {{ old('text_rule', 'none') === 'none' ? 'selected' : '' }}>No special rule</option>
-                    <option value="letters_only" {{ old('text_rule') === 'letters_only' ? 'selected' : '' }}>Letters only</option>
-                    <option value="letters_spaces_only" {{ old('text_rule') === 'letters_spaces_only' ? 'selected' : '' }}>Letters and spaces only</option>
-                    <option value="alpha_numeric" {{ old('text_rule') === 'alpha_numeric' ? 'selected' : '' }}>Letters and numbers</option>
+                    <option value="none" {{ old('text_rule', 'none') === 'none' ? 'selected' : '' }}>{{ __('messages.no_special_rules') }}</option>
+                    <option value="letters_only" {{ old('text_rule') === 'letters_only' ? 'selected' : '' }}>{{ __('messages.letters_only') }}</option>
+                    <option value="letters_spaces_only" {{ old('text_rule') === 'letters_spaces_only' ? 'selected' : '' }}>{{ __('messages.letters_and_spaces_only') }}</option>
+                    <option value="alpha_numeric" {{ old('text_rule') === 'alpha_numeric' ? 'selected' : '' }}>{{ __('messages.letters_and_numbers') }}</option>
                 </select>
 
                 @error('text_rule')

@@ -24,6 +24,16 @@ class LoginRequest extends FormRequest
                 'string',
                 'min:8'
             ],
+            'device_token' => [
+                'nullable',
+                'string',
+                'max:1000'
+            ],
+            'device_type' => [
+                'nullable',
+                'string',
+                'max:50'
+            ],
         ];
     }
 

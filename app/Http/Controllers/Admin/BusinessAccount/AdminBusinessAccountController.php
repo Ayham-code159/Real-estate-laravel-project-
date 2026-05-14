@@ -6,27 +6,18 @@ use App\Models\BusinessAccount;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
+use App\Services\Admin\BusinessAccount\AdminBusinessAccountService;
 
 class AdminBusinessAccountController extends Controller
 {
+    public function __construct(
+        private AdminBusinessAccountService $businessAccountService
+    ) {}
+
     public function index()
     {
-        $businessAccounts = BusinessAccount::query()
-            ->with([
-                'user',
-                'businessType',
-                'city',
-            ])
-            ->withCount('serviceListings')
-            ->latest()
-            ->paginate(15);
-
-        $counts = [
-            'total' => BusinessAccount::count(),
-            'pending' => BusinessAccount::where('status', BusinessAccount::STATUS_PENDING)->count(),
-            'approved' => BusinessAccount::where('status', BusinessAccount::STATUS_APPROVED)->count(),
-            'rejected' => BusinessAccount::where('status', BusinessAccount::STATUS_REJECTED)->count(),
-        ];
+        $businessAccounts = $this->businessAccountService->paginateBusinessAccounts(15);
+        $counts = $this->businessAccountService->getCounts();
 
         return view('admin.business-accounts.index', compact('businessAccounts', 'counts'));
     }
@@ -51,15 +42,7 @@ class AdminBusinessAccountController extends Controller
             'rejection_reason' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $businessAccount->status = (int) $validated['status'];
-
-        if ($businessAccount->status === BusinessAccount::STATUS_REJECTED) {
-            $businessAccount->rejection_reason = $validated['rejection_reason'] ?? null;
-        } else {
-            $businessAccount->rejection_reason = null;
-        }
-
-        $businessAccount->save();
+        $this->businessAccountService->updateStatus($businessAccount, $validated);
 
         return back()->with('success', 'Business account status updated successfully.');
     }

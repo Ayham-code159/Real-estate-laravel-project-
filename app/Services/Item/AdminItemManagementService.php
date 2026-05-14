@@ -5,9 +5,14 @@ namespace App\Services\Item;
 use App\Models\Item;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
+use App\Services\Notification\AppNotificationService;
 
 class AdminItemManagementService
 {
+    public function __construct(
+        private AppNotificationService $notificationService
+    ) {}
+
     public function paginatedItems(): LengthAwarePaginator
     {
         return Item::query()
@@ -43,6 +48,8 @@ class AdminItemManagementService
             ]);
         }
 
+        $oldStatus = (int) $item->status;
+
         $item->status = $status;
 
         if ($status === Item::STATUS_REJECTED) {
@@ -53,7 +60,21 @@ class AdminItemManagementService
 
         $item->save();
 
-        return $this->getItemDetails($item);
+        $item = $this->getItemDetails($item);
+
+        if ($oldStatus === $status) {
+            return $item;
+        }
+
+        if ($status === Item::STATUS_APPROVED) {
+            $this->notificationService->sendItemAccepted($item);
+        }
+
+        if ($status === Item::STATUS_REJECTED) {
+            $this->notificationService->sendItemRejected($item);
+        }
+
+        return $item;
     }
 
     public function delete(Item $item): void

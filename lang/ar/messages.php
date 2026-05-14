@@ -360,8 +360,8 @@ return [
     'edit_category' => 'تعديل التصنيف',
     'create_subcategory' => 'إنشاء تصنيف فرعي',
     'edit_subcategory' => 'تعديل التصنيف الفرعي',
-    'create_dynamic_field' => 'إنشاء حقل ديناميكي',
-    'edit_dynamic_field' => 'تعديل الحقل الديناميكي',
+    'create_a_new_field' => 'إنشاء حقل جديد',
+    'edit_dynamic_field' => 'تعديل الحقل ',
 
     'add_category' => 'إضافة تصنيف',
     'add_subcategory' => 'إضافة تصنيف فرعي',
@@ -466,4 +466,11 @@ return [
     'sell' => 'بيع',
     'rent' => 'إيجار',
     'not_available' => 'غير متوفر',
+    'user_must_fill_this_field'=>'يجب على المستخدم ان يقوم بادخال هذا الحقل',
+
+    'no_special_rules' => 'لا يوجد قواعد محددة للنص',
+    'letters_only'=>'حروف فقط',
+    'letters_and_spaces_only'=>'حروف و فراغات فقط',
+    'letters_and_numbers'=>'حروف و أرقام',
+
 ];
