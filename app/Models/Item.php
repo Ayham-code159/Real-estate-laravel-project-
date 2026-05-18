@@ -8,6 +8,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Item extends Model implements HasMedia
 {
@@ -226,5 +227,10 @@ class Item extends Model implements HasMedia
     public function itemRequests(): HasMany
     {
         return $this->hasMany(ItemRequest::class);
+    }
+
+    public function slider(): HasOne
+    {
+        return $this->hasOne(ItemSlider::class);
     }
 }

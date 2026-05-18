@@ -164,7 +164,7 @@
                 </p>
 
                 <div class="activity-list">
-                    @forelse($recentPendingListings as $listing)
+                    {{-- @forelse($recentPendingListings as $listing)
                         <a href="{{ route('admin.service-listings.show', $listing->id) }}" style="display: block;">
                             <div class="activity-item">
                                 <div class="activity-icon">📦</div>
@@ -186,7 +186,7 @@
                                 {{ __('messages.no_pending_listings_subtitle') }}
                             </p>
                         </div>
-                    @endforelse
+                    @endforelse --}}
                 </div>
             </x-card>
 

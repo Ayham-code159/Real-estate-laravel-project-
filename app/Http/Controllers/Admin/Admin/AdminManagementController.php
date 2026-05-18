@@ -28,7 +28,10 @@ class AdminManagementController extends Controller
 
     public function create()
     {
-        return view('admin.admins.create');
+        $permissions = $this->adminManagementService->availablePermissions();
+        $defaultRoles = $this->adminManagementService->defaultRoles();
+
+        return view('admin.admins.create', compact('permissions', 'defaultRoles'));
     }
 
     public function store(StoreAdminRequest $request): RedirectResponse
@@ -47,7 +50,10 @@ class AdminManagementController extends Controller
 
     public function edit(Admin $admin)
     {
-        return view('admin.admins.edit', compact('admin'));
+        $permissions = $this->adminManagementService->availablePermissions();
+        $defaultRoles = $this->adminManagementService->defaultRoles();
+
+        return view('admin.admins.edit', compact('admin', 'permissions', 'defaultRoles'));
     }
 
     public function update(UpdateAdminRequest $request, Admin $admin): RedirectResponse
@@ -57,5 +63,14 @@ class AdminManagementController extends Controller
         return redirect()
             ->route('admin.admins.show', $admin)
             ->with('success', 'Admin updated successfully.');
+    }
+
+    public function destroy(Admin $admin): RedirectResponse
+    {
+        $this->adminManagementService->delete($admin);
+
+        return redirect()
+            ->route('admin.admins.index')
+            ->with('success', 'Admin deleted successfully.');
     }
 }

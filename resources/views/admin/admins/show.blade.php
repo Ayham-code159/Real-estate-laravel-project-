@@ -19,24 +19,40 @@
                     <span>{{ __('messages.edit') }}</span>
                 </a>
             </div>
+
+            @if(! $admin->isSuperAdmin())
+    <form method="POST"
+          action="{{ route('admin.admins.destroy', $admin) }}"
+          onsubmit="return confirm('Are you sure you want to delete this admin?');">
+        @csrf
+        @method('DELETE')
+
+        <button type="submit" class="btn btn-danger">
+            <span>🗑</span>
+            <span>{{ __('messages.delete') }}</span>
+        </button>
+    </form>
+@endif
+
+
         </x-slot:actions>
     </x-page-title>
 
     <x-card class="subtle-panel">
         <div class="info-list">
+
             <div class="info-row">
                 <div class="info-label">{{ __('messages.name') }}</div>
-                <div class="info-value">{{ $admin->name }}</div>
+                <div class="info-value">
+                    {{ $admin->name }}
+                </div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">{{ __('messages.email') }}</div>
-                <div class="info-value">{{ $admin->email }}</div>
-            </div>
-
-            <div class="info-row">
-                <div class="info-label">{{ __('messages.permission_level') }}</div>
-                <div class="info-value">{{ $admin->permissionLabel() }}</div>
+                <div class="info-value">
+                    {{ $admin->email }}
+                </div>
             </div>
 
             <div class="info-row">
@@ -45,44 +61,43 @@
                     {{ optional($admin->last_login_at)->format('Y-m-d h:i A') ?? __('messages.no_previous_login') }}
                 </div>
             </div>
+
         </div>
     </x-card>
 
     <x-card class="subtle-panel" style="margin-top: 24px;">
         <div style="margin-bottom: 20px;">
             <h2 class="section-title">{{ __('messages.permissions') }}</h2>
+
             <p class="section-subtitle">
                 {{ __('messages.admin_permissions_subtitle') }}
             </p>
         </div>
 
-        <div class="grid grid-3">
-            <div class="card" style="background: rgba(255,255,255,0.72);">
-                <div class="card-body">
-                    <div class="text-muted" style="margin-bottom: 8px;">{{ __('messages.make_super_admin') }}</div>
-                    <div style="font-weight: 800; font-size: 18px;">
-                        {{ $admin->is_super_admin ? __('messages.yes') : __('messages.no') }}
-                    </div>
-                </div>
+        @if($admin->isSuperAdmin())
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <span class="badge badge-danger">
+                    👑 Super Admin
+                </span>
             </div>
 
-            <div class="card" style="background: rgba(255,255,255,0.72);">
-                <div class="card-body">
-                    <div class="text-muted" style="margin-bottom: 8px;">{{ __('messages.can_manage_users') }}</div>
-                    <div style="font-weight: 800; font-size: 18px;">
-                        {{ $admin->can_manage_users ? __('messages.yes') : __('messages.no') }}
-                    </div>
-                </div>
+        @else
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+
+                @forelse($admin->permissionLabels() as $permission)
+                    <span class="badge badge-primary">
+                        {{ $permission }}
+                    </span>
+                @empty
+                    <span class="badge badge-warning">
+                        Basic Admin
+                    </span>
+                @endforelse
+
             </div>
 
-            <div class="card" style="background: rgba(255,255,255,0.72);">
-                <div class="card-body">
-                    <div class="text-muted" style="margin-bottom: 8px;">{{ __('messages.can_manage_business_accounts') }}</div>
-                    <div style="font-weight: 800; font-size: 18px;">
-                        {{ $admin->can_manage_business_accounts ? __('messages.yes') : __('messages.no') }}
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endif
     </x-card>
 @endsection

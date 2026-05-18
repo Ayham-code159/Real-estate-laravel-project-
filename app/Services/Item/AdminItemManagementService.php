@@ -3,6 +3,7 @@
 namespace App\Services\Item;
 
 use App\Models\Item;
+use App\Models\ItemSlider;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
 use App\Services\Notification\AppNotificationService;
@@ -22,6 +23,7 @@ class AdminItemManagementService
                 'businessAccount.city',
                 'category',
                 'subcategory',
+                'slider',
             ])
             ->latest()
             ->paginate(10);
@@ -35,6 +37,7 @@ class AdminItemManagementService
             'businessAccount.city',
             'category',
             'subcategory',
+            'slider',
         ]);
     }
 
@@ -62,23 +65,55 @@ class AdminItemManagementService
 
         $item = $this->getItemDetails($item);
 
-        if ($oldStatus === $status) {
-            return $item;
+        if ($oldStatus !== $status) {
+            if ($status === Item::STATUS_APPROVED) {
+                $this->createSliderIfMissing($item);
+                $this->notificationService->sendItemAccepted($item);
+            }
+
+            if ($status === Item::STATUS_REJECTED) {
+                $this->deactivateSliderIfExists($item);
+                $this->notificationService->sendItemRejected($item);
+            }
+
+            if ($status === Item::STATUS_PENDING) {
+                $this->deactivateSliderIfExists($item);
+            }
         }
 
-        if ($status === Item::STATUS_APPROVED) {
-            $this->notificationService->sendItemAccepted($item);
-        }
-
-        if ($status === Item::STATUS_REJECTED) {
-            $this->notificationService->sendItemRejected($item);
-        }
-
-        return $item;
+        return $this->getItemDetails($item);
     }
 
     public function delete(Item $item): void
     {
         $item->delete();
+    }
+
+    private function createSliderIfMissing(Item $item): void
+    {
+        ItemSlider::query()->firstOrCreate(
+            [
+                'item_id' => $item->id,
+            ],
+            [
+                'is_active' => true,
+                'priority' => ItemSlider::PRIORITY_NORMAL,
+                'click_count' => 0,
+                'admin_note' => null,
+            ]
+        );
+
+        if ($item->slider && ! $item->slider->is_active) {
+            $item->slider->update([
+                'is_active' => true,
+            ]);
+        }
+    }
+
+    private function deactivateSliderIfExists(Item $item): void
+    {
+        $item->slider?->update([
+            'is_active' => false,
+        ]);
     }
 }

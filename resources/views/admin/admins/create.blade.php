@@ -22,13 +22,7 @@
             <div class="grid grid-2">
                 <div class="form-group">
                     <label class="form-label">{{ __('messages.name') }}</label>
-                    <input
-                        type="text"
-                        name="name"
-                        class="form-input"
-                        value="{{ old('name') }}"
-                        placeholder="{{ __('messages.enter_admin_name') }}"
-                    >
+                    <input type="text" name="name" class="form-input" value="{{ old('name') }}">
                     @error('name')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
                     @enderror
@@ -36,13 +30,7 @@
 
                 <div class="form-group">
                     <label class="form-label">{{ __('messages.email') }}</label>
-                    <input
-                        type="email"
-                        name="email"
-                        class="form-input"
-                        value="{{ old('email') }}"
-                        placeholder="{{ __('messages.enter_admin_email') }}"
-                    >
+                    <input type="email" name="email" class="form-input" value="{{ old('email') }}">
                     @error('email')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
                     @enderror
@@ -51,43 +39,51 @@
 
             <div class="form-group">
                 <label class="form-label">{{ __('messages.password') }}</label>
-                <input
-                    type="password"
-                    name="password"
-                    class="form-input"
-                    placeholder="{{ __('messages.enter_admin_password') }}"
-                >
+                <input type="password" name="password" class="form-input">
                 @error('password')
                     <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
                 @enderror
             </div>
 
             <div style="margin-top: 24px; margin-bottom: 18px;">
+                <h2 class="section-title">{{ __('messages.default_roles') }}</h2>
+                <p class="section-subtitle">Choose a preset, then customize permissions if needed.</p>
+            </div>
+
+            <div class="grid grid-3" style="margin-bottom: 24px;">
+                @foreach($defaultRoles as $roleKey => $role)
+                    <button
+                        type="button"
+                        class="btn btn-outline role-preset"
+                        data-permissions='@json($role["permissions"])'
+                    >
+                        {{ $role['label'] }}
+                    </button>
+                @endforeach
+            </div>
+
+            <div style="margin-top: 24px; margin-bottom: 18px;">
                 <h2 class="section-title">{{ __('messages.permissions') }}</h2>
-                <p class="section-subtitle">{{ __('messages.permissions_form_subtitle') }}</p>
+                <p class="section-subtitle">
+                    Super admin permission is system-only and cannot be granted.
+                </p>
             </div>
 
             <div class="grid grid-3">
-                <label class="card" style="background: rgba(255,255,255,0.72); cursor: pointer;">
-                    <div class="card-body">
-                        <input type="checkbox" name="is_super_admin" value="1" {{ old('is_super_admin') ? 'checked' : '' }}>
-                        <div style="margin-top: 10px; font-weight: 800;">{{ __('messages.make_super_admin') }}</div>
-                    </div>
-                </label>
-
-                <label class="card" style="background: rgba(255,255,255,0.72); cursor: pointer;">
-                    <div class="card-body">
-                        <input type="checkbox" name="can_manage_users" value="1" {{ old('can_manage_users') ? 'checked' : '' }}>
-                        <div style="margin-top: 10px; font-weight: 800;">{{ __('messages.can_manage_users') }}</div>
-                    </div>
-                </label>
-
-                <label class="card" style="background: rgba(255,255,255,0.72); cursor: pointer;">
-                    <div class="card-body">
-                        <input type="checkbox" name="can_manage_business_accounts" value="1" {{ old('can_manage_business_accounts') ? 'checked' : '' }}>
-                        <div style="margin-top: 10px; font-weight: 800;">{{ __('messages.can_manage_business_accounts') }}</div>
-                    </div>
-                </label>
+                @foreach($permissions as $key => $label)
+                    <label class="card" style="background: rgba(255,255,255,0.72); cursor: pointer;">
+                        <div class="card-body">
+                            <input
+                                type="checkbox"
+                                name="permissions[]"
+                                value="{{ $key }}"
+                                class="permission-checkbox"
+                                {{ in_array($key, old('permissions', []), true) ? 'checked' : '' }}
+                            >
+                            <div style="margin-top: 10px; font-weight: 800;">{{ $label }}</div>
+                        </div>
+                    </label>
+                @endforeach
             </div>
 
             <div style="margin-top: 24px;">
@@ -98,4 +94,16 @@
             </div>
         </form>
     </x-card>
+
+    <script>
+        document.querySelectorAll('.role-preset').forEach(button => {
+            button.addEventListener('click', () => {
+                const permissions = JSON.parse(button.dataset.permissions || '[]');
+
+                document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
+                    checkbox.checked = permissions.includes(checkbox.value);
+                });
+            });
+        });
+    </script>
 @endsection

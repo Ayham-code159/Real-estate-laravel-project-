@@ -8,11 +8,21 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AdminManagementService
 {
+    private const ALLOWED_PERMISSION_KEYS = [
+        'can_manage_users',
+        'can_manage_business_accounts',
+        'can_manage_business_types',
+        'can_manage_categories',
+        'can_manage_items',
+        'can_manage_sliders',
+    ];
+
     public function paginateAdmins(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
         return Admin::query()
             ->when($search, function ($query) use ($search) {
-                $query->where('email', 'like', '%' . trim($search) . '%');
+                $query->where('email', 'like', '%' . trim($search) . '%')
+                    ->orWhere('name', 'like', '%' . trim($search) . '%');
             })
             ->latest()
             ->paginate($perPage)
@@ -26,6 +36,69 @@ class AdminManagementService
             'super_admins' => Admin::where('is_super_admin', true)->count(),
             'manage_users_admins' => Admin::where('can_manage_users', true)->count(),
             'manage_business_accounts_admins' => Admin::where('can_manage_business_accounts', true)->count(),
+            'manage_business_types_admins' => Admin::where('can_manage_business_types', true)->count(),
+            'manage_categories_admins' => Admin::where('can_manage_categories', true)->count(),
+            'manage_items_admins' => Admin::where('can_manage_items', true)->count(),
+            'manage_sliders_admins' => Admin::where('can_manage_sliders', true)->count(),
+        ];
+    }
+
+    public function availablePermissions(): array
+    {
+        return [
+            'can_manage_users' => 'Manage Users',
+            'can_manage_business_accounts' => 'Manage Business Accounts',
+            'can_manage_business_types' => 'Manage Business Types',
+            'can_manage_categories' => 'Manage Categories',
+            'can_manage_items' => 'Manage Items',
+            'can_manage_sliders' => 'Manage Sliders',
+        ];
+    }
+
+    public function defaultRoles(): array
+    {
+        return [
+            'account_manager' => [
+                'label' => 'Account Manager',
+                'permissions' => [
+                    'can_manage_users',
+                    'can_manage_business_accounts',
+                ],
+            ],
+            'content_manager' => [
+                'label' => 'Content Manager',
+                'permissions' => [
+                    'can_manage_categories',
+                    'can_manage_items',
+                    'can_manage_sliders',
+                ],
+            ],
+            'marketplace_moderator' => [
+                'label' => 'Marketplace Moderator',
+                'permissions' => [
+                    'can_manage_business_accounts',
+                    'can_manage_items',
+                    'can_manage_sliders',
+                ],
+            ],
+            'settings_manager' => [
+                'label' => 'Settings Manager',
+                'permissions' => [
+                    'can_manage_business_types',
+                    'can_manage_categories',
+                ],
+            ],
+            'full_staff_manager' => [
+                'label' => 'Full Staff Manager',
+                'permissions' => [
+                    'can_manage_users',
+                    'can_manage_business_accounts',
+                    'can_manage_business_types',
+                    'can_manage_categories',
+                    'can_manage_items',
+                    'can_manage_sliders',
+                ],
+            ],
         ];
     }
 
@@ -33,14 +106,12 @@ class AdminManagementService
     {
         $permissions = $this->normalizePermissions($data);
 
-        return Admin::create([
+        return Admin::create(array_merge([
             'name' => trim($data['name']),
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'is_super_admin' => $permissions['is_super_admin'],
-            'can_manage_users' => $permissions['can_manage_users'],
-            'can_manage_business_accounts' => $permissions['can_manage_business_accounts'],
-        ]);
+            'is_super_admin' => false,
+        ], $permissions));
     }
 
     public function update(Admin $admin, array $data): Admin
@@ -49,9 +120,14 @@ class AdminManagementService
 
         $admin->name = trim($data['name']);
         $admin->email = $data['email'];
-        $admin->is_super_admin = $permissions['is_super_admin'];
-        $admin->can_manage_users = $permissions['can_manage_users'];
-        $admin->can_manage_business_accounts = $permissions['can_manage_business_accounts'];
+
+        if (! $admin->isSuperAdmin()) {
+            foreach ($permissions as $key => $value) {
+                $admin->{$key} = $value;
+            }
+
+            $admin->is_super_admin = false;
+        }
 
         if (! empty($data['password'])) {
             $admin->password = Hash::make($data['password']);
@@ -64,23 +140,33 @@ class AdminManagementService
 
     private function normalizePermissions(array $data): array
     {
-        $isSuperAdmin = (bool) ($data['is_super_admin'] ?? false);
-        $canManageUsers = (bool) ($data['can_manage_users'] ?? false);
-        $canManageBusinessAccounts = (bool) ($data['can_manage_business_accounts'] ?? false);
+        $permissions = [];
 
-        if ($isSuperAdmin) {
-            $canManageUsers = true;
-            $canManageBusinessAccounts = true;
+        foreach (self::ALLOWED_PERMISSION_KEYS as $key) {
+            $permissions[$key] = false;
         }
 
-        if ($canManageUsers) {
-            $canManageBusinessAccounts = true;
+        $selectedPermissions = $data['permissions'] ?? [];
+
+        if (! is_array($selectedPermissions)) {
+            $selectedPermissions = [];
         }
 
-        return [
-            'is_super_admin' => $isSuperAdmin,
-            'can_manage_users' => $canManageUsers,
-            'can_manage_business_accounts' => $canManageBusinessAccounts,
-        ];
+        foreach ($selectedPermissions as $permissionKey) {
+            if (in_array($permissionKey, self::ALLOWED_PERMISSION_KEYS, true)) {
+                $permissions[$permissionKey] = true;
+            }
+        }
+
+        return $permissions;
+    }
+
+    public function delete(Admin $admin): void
+    {
+        if ($admin->isSuperAdmin()) {
+            abort(403, 'The seeded Super Admin cannot be deleted.');
+    }
+
+        $admin->delete();
     }
 }

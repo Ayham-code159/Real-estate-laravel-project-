@@ -8,9 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureAdminHasPermission
 {
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next, string $permission): Response
     {
         $admin = auth('admin')->user();
@@ -19,14 +16,15 @@ class EnsureAdminHasPermission
             abort(403);
         }
 
-        $allowed = match ($permission) {
-            'super_admin' => $admin->isSuperAdmin(),
-            'manage_users' => $admin->canManageUsers(),
-            'manage_business_accounts' => $admin->canManageBusinessAccounts(),
-            default => false,
-        };
+        if ($permission === 'super_admin') {
+            if (! $admin->isSuperAdmin()) {
+                abort(403, 'You do not have permission to access this page.');
+            }
 
-        if (! $allowed) {
+            return $next($request);
+        }
+
+        if (! $admin->hasPermission($permission)) {
             abort(403, 'You do not have permission to access this page.');
         }
 
