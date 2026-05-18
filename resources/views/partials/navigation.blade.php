@@ -1,19 +1,21 @@
 <aside class="sidebar">
-    <div class="sidebar-title">{{ __('messages.navigation') }}</div>
+    <div class="sidebar-title">
+        {{ __('messages.navigation') }}
+    </div>
 
     <nav class="nav-menu">
 
         <a href="{{ route('admin.dashboard') }}"
            class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <span class="nav-icon">🏠</span>
-            <span>{{ __('messages.dashboard') }}</span>
+            <span class="nav-text">{{ __('messages.dashboard') }}</span>
         </a>
 
         @if(auth('admin')->user()?->isSuperAdmin())
             <a href="{{ route('admin.admins.index') }}"
                class="nav-link {{ request()->routeIs('admin.admins.*') ? 'active' : '' }}">
                 <span class="nav-icon">🛡️</span>
-                <span>{{ __('messages.admins') }}</span>
+                <span class="nav-text">{{ __('messages.admins') }}</span>
             </a>
         @endif
 
@@ -21,7 +23,7 @@
             <a href="{{ route('admin.business-accounts.index') }}"
                class="nav-link {{ request()->routeIs('admin.business-accounts.*') ? 'active' : '' }}">
                 <span class="nav-icon">🏢</span>
-                <span>{{ __('messages.business_accounts') }}</span>
+                <span class="nav-text">{{ __('messages.business_accounts') }}</span>
             </a>
         @endif
 
@@ -29,7 +31,7 @@
             <a href="{{ route('admin.users.index') }}"
                class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                 <span class="nav-icon">👤</span>
-                <span>{{ __('messages.users') }}</span>
+                <span class="nav-text">{{ __('messages.users') }}</span>
             </a>
         @endif
 
@@ -37,7 +39,7 @@
             <a href="{{ route('admin.master-data.business-types.index') }}"
                class="nav-link {{ request()->routeIs('admin.master-data.business-types.*') ? 'active' : '' }}">
                 <span class="nav-icon">🏷️</span>
-                <span>{{ __('messages.business_types') }}</span>
+                <span class="nav-text">{{ __('messages.business_types') }}</span>
             </a>
         @endif
 
@@ -45,7 +47,7 @@
             <a href="{{ route('admin.categories.index') }}"
                class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                 <span class="nav-icon">🗂️</span>
-                <span>{{ __('messages.categories') }}</span>
+                <span class="nav-text">{{ __('messages.categories') }}</span>
             </a>
         @endif
 
@@ -53,7 +55,7 @@
             <a href="{{ route('admin.items.index') }}"
                class="nav-link {{ request()->routeIs('admin.items.*') ? 'active' : '' }}">
                 <span class="nav-icon">📦</span>
-                <span>{{ __('messages.items') }}</span>
+                <span class="nav-text">{{ __('messages.items') }}</span>
             </a>
         @endif
 
@@ -61,13 +63,13 @@
             <a href="{{ route('admin.sliders.index') }}"
                class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}">
                 <span class="nav-icon">🎞️</span>
-                <span>{{ __('messages.sliders') }}</span>
+                <span class="nav-text">{{ __('messages.sliders') }}</span>
             </a>
         @endif
 
         <a href="#" class="nav-link">
             <span class="nav-icon">⚙️</span>
-            <span>{{ __('messages.settings') }}</span>
+            <span class="nav-text">{{ __('messages.settings') }}</span>
         </a>
 
     </nav>

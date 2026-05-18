@@ -108,14 +108,8 @@
                 radial-gradient(rgba(255,255,255,0.95) 1.4px, transparent 1.4px),
                 radial-gradient(rgba(255,255,255,0.55) 0.9px, transparent 0.9px),
                 radial-gradient(rgba(164, 130, 255, 0.18) 0.8px, transparent 0.8px);
-            background-size:
-                190px 190px,
-                240px 240px,
-                280px 280px;
-            background-position:
-                0 0,
-                60px 90px,
-                30px 50px;
+            background-size: 190px 190px, 240px 240px, 280px 280px;
+            background-position: 0 0, 60px 90px, 30px 50px;
             opacity: 0.52;
             pointer-events: none;
             z-index: 0;
@@ -466,42 +460,26 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            width: 260px;
+            height: 70px;
+            background-image: url("{{ asset('images/servixa-logo.png') }}");
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: contain;
         }
 
-        .brand-badge {
-            width: 52px;
-            height: 52px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, var(--primary), #8B5CF6);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 22px;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .brand-text h2 {
-            margin: 0;
-            font-size: 19px;
-            font-weight: 800;
-        }
-
-        .brand-text p {
-            margin: 3px 0 0;
-            color: var(--text-muted);
-            font-size: 13px;
+        .brand-badge,
+        .brand-text {
+            display: none !important;
         }
 
         .sidebar {
-            width: 250px;
+            width: 210px;
             background: rgba(255, 255, 255, 0.58);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border-right: 1px solid rgba(231, 234, 243, 0.88);
-            padding: 28px 14px;
+            padding: 22px 10px;
             position: relative;
             z-index: 1;
             flex-shrink: 0;
@@ -512,21 +490,22 @@
             text-transform: uppercase;
             letter-spacing: 0.10em;
             color: var(--text-muted);
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             font-weight: 800;
+            padding: 0 10px;
         }
 
         .nav-menu {
             display: grid;
-            gap: 10px;
+            gap: 8px;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 15px 16px;
-            border-radius: 16px;
+            gap: 11px;
+            padding: 12px 13px;
+            border-radius: 15px;
             color: var(--text-main);
             font-weight: 700;
             transition: background var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
@@ -545,14 +524,19 @@
         }
 
         .nav-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 12px;
+            width: 30px;
+            height: 30px;
+            border-radius: 11px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             background: #F7F4FE;
-            font-size: 15px;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            flex: 1;
         }
 
         .footer {
@@ -765,32 +749,92 @@
             flex-wrap: wrap;
         }
 
-        /*
-        =========================
-        RTL SUPPORT ONLY
-        =========================
-        */
-
+        html[dir="rtl"],
         body[dir="rtl"] {
             direction: rtl;
         }
 
-        body[dir="rtl"] .admin-main {
+        .admin-main {
             display: flex !important;
-            flex-direction: row-reverse !important;
+            flex-direction: row !important;
+            direction: ltr !important;
         }
 
+        .sidebar {
+            order: 1 !important;
+        }
+
+        .admin-content {
+            order: 2 !important;
+        }
+
+        html[dir="rtl"] .sidebar,
         body[dir="rtl"] .sidebar {
-            border-right: none;
-            border-left: 1px solid rgba(231, 234, 243, 0.88);
+            order: 2 !important;
+            border-right: 1px solid rgba(231, 234, 243, 0.88);
+            border-left: none;
+            direction: rtl !important;
         }
 
+        html[dir="rtl"] .admin-content,
+        body[dir="rtl"] .admin-content {
+            order: 1 !important;
+            direction: rtl !important;
+        }
+
+        html[dir="rtl"] .brand,
+        body[dir="rtl"] .brand {
+            background-position: right center;
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        html[dir="ltr"] .brand,
+        body[dir="ltr"] .brand {
+            background-position: left center;
+            margin-right: auto;
+            margin-left: 0;
+        }
+
+        html[dir="rtl"] .topbar-inner,
+        body[dir="rtl"] .topbar-inner {
+            direction: rtl;
+        }
+
+        html[dir="ltr"] .topbar-inner,
+        body[dir="ltr"] .topbar-inner {
+            direction: ltr;
+        }
+
+        html[dir="rtl"] .nav-link,
         body[dir="rtl"] .nav-link {
             flex-direction: row-reverse;
             text-align: right;
         }
 
-        body[dir="rtl"] .sidebar-title,
+        html[dir="rtl"] .nav-link:hover,
+        body[dir="rtl"] .nav-link:hover {
+            transform: translateX(-2px);
+        }
+
+        html[dir="rtl"] .sidebar-title,
+        body[dir="rtl"] .sidebar-title {
+            text-align: right;
+        }
+
+        html[dir="ltr"] .sidebar-title,
+        body[dir="ltr"] .sidebar-title {
+            text-align: left;
+        }
+
+        html[dir="rtl"] .section-title,
+        html[dir="rtl"] .section-subtitle,
+        html[dir="rtl"] .form-label,
+        html[dir="rtl"] .text-muted,
+        html[dir="rtl"] .activity-body,
+        html[dir="rtl"] .page-title,
+        html[dir="rtl"] .card-body,
+        html[dir="rtl"] .empty-state,
         body[dir="rtl"] .section-title,
         body[dir="rtl"] .section-subtitle,
         body[dir="rtl"] .form-label,
@@ -802,29 +846,32 @@
             text-align: right;
         }
 
+        html[dir="rtl"] .info-row,
         body[dir="rtl"] .info-row {
             flex-direction: row-reverse;
         }
 
+        html[dir="rtl"] .info-value,
         body[dir="rtl"] .info-value {
             text-align: left;
         }
 
+        html[dir="rtl"] .stats-head,
         body[dir="rtl"] .stats-head {
             flex-direction: row-reverse;
         }
 
+        html[dir="rtl"] .page-title-top,
+        html[dir="rtl"] .section-actions,
         body[dir="rtl"] .page-title-top,
-        body[dir="rtl"] .topbar-inner,
-        body[dir="rtl"] .brand,
         body[dir="rtl"] .section-actions {
             flex-direction: row-reverse;
         }
 
-        body[dir="rtl"] .brand-text {
-            text-align: right;
-        }
-
+        html[dir="rtl"] .form-input,
+        html[dir="rtl"] input,
+        html[dir="rtl"] textarea,
+        html[dir="rtl"] select,
         body[dir="rtl"] .form-input,
         body[dir="rtl"] input,
         body[dir="rtl"] textarea,
@@ -832,19 +879,16 @@
             text-align: right;
         }
 
+        html[dir="rtl"] .btn,
         body[dir="rtl"] .btn {
             flex-direction: row-reverse;
         }
 
+        html[dir="rtl"] .grid,
+        html[dir="rtl"] .overview-grid,
+        html[dir="rtl"] .container,
         body[dir="rtl"] .grid,
-        body[dir="rtl"] .overview-grid {
-            direction: rtl;
-        }
-
-        body[dir="rtl"] .nav-menu {
-            direction: rtl;
-        }
-
+        body[dir="rtl"] .overview-grid,
         body[dir="rtl"] .container {
             direction: rtl;
         }
@@ -875,6 +919,11 @@
 
             .topbar {
                 padding: 16px 20px;
+            }
+
+            .brand {
+                width: 210px;
+                height: 56px;
             }
 
             .page-title h1 {
