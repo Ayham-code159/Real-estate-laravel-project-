@@ -575,4 +575,4 @@ return [
     'dashboard' => 'Dashboard',
     'navigation' => 'Navigation',
     'settings' => 'Settings',
-];
+];      
