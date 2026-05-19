@@ -12,39 +12,54 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    let currentChannel = null;
+    let currentChannelName = null;
 
-    function listenToConversation(conversationId) {
-        if (currentChannel) {
-            window.Echo.leave(currentChannel);
+    function getConversationId() {
+        return conversationIdInput.value.trim();
+    }
+
+    function getToken() {
+        return tokenInput.value.trim();
+    }
+
+    function listenToConversation() {
+        const conversationId = getConversationId();
+
+        if (!conversationId) {
+            return;
         }
 
-        currentChannel = `conversation.${conversationId}`;
+        if (currentChannelName) {
+            window.Echo.leave(currentChannelName);
+        }
 
-        window.Echo.channel(currentChannel)
+        currentChannelName = `private-chat.${conversationId}`;
+
+        window.Echo.private(`chat.${conversationId}`)
             .listen('.message.sent', (event) => {
                 appendMessage(event.message);
             });
 
-        console.log(`Listening to ${currentChannel}`);
+        console.log(`Listening privately to chat.${conversationId}`);
     }
 
-    document.getElementById('start-listening').addEventListener('click', () => {
-        const conversationId = conversationIdInput.value.trim();
-
-        if (!conversationId) {
-            alert('Please enter conversation ID.');
-            return;
-        }
-
-        listenToConversation(conversationId);
+    conversationIdInput.addEventListener('change', () => {
+        listenToConversation();
     });
+
+    conversationIdInput.addEventListener('blur', () => {
+        listenToConversation();
+    });
+
+    if (getConversationId()) {
+        listenToConversation();
+    }
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const conversationId = conversationIdInput.value.trim();
-        const token = tokenInput.value.trim();
+        const conversationId = getConversationId();
+        const token = getToken();
         const body = input.value.trim();
 
         if (!conversationId || !token || !body) {
@@ -69,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
 
         if (response.ok) {
-            console.log('Message sent successfully.', data.chat_message);
+            appendMessage(data.chat_message);
         } else {
             console.error(data);
             alert(data.message || 'Message could not be sent.');

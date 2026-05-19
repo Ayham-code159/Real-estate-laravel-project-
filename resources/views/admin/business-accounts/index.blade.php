@@ -117,9 +117,9 @@
                             </div>
 
                             <div>
-                                <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.listings_count') }}</div>
+                                <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.items_count') }}</div>
                                 <div style="font-weight: 800;">
-                                    {{ $businessAccount->service_listings_count }}
+                                    {{ $businessAccount->items()->count() }}
                                 </div>
                             </div>
                         </div>

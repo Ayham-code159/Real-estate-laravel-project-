@@ -575,4 +575,5 @@ return [
     'dashboard' => 'Dashboard',
     'navigation' => 'Navigation',
     'settings' => 'Settings',
-];      
+    'items_count'=>'Services count',
+];

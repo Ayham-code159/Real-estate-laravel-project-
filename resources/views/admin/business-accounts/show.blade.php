@@ -5,7 +5,7 @@
 @section('content')
     <x-page-title
         :title="__('messages.business_account_details')"
-        subtitle="View full business account information and update moderation status."
+
     >
         <x-slot:actions>
             <a href="{{ route('admin.business-accounts.index') }}" class="btn btn-outline">
@@ -56,7 +56,7 @@
             </div>
 
             <div class="info-row">
-                <div class="info-label">Location</div>
+                <div class="info-label">{{ __('messages.location') }}</div>
                 <div class="info-value">
                     {{ $businessAccount->location_label ?? __('messages.not_available') }}
 
@@ -71,8 +71,8 @@
             </div>
 
             <div class="info-row">
-                <div class="info-label">{{ __('messages.listings_count') }}</div>
-                <div class="info-value">{{ $businessAccount->serviceListings->count() }}</div>
+                <div class="info-label">{{ __('messages.items_count') }}</div>
+                <div class="info-value">{{ $businessAccount->items()->count() }}</div>
             </div>
 
             @if($businessAccount->isRejected() && $businessAccount->rejection_reason)
@@ -132,9 +132,7 @@
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
             <h2 class="section-title">{{ __('messages.listings') }}</h2>
-            <p class="section-subtitle">
-                Listings that belong to this business account.
-            </p>
+
         </div>
 
         @forelse($businessAccount->serviceListings as $listing)

@@ -11,9 +11,24 @@ class BusinessAccountService
 {
     public function create(User $user, array $data): BusinessAccount
     {
-        if ($user->businessAccounts()->count() >= 5) {
+        $businessAccountLimit = (int) ($user->business_account_limit ?? 0);
+        $currentBusinessAccountsCount = $user->businessAccounts()->count();
+
+        if ($currentBusinessAccountsCount >= $businessAccountLimit) {
             throw ValidationException::withMessages([
-                'business_account_limit' => ['You cannot create more than 5 business accounts.'],
+                'business_account_limit' => [
+                    'Your current plan does not allow you to create more business accounts. Please upgrade your plan.',
+                ],
+            ]);
+        }
+
+        $alreadyHasSameType = $user->businessAccounts()
+            ->where('business_type_id', (int) $data['business_type_id'])
+            ->exists();
+
+        if ($alreadyHasSameType) {
+            throw ValidationException::withMessages([
+                'business_type_id' => ['You already have a business account with this type.'],
             ]);
         }
 

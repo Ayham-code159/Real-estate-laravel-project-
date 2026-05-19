@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\BusinessAccount;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBusinessAccountRequest extends FormRequest
@@ -13,8 +14,17 @@ class StoreBusinessAccountRequest extends FormRequest
 
     public function rules(): array
     {
+        $userId = $this->user()?->id;
+
         return [
-            'business_type_id' => ['required', 'integer', 'exists:business_types,id'],
+            'business_type_id' => [
+                'required',
+                'integer',
+                'exists:business_types,id',
+                Rule::unique('business_accounts', 'business_type_id')
+                    ->where('user_id', $userId),
+            ],
+
             'city_id' => ['required', 'integer', 'exists:cities,id'],
 
             'business_name_en' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
@@ -31,6 +41,8 @@ class StoreBusinessAccountRequest extends FormRequest
         return [
             'business_type_id.required' => 'Business account type is required.',
             'business_type_id.exists' => 'Selected business account type is invalid.',
+            'business_type_id.unique' => 'You already have a business account with this type.',
+
             'business_name_en.required' => 'Business name in English is required.',
             'business_name_en.regex' => 'Business name in English must contain letters only.',
             'business_name_ar.regex' => 'Business name in Arabic must contain letters only.',

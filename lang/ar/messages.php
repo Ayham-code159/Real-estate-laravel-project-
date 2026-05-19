@@ -577,5 +577,6 @@ return [
     'dashboard' => 'لوحة التحكم',
     'navigation' => 'التنقل',
     'settings' => 'الإعدادات',
+    'items_count'=>'عدد الخدمات',
 
 ];

@@ -15,6 +15,11 @@ use App\Http\Controllers\Api\Chat\ChatController;
 use App\Http\Controllers\Api\Item\ItemController;
 use App\Http\Controllers\Api\ItemRequest\BuyerItemRequestController;
 use App\Http\Controllers\Api\ItemRequest\SellerItemRequestController;
+use App\Http\Controllers\Api\Payment\PaymentController;
+use App\Http\Controllers\Api\Payment\StripeWebhookController;
+
+// webhook (outside auth)
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 
 // UserAuth routes
 Route::prefix('auth')->group(function () {
@@ -35,6 +40,21 @@ Route::middleware('auth:api')->prefix('business-context')->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payments
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('payments')->group(function () {
+        Route::get('/current-plan', [PaymentController::class, 'currentPlan']);
+        Route::get('/my-plan', [PaymentController::class, 'myPlan']);
+        Route::post('/checkout', [PaymentController::class, 'checkout']);
+        Route::get('/success', [PaymentController::class, 'success']);
+        Route::get('/cancel', [PaymentController::class, 'cancel']);
+    });
+
     Route::get('/business-types', [BusinessTypeController::class, 'index']);
 
     Route::prefix('business-accounts')->group(function () {

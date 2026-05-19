@@ -125,9 +125,7 @@
                 <textarea id="chat-token" style="height: 90px;"></textarea>
             </div>
 
-            <button id="start-listening" type="button" class="btn btn-primary">
-                Start Listening
-            </button>
+            
 
             <div id="chat-box" class="chat-box"></div>
 
