@@ -52,10 +52,14 @@ class ChatController extends Controller
         StoreMessageRequest $request,
         int $conversationId
     ): JsonResponse {
+        $validated = $request->validated();
+
         $message = $this->chatService->sendMessage(
             $request->user(),
             $conversationId,
-            $request->validated()['body']
+            $validated['body'] ?? null,
+            $request->file('audio'),
+            $request->file('image')
         );
 
         return response()->json([
@@ -63,6 +67,32 @@ class ChatController extends Controller
             'chat_message' => $message,
         ], 201);
     }
+
+    public function reactToMessage(
+        Request $request,
+        int $conversationId,
+        int $messageId
+    ): JsonResponse {
+        $validated = $request->validate([
+            'emoji' => ['required', 'string', 'in:❤️,👍,😂,😮,😢'],
+        ]);
+
+        $message = $this->chatService->reactToMessage(
+            $request->user(),
+            $conversationId,
+            $messageId,
+            $validated['emoji']
+        );
+
+        return response()->json([
+            'message' => 'Reaction updated successfully.',
+            'chat_message' => $message,
+        ]);
+    }
+
+
+
+
 
     public function markAsRead(Request $request, int $conversationId): JsonResponse
     {

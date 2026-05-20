@@ -5,9 +5,11 @@ namespace App\Services\Chat;
 use App\Models\User;
 use App\Models\Message;
 use App\Models\Conversation;
+use App\Events\MessageSent;
+use App\Events\MessageSeen;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\ValidationException;
-use App\Events\MessageSent;
+use App\Events\MessageReactionUpdated;
 
 class ChatService
 {
@@ -50,26 +52,99 @@ class ChatService
     {
         $conversation = $this->getConversationForUser($authUser, $conversationId);
 
-        return $conversation->messages()
-            ->with('sender')
+       return $conversation->messages()
+            ->with(['sender', 'reactions'])
             ->oldest()
             ->get();
-    }
+        }
 
-    public function sendMessage(User $authUser, int $conversationId, string $body): Message
-    {
+    public function sendMessage(
+    User $authUser,
+    int $conversationId,
+    ?string $body = null,
+    $audio = null,
+    $image = null
+    ): Message {
         $conversation = $this->getConversationForUser($authUser, $conversationId);
+
+        $audioPath = null;
+        $imagePath = null;
+        $messageType = 'text';
+
+        if ($audio) {
+            $audioPath = $audio->store('chat/audio', 'public');
+            $messageType = 'voice';
+        }
+
+        if ($image) {
+            $imagePath = $image->store('chat/images', 'public');
+            $messageType = 'image';
+        }
 
         $message = Message::create([
             'conversation_id' => $conversation->id,
             'sender_id' => $authUser->id,
-            'body' => trim($body),
-        ])->load('sender');
+            'message_type' => $messageType,
+            'body' => $body ? trim($body) : null,
+            'audio_path' => $audioPath,
+            'image_path' => $imagePath,
+        ])->load(['sender', 'reactions']);
 
-        broadcast(new MessageSent($message))->toOthers();
+        broadcast(new MessageSent($message));
 
         return $message;
     }
+
+    public function reactToMessage(
+    User $authUser,
+    int $conversationId,
+    int $messageId,
+    string $emoji
+    ): Message {
+        $conversation = $this->getConversationForUser($authUser, $conversationId);
+
+        $allowedEmojis = ['❤️', '👍', '😂', '😮', '😢'];
+
+        if (! in_array($emoji, $allowedEmojis, true)) {
+            throw ValidationException::withMessages([
+                'emoji' => ['Invalid reaction emoji.'],
+            ]);
+        }
+
+        $message = $conversation->messages()
+            ->where('id', $messageId)
+            ->first();
+
+        if (! $message) {
+            throw ValidationException::withMessages([
+                'message' => ['Message not found.'],
+            ]);
+        }
+
+        $existingReaction = $message->reactions()
+            ->where('user_id', $authUser->id)
+            ->first();
+
+        if ($existingReaction && $existingReaction->emoji === $emoji) {
+            $existingReaction->delete();
+        } else {
+            $message->reactions()->updateOrCreate(
+                [
+                    'user_id' => $authUser->id,
+                ],
+                [
+                    'emoji' => $emoji,
+                ]
+            );
+        }
+
+        $message = $message->fresh()->load(['sender', 'reactions']);
+
+        broadcast(new MessageReactionUpdated($message));
+
+        return $message;
+    }
+
 
 
 
@@ -77,12 +152,29 @@ class ChatService
     {
         $conversation = $this->getConversationForUser($authUser, $conversationId);
 
-        return $conversation->messages()
+        $messageIds = $conversation->messages()
             ->where('sender_id', '!=', $authUser->id)
             ->whereNull('read_at')
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($messageIds)) {
+            return 0;
+        }
+
+        $updatedCount = Message::query()
+            ->whereIn('id', $messageIds)
             ->update([
                 'read_at' => now(),
             ]);
+
+        broadcast(new MessageSeen(
+            $conversation->id,
+            $authUser->id,
+            $messageIds
+        ));
+
+        return $updatedCount;
     }
 
     private function getConversationForUser(User $authUser, int $conversationId): Conversation
