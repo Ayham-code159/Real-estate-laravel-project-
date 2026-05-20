@@ -2,9 +2,12 @@
 
 namespace App\Services\Auth;
 
+use App\Mail\VerifyRegistrationMail;
+use App\Models\PendingUserRegistration;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class UserAuthService
@@ -15,6 +18,158 @@ class UserAuthService
 
         $this->ensureIdentifierIsUnique($identifierData);
 
+        if ($identifierData['type'] === 'phone') {
+            return $this->registerPhoneUserImmediately($data, $identifierData);
+        }
+
+        $email = $identifierData['value'];
+
+        $pendingRegistration = PendingUserRegistration::query()
+            ->where('email', $email)
+            ->latest()
+            ->first();
+
+        if ($pendingRegistration && ! $pendingRegistration->isExpired() && ! $pendingRegistration->canResend()) {
+            throw ValidationException::withMessages([
+                'identifier' => ['Please wait 1 minute before requesting another verification email.'],
+            ]);
+        }
+
+        PendingUserRegistration::query()
+            ->where('email', $email)
+            ->delete();
+
+        $pendingRegistration = PendingUserRegistration::create([
+            'first_name' => trim($data['first_name']),
+            'last_name' => trim($data['last_name']),
+            'identifier' => $email,
+            'identifier_type' => 'email',
+            'email' => $email,
+            'phone' => null,
+            'password' => $data['password'],
+            'token' => Str::random(80),
+            'expires_at' => now()->addMinutes(5),
+            'last_sent_at' => now(),
+        ]);
+
+        Mail::to($email)->send(new VerifyRegistrationMail($pendingRegistration));
+
+        return [
+            'pending_registration' => $pendingRegistration,
+            'identifier_type' => 'email',
+            'requires_email_verification' => true,
+        ];
+    }
+
+    public function verifyRegistration(string $token): array
+    {
+        $pendingRegistration = PendingUserRegistration::query()
+            ->where('token', $token)
+            ->first();
+
+        if (! $pendingRegistration) {
+            throw ValidationException::withMessages([
+                'token' => ['Invalid verification link.'],
+            ]);
+        }
+
+        if ($pendingRegistration->isExpired()) {
+            $pendingRegistration->delete();
+
+            throw ValidationException::withMessages([
+                'token' => ['Verification link expired. Please register again.'],
+            ]);
+        }
+
+        $identifierData = [
+            'type' => $pendingRegistration->identifier_type,
+            'value' => $pendingRegistration->identifier,
+        ];
+
+        $this->ensureIdentifierIsUnique($identifierData);
+
+        $username = $this->generateUniqueUsername(
+            $pendingRegistration->first_name,
+            $pendingRegistration->last_name
+        );
+
+        $user = User::create([
+            'first_name' => $pendingRegistration->first_name,
+            'last_name' => $pendingRegistration->last_name,
+            'username' => $username,
+            'email' => $pendingRegistration->email,
+            'phone' => null,
+            'password' => $pendingRegistration->password,
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        $pendingRegistration->delete();
+
+        $token = $user->createToken('user-register-token')->accessToken;
+
+        return [
+            'user' => $user,
+            'token' => $token,
+            'identifier_type' => 'email',
+        ];
+    }
+
+    public function resendVerificationEmail(string $identifier): array
+    {
+        $identifierData = $this->parseIdentifier($identifier);
+
+        if ($identifierData['type'] !== 'email') {
+            throw ValidationException::withMessages([
+                'identifier' => ['Verification resend is only available for email registrations.'],
+            ]);
+        }
+
+        $email = $identifierData['value'];
+
+        $this->ensureIdentifierIsUnique($identifierData);
+
+        $pendingRegistration = PendingUserRegistration::query()
+            ->where('email', $email)
+            ->latest()
+            ->first();
+
+        if (! $pendingRegistration) {
+            throw ValidationException::withMessages([
+                'identifier' => ['No pending registration found for this email. Please register again.'],
+            ]);
+        }
+
+        if ($pendingRegistration->isExpired()) {
+            $pendingRegistration->delete();
+
+            throw ValidationException::withMessages([
+                'identifier' => ['Verification link expired. Please register again.'],
+            ]);
+        }
+
+        if (! $pendingRegistration->canResend()) {
+            throw ValidationException::withMessages([
+                'identifier' => ['Please wait 1 minute before requesting another verification email.'],
+            ]);
+        }
+
+        $pendingRegistration->update([
+            'token' => Str::random(80),
+            'expires_at' => now()->addMinutes(5),
+            'last_sent_at' => now(),
+        ]);
+
+        Mail::to($email)->send(new VerifyRegistrationMail($pendingRegistration->fresh()));
+
+        return [
+            'identifier_type' => 'email',
+            'requires_email_verification' => true,
+        ];
+    }
+
+    private function registerPhoneUserImmediately(array $data, array $identifierData): array
+    {
         $username = $this->generateUniqueUsername(
             $data['first_name'],
             $data['last_name']
@@ -24,8 +179,8 @@ class UserAuthService
             'first_name' => trim($data['first_name']),
             'last_name' => trim($data['last_name']),
             'username' => $username,
-            'email' => $identifierData['type'] === 'email' ? $identifierData['value'] : null,
-            'phone' => $identifierData['type'] === 'phone' ? $identifierData['value'] : null,
+            'email' => null,
+            'phone' => $identifierData['value'],
             'password' => $data['password'],
             'status' => 'active',
         ]);
@@ -35,7 +190,8 @@ class UserAuthService
         return [
             'user' => $user,
             'token' => $token,
-            'identifier_type' => $identifierData['type'],
+            'identifier_type' => 'phone',
+            'requires_email_verification' => false,
         ];
     }
 

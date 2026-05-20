@@ -23,6 +23,16 @@ class UserAuthController extends Controller
 
         $result = $this->userAuthService->register($data);
 
+        if (($result['requires_email_verification'] ?? false) === true) {
+            return response()->json([
+                'message' => 'Verification email sent. Please verify your email within 5 minutes.',
+                'data' => [
+                    'requires_email_verification' => true,
+                    'identifier_type' => $result['identifier_type'],
+                ],
+            ], 202);
+        }
+
         if (! empty($data['device_token'])) {
             $this->deviceTokenService->store(
                 $result['user'],
@@ -33,10 +43,45 @@ class UserAuthController extends Controller
 
         return response()->json([
             'message' => 'User registered successfully.',
-            'user' => $result['user'],
-            'token' => $result['token'],
-            'identifier_type' => $result['identifier_type'],
+            'data' => [
+                'user' => $result['user'],
+                'token' => $result['token'],
+                'identifier_type' => $result['identifier_type'],
+            ],
         ], 201);
+    }
+
+    public function verifyRegistration(string $token): JsonResponse
+    {
+        $result = $this->userAuthService->verifyRegistration($token);
+
+        return response()->json([
+            'message' => 'Email verified successfully. Account created.',
+            'data' => [
+                'user' => $result['user'],
+                'token' => $result['token'],
+                'identifier_type' => $result['identifier_type'],
+            ],
+        ], 201);
+    }
+
+    public function resendVerificationEmail(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'identifier' => ['required', 'string', 'max:255'],
+        ]);
+
+        $result = $this->userAuthService->resendVerificationEmail(
+            $validated['identifier']
+        );
+
+        return response()->json([
+            'message' => 'Verification email resent. Please verify your email within 5 minutes.',
+            'data' => [
+                'requires_email_verification' => true,
+                'identifier_type' => $result['identifier_type'],
+            ],
+        ]);
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -55,8 +100,10 @@ class UserAuthController extends Controller
 
         return response()->json([
             'message' => 'Login successful.',
-            'user' => $result['user'],
-            'token' => $result['token'],
+            'data' => [
+                'user' => $result['user'],
+                'token' => $result['token'],
+            ],
         ]);
     }
 
@@ -73,6 +120,7 @@ class UserAuthController extends Controller
 
         return response()->json([
             'message' => 'Logged out successfully.',
+            'data' => null,
         ]);
     }
 }

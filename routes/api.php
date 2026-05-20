@@ -22,6 +22,8 @@ Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [UserAuthController::class, 'register']);
+    Route::post('/resend-verification-email', [UserAuthController::class, 'resendVerificationEmail']);
+    Route::get('/verify-registration/{token}', [UserAuthController::class, 'verifyRegistration']);
     Route::post('/login', [UserAuthController::class, 'login']);
 
     Route::middleware('auth:api')->group(function () {
@@ -37,7 +39,6 @@ Route::middleware('auth:api')->prefix('business-context')->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
-
     Route::post('/broadcasting/auth', function (\Illuminate\Http\Request $request) {
         return Broadcast::auth($request);
     });
@@ -103,7 +104,6 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/conversations/{conversationId}/messages', [ChatController::class, 'sendMessage']);
         Route::put('/conversations/{conversationId}/read', [ChatController::class, 'markAsRead']);
         Route::post('/conversations/{conversationId}/messages/{messageId}/reactions', [ChatController::class, 'reactToMessage']);
-
     });
 
     Route::get('/item-categories', [ItemController::class, 'categories']);
