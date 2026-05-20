@@ -14,6 +14,8 @@ class Admin extends Authenticatable
         'email',
         'password',
 
+        'can_manage_cities',
+
         'is_super_admin',
         'can_manage_users',
         'can_manage_business_accounts',
@@ -43,6 +45,7 @@ class Admin extends Authenticatable
             'can_manage_categories' => 'boolean',
             'can_manage_items' => 'boolean',
             'can_manage_sliders' => 'boolean',
+            'can_manage_cities'=>'boolean',
         ];
     }
 
@@ -64,6 +67,7 @@ class Admin extends Authenticatable
             'manage_categories' => $this->canManageCategories(),
             'manage_items' => $this->canManageItems(),
             'manage_sliders' => $this->canManageSliders(),
+            'manage_cities'=>$this->canManageCities(),
             default => false,
         };
     }
@@ -141,6 +145,50 @@ class Admin extends Authenticatable
             $permissions[] = 'Manage Sliders';
         }
 
+        if ($this->can_manage_cities) {
+            $permissions[] = 'Manage Cities';
+        }
+
         return $permissions;
+    }
+
+    public function permissionTranslationKeys(): array
+    {
+        $permissions = [];
+
+        if ($this->can_manage_users) {
+            $permissions[] = 'manage_users';
+        }
+
+        if ($this->can_manage_business_accounts) {
+            $permissions[] = 'manage_business_accounts';
+        }
+
+        if ($this->can_manage_business_types) {
+            $permissions[] = 'manage_business_types';
+        }
+
+        if ($this->can_manage_categories) {
+            $permissions[] = 'manage_categories';
+        }
+
+        if ($this->can_manage_items) {
+            $permissions[] = 'manage_items';
+        }
+
+        if ($this->can_manage_sliders) {
+            $permissions[] = 'manage_sliders';
+        }
+
+        if ($this->can_manage_cities) {
+            $permissions[] = 'manage_cities';
+        }
+
+        return $permissions;
+    }
+
+    public function canManageCities(): bool
+    {
+        return $this->isSuperAdmin() || $this->can_manage_cities;
     }
 }

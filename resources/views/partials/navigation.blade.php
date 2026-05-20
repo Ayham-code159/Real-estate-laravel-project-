@@ -67,10 +67,19 @@
             </a>
         @endif
 
-        <a href="#" class="nav-link">
-            <span class="nav-icon">⚙️</span>
-            <span class="nav-text">{{ __('messages.settings') }}</span>
-        </a>
+        @if(auth('admin')->user()?->canManageCities())
+            <a href="{{ route('admin.cities.index') }}"
+                class="nav-link {{ request()->routeIs('admin.cities.*') ? 'active' : '' }}">
+                    <span class="nav-icon">🏙️</span>
+                    <span class="nav-text">{{ __('messages.cities') }}</span>
+            </a>
+        @endif
+
+
+
+
+
+      
 
     </nav>
 </aside>

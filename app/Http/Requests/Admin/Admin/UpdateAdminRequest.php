@@ -23,6 +23,7 @@ class UpdateAdminRequest extends FormRequest
             'can_manage_categories',
             'can_manage_items',
             'can_manage_sliders',
+            'can_manage_cities',
         ];
 
         return [

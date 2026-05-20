@@ -256,17 +256,16 @@
 
     <div class="sliders-page">
         <x-page-title
-            title="Sliders"
-            subtitle="Manage and control approved item sliders."
+            title="{{ __('messages.sliders') }}"
         />
 
         <div class="slider-filter-card">
             <form method="GET" action="{{ route('admin.sliders.index') }}">
                 <div style="display: flex; gap: 12px; align-items: end; flex-wrap: wrap;">
                     <div style="min-width: 260px; flex: 1; max-width: 360px;">
-                        <label class="form-label">Category Filter</label>
+                        <label class="form-label">{{ __('messages.category_filter') }}</label>
                         <select name="category_id" class="form-input">
-                            <option value="">All Categories</option>
+                            <option value="">{{ __('messages.all_categories') }}</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ (string) $categoryId === (string) $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
@@ -276,11 +275,11 @@
                     </div>
 
                     <x-button type="submit" variant="primary">
-                        🔍 Filter
+                        🔍 {{ __('messages.filter') }}
                     </x-button>
 
                     <a href="{{ route('admin.sliders.index') }}" class="btn btn-outline">
-                        Reset
+                        {{ __('messages.reset') }}
                     </a>
                 </div>
             </form>
@@ -366,7 +365,7 @@
 
                                 <div class="slider-actions">
                                     <a href="{{ route('admin.sliders.show', $slider) }}" class="btn btn-primary">
-                                        👁 View Details
+                                        👁 {{ __('messages.view_details') }}
                                     </a>
 
                                     <form method="POST"
@@ -376,7 +375,7 @@
                                         @method('DELETE')
 
                                         <x-button type="submit" variant="danger">
-                                            🗑 Delete
+                                            🗑 {{ __('messages.delete') }}
                                         </x-button>
                                     </form>
                                 </div>

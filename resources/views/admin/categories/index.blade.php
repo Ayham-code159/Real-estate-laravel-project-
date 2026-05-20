@@ -43,12 +43,12 @@
 
     <x-page-title
         :title="__('messages.categories')"
-        
+
     >
         <x-slot:actions>
             <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
                 <span>＋</span>
-                <span>{{ __('messages.all_categories') }}</span>
+                <span>{{ __('messages.add_categories') }}</span>
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -69,7 +69,6 @@
                             </h3>
 
                             <p class="text-muted" style="margin: 0;">
-                                {{ $category->description ?? 'No description' }}
                             </p>
                         </div>
 
@@ -80,17 +79,17 @@
 
                     <div class="grid grid-4" style="margin-top: 20px;">
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">English Name</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.english_name') }}</div>
                             <div style="font-weight: 800;">{{ $category->name_en }}</div>
                         </div>
 
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Arabic Name</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.arabic_name') }}</div>
                             <div style="font-weight: 800;">{{ $category->name_ar ?? 'N/A' }}</div>
                         </div>
 
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Subcategories</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.subcategories') }}</div>
                             <div style="font-weight: 800;">{{ $category->subcategories_count }}</div>
                         </div>
 

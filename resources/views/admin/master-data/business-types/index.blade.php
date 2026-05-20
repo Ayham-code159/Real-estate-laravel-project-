@@ -65,10 +65,18 @@
                     <div class="activity-icon">🏷️</div>
 
                     <div class="activity-body" style="width: 100%;">
+
                         <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center;">
-                            <h4 style="margin: 0;">{{ $businessType->translated_name }}</h4>
-                            <span class="badge badge-primary">{{ __('messages.id_number') }}{{ $businessType->id }}</span>
-                        </div>
+    <h4 style="margin: 0;">{{ $businessType->translated_name }}</h4>
+
+    <object>
+        <a href="{{ route('admin.master-data.business-types.show', $businessType->id) }}" class="btn btn-outline">
+            👁 {{ __('messages.view_details') }}
+        </a>
+    </object>
+</div>
+
+
 
                         <p style="margin-top: 8px;">
                             EN: {{ $businessType->name_en }} • AR: {{ $businessType->name_ar }}

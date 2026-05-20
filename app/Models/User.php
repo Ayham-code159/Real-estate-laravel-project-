@@ -180,4 +180,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Conversation::class, 'user_two_id');
     }
+
+    public function favoriteItems()
+    {
+        return $this->belongsToMany(Item::class, 'item_favorites')
+            ->withTimestamps();
+    }
 }

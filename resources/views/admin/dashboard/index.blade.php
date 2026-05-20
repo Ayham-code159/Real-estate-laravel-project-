@@ -269,22 +269,20 @@
                 <div class="hero-eyebrow">{{ __('messages.dashboard') }}</div>
 
                 <h1 class="hero-title">
-                    Welcome back, {{ $admin->name }}
+                    {{ __('messages.welcome_back') }}
                 </h1>
 
-                <p class="hero-subtitle">
-                    A clean overview of your moderation workspace and available admin actions.
-                </p>
+
 
                 <div class="hero-footer">
                     <div class="permission-badges">
                         @if($admin->isSuperAdmin())
-                            <span class="badge badge-danger">👑 Super Admin</span>
+                            <span class="badge badge-danger">👑 {{ __('messages.super_admin') }}</span>
                         @else
                             @forelse($admin->permissionLabels() as $permission)
                                 <span class="badge badge-primary">{{ $permission }}</span>
                             @empty
-                                <span class="badge badge-warning">Basic Admin</span>
+                                <span class="badge badge-warning">{{ __('messages.admin') }}</span>
                             @endforelse
                         @endif
                     </div>
@@ -292,7 +290,7 @@
                     <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
                         <button type="submit" class="logout-btn">
-                            ↩ Logout
+                            ↩ {{ __('messages.logout') }}
                         </button>
                     </form>
                 </div>
@@ -300,22 +298,22 @@
 
             <div class="compact-stats">
                 <div class="soft-card compact-stat">
-                    <div class="compact-stat-label">Pending Items</div>
+                    <div class="compact-stat-label">{{ __('messages.pending_items') }}</div>
                     <div class="compact-stat-value">{{ $stats['pending_items'] }}</div>
                 </div>
 
                 <div class="soft-card compact-stat">
-                    <div class="compact-stat-label">Total Items</div>
+                    <div class="compact-stat-label">{{ __('messages.total_items') }}</div>
                     <div class="compact-stat-value">{{ $stats['total_items'] }}</div>
                 </div>
 
                 <div class="soft-card compact-stat">
-                    <div class="compact-stat-label">Total Users</div>
+                    <div class="compact-stat-label">{{ __('messages.total_users') }}</div>
                     <div class="compact-stat-value">{{ $stats['total_users'] }}</div>
                 </div>
 
                 <div class="soft-card compact-stat">
-                    <div class="compact-stat-label">Active Sliders</div>
+                    <div class="compact-stat-label">{{ __('messages.active_sliders') }}</div>
                     <div class="compact-stat-value">{{ $stats['active_sliders'] }}</div>
                 </div>
             </div>
@@ -324,10 +322,8 @@
         <div class="dashboard-grid">
             <div class="soft-card panel-card">
                 <div class="panel-head">
-                    <h2 class="panel-title">Quick Actions</h2>
-                    <p class="panel-subtitle">
-                        Jump directly to the sections you are allowed to manage.
-                    </p>
+                    <h2 class="panel-title">{{ __('messages.quick_actions') }}</h2>
+
                 </div>
 
                 <div class="quick-actions">
@@ -335,8 +331,8 @@
                         <a href="{{ route('admin.items.index') }}" class="quick-action">
                             <div class="quick-action-icon">📦</div>
                             <div>
-                                <div class="quick-action-title">Manage Items</div>
-                                <div class="quick-action-meta">{{ $stats['pending_items'] }} pending review</div>
+                                <div class="quick-action-title">{{ __('messages.manage_items') }}</div>
+                                <div class="quick-action-meta">{{ $stats['pending_items'] }} {{ __('messages.pending_items') }} </div>
                             </div>
                         </a>
                     @endif
@@ -345,8 +341,8 @@
                         <a href="{{ route('admin.sliders.index') }}" class="quick-action">
                             <div class="quick-action-icon">🎞️</div>
                             <div>
-                                <div class="quick-action-title">Manage Sliders</div>
-                                <div class="quick-action-meta">{{ $stats['active_sliders'] }} active sliders</div>
+                                <div class="quick-action-title">{{ __('messages.manage_sliders') }}</div>
+                                <div class="quick-action-meta">{{ $stats['active_sliders'] }} {{ __('messages.active_sliders') }} </div>
                             </div>
                         </a>
                     @endif
@@ -355,8 +351,8 @@
                         <a href="{{ route('admin.categories.index') }}" class="quick-action">
                             <div class="quick-action-icon">🗂️</div>
                             <div>
-                                <div class="quick-action-title">Manage Categories</div>
-                                <div class="quick-action-meta">Categories and dynamic fields</div>
+                                <div class="quick-action-title">{{ __('messages.categories') }}</div>
+                                <div class="quick-action-meta">{{ __('messages.manage_categories') }}</div>
                             </div>
                         </a>
                     @endif
@@ -365,8 +361,8 @@
                         <a href="{{ route('admin.business-accounts.index') }}" class="quick-action">
                             <div class="quick-action-icon">🏢</div>
                             <div>
-                                <div class="quick-action-title">Business Accounts</div>
-                                <div class="quick-action-meta">{{ $stats['pending_business_accounts'] }} pending review</div>
+                                <div class="quick-action-title">{{ __('messages.business_accounts') }}</div>
+                                <div class="quick-action-meta">{{ $stats['pending_business_accounts'] }} {{ __('messages.pending_accounts') }}</div>
                             </div>
                         </a>
                     @endif
@@ -375,8 +371,8 @@
                         <a href="{{ route('admin.users.index') }}" class="quick-action">
                             <div class="quick-action-icon">👤</div>
                             <div>
-                                <div class="quick-action-title">Manage Users</div>
-                                <div class="quick-action-meta">{{ $stats['total_users'] }} registered users</div>
+                                <div class="quick-action-title">{{ __('messages.users') }}</div>
+                                <div class="quick-action-meta">{{ $stats['total_users'] }} {{ __('messages.registered_platform_users') }}</div>
                             </div>
                         </a>
                     @endif
@@ -385,8 +381,8 @@
                         <a href="{{ route('admin.master-data.business-types.index') }}" class="quick-action">
                             <div class="quick-action-icon">🏷️</div>
                             <div>
-                                <div class="quick-action-title">Business Types</div>
-                                <div class="quick-action-meta">Manage business type data</div>
+                                <div class="quick-action-title">{{ __('messages.manage_business_types') }}</div>
+                                <div class="quick-action-meta">{{ __('messages.manage_business_types_in_the_system') }}</div>
                             </div>
                         </a>
                     @endif
@@ -395,10 +391,8 @@
 
             <div class="soft-card panel-card">
                 <div class="panel-head">
-                    <h2 class="panel-title">Recent Pending Items</h2>
-                    <p class="panel-subtitle">
-                        Latest items waiting for moderation.
-                    </p>
+                    <h2 class="panel-title">{{ __('messages.recent_pending_items') }}</h2>
+
                 </div>
 
                 <div class="activity-list">
@@ -414,8 +408,7 @@
                         </a>
                     @empty
                         <div class="activity-item">
-                            <div class="activity-title">No pending items</div>
-                            <div class="activity-meta">Everything is clear for now.</div>
+                            <div class="activity-title">{{ __('messages.no_pending_items') }}</div>
                         </div>
                     @endforelse
                 </div>
@@ -424,22 +417,22 @@
 
         <div class="overview-row">
             <div class="soft-card overview-card">
-                <div class="overview-label">Approved Items</div>
+                <div class="overview-label">{{ __('messages.approved_items') }}</div>
                 <div class="overview-value">{{ $stats['approved_items'] }}</div>
             </div>
 
             <div class="soft-card overview-card">
-                <div class="overview-label">Rejected Items</div>
+                <div class="overview-label">{{ __('messages.rejected_items') }}</div>
                 <div class="overview-value">{{ $stats['rejected_items'] }}</div>
             </div>
 
             <div class="soft-card overview-card">
-                <div class="overview-label">Business Accounts</div>
+                <div class="overview-label">{{ __('messages.business_accounts') }}</div>
                 <div class="overview-value">{{ $stats['total_business_accounts'] }}</div>
             </div>
 
             <div class="soft-card overview-card">
-                <div class="overview-label">Pending Accounts</div>
+                <div class="overview-label">{{ __('messages.pending_accounts') }}</div>
                 <div class="overview-value">{{ $stats['pending_business_accounts'] }}</div>
             </div>
         </div>

@@ -4,16 +4,16 @@
 
 @section('content')
     <x-page-title
-        title="Slider Details"
-        subtitle="Manage this slider and view its item information."
+        title="{{ __('messages.slider_details') }}"
+
     >
         <x-slot:actions>
             <a href="{{ route('admin.sliders.index') }}" class="btn btn-outline">
-                ← Back
+                ← {{ __('messages.back') }}
             </a>
 
             <a href="{{ route('admin.items.show', $slider->item) }}" class="btn btn-primary">
-                📦 Show Item
+                📦 {{ __('messages.show_item') }}
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -40,38 +40,38 @@
 
         <div class="info-list" style="margin-top: 20px;">
             <div class="info-row">
-                <div class="info-label">Category</div>
+                <div class="info-label">{{ __('messages.category') }}</div>
                 <div class="info-value">{{ $slider->item->category?->name ?? 'N/A' }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Subcategory</div>
+                <div class="info-label">{{ __('messages.subcategory') }}</div>
                 <div class="info-value">{{ $slider->item->subcategory?->name ?? 'N/A' }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Price USD</div>
+                <div class="info-label">{{ __('messages.price_usd') }}</div>
                 <div class="info-value">${{ number_format((float) $slider->item->price_usd, 2) }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Price SYP</div>
+                <div class="info-label">{{ __('messages.price_syp') }}</div>
                 <div class="info-value">{{ number_format((float) $slider->item->price_syp, 2) }} SYP</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Click Count</div>
+                <div class="info-label">{{ __('messages.click_count') }}</div>
                 <div class="info-value">{{ $slider->click_count }}</div>
             </div>
         </div>
     </x-card>
 
     <x-card class="subtle-panel" style="margin-bottom: 24px;">
-        <h2 class="section-title">Photos</h2>
+        <h2 class="section-title">{{ __('messages.photos') }}</h2>
 
         @if($slider->item->main_photo_url)
             <div style="margin-top: 16px;">
-                <h3 style="margin: 0 0 14px;">Main Photo</h3>
+                <h3 style="margin: 0 0 14px;">{{ __('messages.main_photo') }}</h3>
                 <img
                     src="{{ $slider->item->main_photo_url }}"
                     alt="Main Photo"
@@ -82,7 +82,7 @@
 
         @if(!empty($slider->item->sub_photo_urls))
             <div style="margin-top: 24px;">
-                <h3 style="margin: 0 0 14px;">Sub Photos</h3>
+                <h3 style="margin: 0 0 14px;">{{ __('messages.sub_photos') }}</h3>
 
                 <div class="grid grid-3">
                     @foreach($slider->item->sub_photo_urls as $photo)
@@ -100,7 +100,7 @@
     </x-card>
 
     <x-card class="subtle-panel" style="margin-bottom: 24px;">
-        <h2 class="section-title">Slider Settings</h2>
+        <h2 class="section-title">{{ __('messages.slider_settings') }}</h2>
 
         <form method="POST" action="{{ route('admin.sliders.update', $slider) }}">
             @csrf
@@ -108,43 +108,41 @@
 
             <div class="grid grid-2" style="align-items: end;">
                 <div>
-                    <label class="form-label">Priority</label>
+                    <label class="form-label">{{ __('messages.priority') }}</label>
                     <select name="priority" class="form-input">
                         @foreach(\App\Models\ItemSlider::priorities() as $value => $label)
                             <option value="{{ $value }}" {{ $slider->priority === $value ? 'selected' : '' }}>
-                                {{ $label }}
+                                {{ __('messages.slider_priority_' . strtolower($label)) }}
                             </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
-                    <label class="form-label">Active?</label>
+                    <label class="form-label">{{ __('messages.active') }}?</label>
                     <select name="is_active" class="form-input">
-                        <option value="1" {{ $slider->is_active ? 'selected' : '' }}>Active</option>
-                        <option value="0" {{ ! $slider->is_active ? 'selected' : '' }}>Inactive</option>
+                        <option value="1" {{ $slider->is_active ? 'selected' : '' }}>{{ __('messages.active') }}</option>
+                        <option value="0" {{ ! $slider->is_active ? 'selected' : '' }}>{{ __('messages.inactive') }}</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group" style="margin-top: 18px;">
-                <label class="form-label">Admin Note</label>
+                <label class="form-label">{{ __('messages.admin_note') }}</label>
                 <textarea name="admin_note" rows="4" class="form-input">{{ old('admin_note', $slider->admin_note) }}</textarea>
             </div>
 
             <div style="margin-top: 18px;">
                 <x-button type="submit" variant="primary">
-                    💾 Update Slider
+                    💾 {{ __('messages.update_slider') }}
                 </x-button>
             </div>
         </form>
     </x-card>
 
     <x-card class="subtle-panel">
-        <h2 class="section-title">Danger Zone</h2>
-        <p class="section-subtitle" style="margin-bottom: 18px;">
-            Delete this slider only. The item itself will not be deleted.
-        </p>
+        <h2 class="section-title">{{ __('messages.danger_zone') }}</h2>
+
 
         <form method="POST"
               action="{{ route('admin.sliders.destroy', $slider) }}"
@@ -153,7 +151,7 @@
             @method('DELETE')
 
             <x-button type="submit" variant="danger">
-                🗑 Delete Slider
+                🗑 {{ __('messages.delete_slider') }}
             </x-button>
         </form>
     </x-card>

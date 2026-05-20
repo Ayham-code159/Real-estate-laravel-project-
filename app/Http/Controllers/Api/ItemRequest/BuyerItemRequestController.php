@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Services\ItemRequest\ItemRequestService;
 use App\Http\Requests\ItemRequest\StoreItemRatingRequest;
 use App\Http\Requests\ItemRequest\StoreItemRequestRequest;
+use App\Models\Item;
+
 
 class BuyerItemRequestController extends Controller
 {
@@ -71,4 +73,26 @@ class BuyerItemRequestController extends Controller
             'data' => $rating,
         ], 201);
     }
+
+    public function updateRating(StoreItemRatingRequest $request, int $itemRequestId): JsonResponse
+{
+    $rating = $this->itemRequestService->updateRating(
+        $request->user(),
+        $itemRequestId,
+        $request->validated()
+    );
+
+    return response()->json([
+        'message' => 'item_request.rating_updated',
+        'data' => $rating,
+    ]);
+}
+
+public function averageRating(Item $item): JsonResponse
+{
+    return response()->json([
+        'message' => 'item.average_rating_retrieved',
+        'data' => $this->itemRequestService->getAverageRatingForItem($item),
+    ]);
+}
 }

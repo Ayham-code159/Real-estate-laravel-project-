@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\ValidationException;
 use App\Services\Notification\AppNotificationService;
 
+
 class ItemRequestService
 {
     public function __construct(
@@ -135,45 +136,7 @@ class ItemRequestService
             ->get();
     }
 
-    public function createRating(User $buyer, int $itemRequestId, array $data): ItemRating
-    {
-        $itemRequest = ItemRequest::query()
-            ->with(['item'])
-            ->findOrFail($itemRequestId);
 
-        if ($itemRequest->buyer_user_id !== $buyer->id) {
-            throw ValidationException::withMessages([
-                'item_request' => ['You can only rate your own completed requests.'],
-            ]);
-        }
-
-        if (! $itemRequest->isCompleted()) {
-            throw ValidationException::withMessages([
-                'item_request' => ['You can only rate a request after it has been completed.'],
-            ]);
-        }
-
-        $alreadyRated = ItemRating::query()
-            ->where('item_request_id', $itemRequest->id)
-            ->exists();
-
-        if ($alreadyRated) {
-            throw ValidationException::withMessages([
-                'item_request' => ['This request has already been rated.'],
-            ]);
-        }
-
-        return ItemRating::create([
-            'item_request_id' => $itemRequest->id,
-            'item_id' => $itemRequest->item_id,
-
-            'buyer_user_id' => $buyer->id,
-            'seller_user_id' => $itemRequest->seller_user_id,
-
-            'rating' => (int) $data['rating'],
-            'review' => $data['review'] ?? null,
-        ]);
-    }
 
     public function getSellerRequests(User $seller, ?string $search = null): Collection
     {
@@ -380,5 +343,93 @@ class ItemRequestService
             'sellerBusinessAccount.businessType',
             'sellerBusinessAccount.city',
         ]);
+    }
+
+    public function createRating(User $buyer, int $itemRequestId, array $data): ItemRating
+    {
+        $itemRequest = ItemRequest::query()
+            ->with(['item'])
+            ->findOrFail($itemRequestId);
+
+        if ($itemRequest->buyer_user_id !== $buyer->id) {
+            throw ValidationException::withMessages([
+                'item_request' => ['You can only rate your own completed requests.'],
+            ]);
+        }
+
+        if (! $itemRequest->isCompleted()) {
+            throw ValidationException::withMessages([
+                'item_request' => ['You can only rate a request after it has been completed.'],
+            ]);
+        }
+
+        $alreadyRated = ItemRating::query()
+            ->where('item_request_id', $itemRequest->id)
+            ->exists();
+
+        if ($alreadyRated) {
+            throw ValidationException::withMessages([
+                'item_request' => ['This request has already been rated.'],
+            ]);
+        }
+
+        return ItemRating::create([
+            'item_request_id' => $itemRequest->id,
+            'item_id' => $itemRequest->item_id,
+
+            'buyer_user_id' => $buyer->id,
+            'seller_user_id' => $itemRequest->seller_user_id,
+
+            'rating' => (int) $data['rating'],
+            'review' => $data['review'] ?? null,
+        ]);
+    }
+
+
+
+
+    public function updateRating(User $user, int $itemRequestId, array $data): ItemRating
+    {
+        $itemRequest = ItemRequest::query()
+            ->with('rating')
+            ->where('id', $itemRequestId)
+            ->where('buyer_user_id', $user->id)
+            ->first();
+
+        if (! $itemRequest || ! $itemRequest->isCompleted()) {
+            throw ValidationException::withMessages([
+                'item_request' => ['You cannot rate a service you have not completed before.'],
+            ]);
+        }
+
+        if (! $itemRequest->rating) {
+            throw ValidationException::withMessages([
+                'rating' => ['You have not rated this service yet.'],
+            ]);
+        }
+
+        $itemRequest->rating->update([
+            'rating' => (int) $data['rating'],
+            'review' => $data['review'] ?? null,
+        ]);
+
+        return $itemRequest->rating->fresh();
+    }
+
+    public function getAverageRatingForItem(Item $item): array
+    {
+        $average = ItemRating::query()
+            ->where('item_id', $item->id)
+            ->avg('rating');
+
+        $count = ItemRating::query()
+            ->where('item_id', $item->id)
+            ->count();
+
+        return [
+            'item_id' => $item->id,
+            'average_rating' => $average ? round((float) $average, 2) : 0,
+            'ratings_count' => $count,
+        ];
     }
 }

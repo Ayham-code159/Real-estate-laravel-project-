@@ -15,6 +15,7 @@ class AdminManagementService
         'can_manage_categories',
         'can_manage_items',
         'can_manage_sliders',
+        'can_manage_cities',
     ];
 
     public function paginateAdmins(?string $search = null, int $perPage = 10): LengthAwarePaginator
@@ -40,67 +41,78 @@ class AdminManagementService
             'manage_categories_admins' => Admin::where('can_manage_categories', true)->count(),
             'manage_items_admins' => Admin::where('can_manage_items', true)->count(),
             'manage_sliders_admins' => Admin::where('can_manage_sliders', true)->count(),
+            'manage_cities_admins' => Admin::where('can_manage_cities', true)->count(),
         ];
     }
 
     public function availablePermissions(): array
     {
         return [
-            'can_manage_users' => 'Manage Users',
-            'can_manage_business_accounts' => 'Manage Business Accounts',
-            'can_manage_business_types' => 'Manage Business Types',
-            'can_manage_categories' => 'Manage Categories',
-            'can_manage_items' => 'Manage Items',
-            'can_manage_sliders' => 'Manage Sliders',
+            'can_manage_users' => __('messages.manage_users'),
+            'can_manage_business_accounts' => __('messages.manage_business_accounts'),
+            'can_manage_business_types' => __('messages.manage_business_types'),
+            'can_manage_categories' => __('messages.manage_categories'),
+            'can_manage_items' => __('messages.manage_items'),
+            'can_manage_sliders' => __('messages.manage_sliders'),
+            'can_manage_cities' => __('messages.manage_cities'),
         ];
     }
 
+
+
     public function defaultRoles(): array
-    {
-        return [
-            'account_manager' => [
-                'label' => 'Account Manager',
-                'permissions' => [
-                    'can_manage_users',
-                    'can_manage_business_accounts',
-                ],
+{
+    return [
+        'account_manager' => [
+            'label' => __('messages.account_manager'),
+            'permissions' => [
+                'can_manage_users',
+                'can_manage_business_accounts',
             ],
-            'content_manager' => [
-                'label' => 'Content Manager',
-                'permissions' => [
-                    'can_manage_categories',
-                    'can_manage_items',
-                    'can_manage_sliders',
-                ],
+        ],
+
+        'content_manager' => [
+            'label' => __('messages.content_manager'),
+            'permissions' => [
+                'can_manage_categories',
+                'can_manage_items',
+                'can_manage_sliders',
+                'can_manage_cities',
             ],
-            'marketplace_moderator' => [
-                'label' => 'Marketplace Moderator',
-                'permissions' => [
-                    'can_manage_business_accounts',
-                    'can_manage_items',
-                    'can_manage_sliders',
-                ],
+        ],
+
+        'marketplace_moderator' => [
+            'label' => __('messages.marketplace_moderator'),
+            'permissions' => [
+                'can_manage_business_accounts',
+                'can_manage_items',
+                'can_manage_sliders',
             ],
-            'settings_manager' => [
-                'label' => 'Settings Manager',
-                'permissions' => [
-                    'can_manage_business_types',
-                    'can_manage_categories',
-                ],
+        ],
+
+        'settings_manager' => [
+            'label' => __('messages.settings_manager'),
+            'permissions' => [
+                'can_manage_business_types',
+                'can_manage_categories',
+                'can_manage_cities',
             ],
-            'full_staff_manager' => [
-                'label' => 'Full Staff Manager',
-                'permissions' => [
-                    'can_manage_users',
-                    'can_manage_business_accounts',
-                    'can_manage_business_types',
-                    'can_manage_categories',
-                    'can_manage_items',
-                    'can_manage_sliders',
-                ],
+        ],
+
+        'full_staff_manager' => [
+            'label' => __('messages.full_staff_manager'),
+            'permissions' => [
+                'can_manage_users',
+                'can_manage_business_accounts',
+                'can_manage_business_types',
+                'can_manage_categories',
+                'can_manage_items',
+                'can_manage_sliders',
+                'can_manage_cities',
             ],
-        ];
-    }
+        ],
+    ];
+}
 
     public function create(array $data): Admin
     {

@@ -3,6 +3,7 @@
 namespace App\Services\Admin\BusinessAccount;
 
 use App\Models\BusinessAccount;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Services\Notification\AppNotificationService;
 
@@ -16,7 +17,7 @@ class AdminBusinessAccountService
     {
         return BusinessAccount::query()
             ->with(['user', 'businessType', 'city'])
-            ->withCount('serviceListings')
+            ->withCount('items')
             ->latest()
             ->paginate($perPage);
     }
@@ -49,6 +50,14 @@ class AdminBusinessAccountService
         if ($newStatus === BusinessAccount::STATUS_REJECTED) {
             $this->notificationService->sendBusinessAccountRejected($businessAccount);
         }
+    }
+
+    public function deleteBusinessAccount(BusinessAccount $businessAccount): void
+    {
+        DB::transaction(function () use ($businessAccount) {
+            $businessAccount->items()->delete();
+            $businessAccount->delete();
+        });
     }
 
     public function getCounts(): array

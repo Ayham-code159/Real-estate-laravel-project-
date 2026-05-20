@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Item extends Model implements HasMedia
 {
@@ -233,4 +234,17 @@ class Item extends Model implements HasMedia
     {
         return $this->hasOne(ItemSlider::class);
     }
+
+    public function favoritedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'item_favorites')
+            ->withTimestamps();
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(ItemRating::class);
+    }
+
+
 }

@@ -155,7 +155,7 @@ return [
 
     'admins_page_subtitle' => 'Manage administrator accounts, permissions, and platform access levels.',
     'total_admins' => 'Total Admins',
-    'super_admins' => 'Super Admins',
+    'super_admin' => 'Super Admin',
     'manage_users_admins' => 'Manage Users Admins',
     'manage_business_accounts_admins' => 'Manage Business Accounts Admins',
     'all_admins' => 'All Admins',
@@ -405,7 +405,7 @@ return [
     'delete_field' => 'Delete Field',
     'danger_zone' => 'Danger Zone',
 
-    'all_categories' => 'All Categories',
+    'add_categories' => 'Add Category',
     'subcategories' => 'Subcategories',
     'dynamic_fields' => 'Dynamic Fields',
     'fields_count' => 'Fields Count',
@@ -432,7 +432,7 @@ return [
     'all_items' => 'All Items',
     'item_moderation_subtitle' => 'Review user items and manage their moderation status.',
     'showing_10_items_per_page' => 'Showing 10 items per page.',
-    'no_items_yet' => 'No items yet',
+    'no_items_yet' => 'No services yet',
     'items_created_by_users_will_appear_here' => 'Items created by users will appear here.',
     'title' => 'Title',
     'owner_business' => 'Owner / Business',
@@ -443,7 +443,7 @@ return [
     'business_account' => 'Business Account',
     'category' => 'Category',
     'subcategory' => 'Subcategory',
-    'item_type' => 'Item Type',
+    'item_type' => 'Service Type',
     'price_usd' => 'Price USD',
     'price_syp' => 'Price SYP',
     'location' => 'Location',
@@ -487,6 +487,7 @@ return [
 
     'no_sliders' => 'No sliders yet',
     'no_sliders_description' => 'Approved items will automatically appear here.',
+    'slider_details'=>'Slider Details',
 
     'activate_deactivate' => 'Activate / Deactivate',
 
@@ -576,4 +577,95 @@ return [
     'navigation' => 'Navigation',
     'settings' => 'Settings',
     'items_count'=>'Services count',
+    'show_item'=>'Show service',
+    'click_count'=>'Click Count',
+    'photos'=>'Photos',
+    'main_photo'=>'Main Photo',
+    'sub_photos'=>'Sub Photos',
+    'slider_settings'=>'Slider Settings',
+
+    'priority'=>'Priority',
+    'high'=>'High',
+    'normal'=>'Normal',
+    'top'=>'Top',
+    'admin_note'=>'Admin note',
+    'delete_slider'=>'Delete the slider',
+    'update_slider'=>'Update the slider',
+
+    'manage_business_types_in_the_system'=>'Manage business types in the system',
+    'recent_pending_items'=>'Recenet pending services',
+    'approved_items'=>'Approved services',
+    'rejected_items'=>'Rejected services',
+    'pending_accounts'=>'Pending accounts',
+    'pending_review_items'=>'Pending services',
+    'quick_actions'=>'Quick Actions',
+    'pending_items'=>'Pending services',
+    'active_sliders'=>'Active sliders',
+    'no_pending_items'=>'No pending services',
+
+    'total_items'=>'Total services',
+
+    'cities' => 'Cities',
+    'manage_cities' => 'Manage Cities',
+
+    'default_roles_subtitle' => 'Choose a preset role, then customize permissions if needed.',
+    'permissions_subtitle' => 'Select the permissions this admin can access.',
+    'manage_cities' => 'Manage Cities',
+    'cities' => 'Cities',
+
+    'cities_management' => 'Cities Management',
+    'cities_management_subtitle' => 'Manage all cities in the platform.',
+    'all_cities' => 'All Cities',
+    'city_details' => 'City Details',
+    'city_details_subtitle' => 'View and manage city information.',
+    'add_city' => 'Add City',
+    'edit_city' => 'Edit City',
+    'delete_city' => 'Delete City',
+    'city_name_english' => 'City Name (English)',
+    'city_name_arabic' => 'City Name (Arabic)',
+    'related_business_accounts' => 'Related Business Accounts',
+    'delete_city_warning' => 'Deleting this city will permanently remove it from the system.',
+    'confirm_city_delete' => 'Please type the city name to confirm deletion.',
+    'city_deleted_successfully' => 'City deleted successfully.',
+    'city_created_successfully' => 'City created successfully.',
+    'city_updated_successfully' => 'City updated successfully.',
+    'view_details' => 'View Details',
+
+    'manage_users' => 'Manage Users',
+    'manage_business_accounts' => 'Manage Business Accounts',
+    'manage_business_types' => 'Manage Business Types',
+    'manage_categories' => 'Manage Categories',
+    'manage_items' => 'Manage Items',
+    'manage_sliders' => 'Manage Sliders',
+    'manage_cities' => 'Manage Cities',
+
+    'business_account_status_pending' => 'Pending',
+    'business_account_status_approved' => 'Approved',
+    'business_account_status_rejected' => 'Rejected',
+
+
+    'delete_business_account_warning' => 'Deleting this business account will also delete all items created under it.',
+    'delete_business_account' => 'Delete business account',
+    'delete_business_account_warning_details' => 'Once deleted, this action cannot be undone. All related items will be removed.',
+    'delete_business_account_modal_title' => 'Delete :name',
+    'business_account_items_delete_count' => ':count items will be deleted with this account.',
+    'confirm_delete_by_typing' => 'To confirm, type ":name" in the box below',
+    'delete_this_business_account' => 'Delete this business account',
+
+    'delete_this_business_type_will_also_delete__all_business_accounts_that_use_it'=>'Deleting this business type will also delete all business accounts that use it',
+    'deleting_this_category_will_also_delete_all_related_subcategories'=>'Deleting this category will also delete all related subcategories',
+    'business_account_name'=>'Business acccount name',
+
+    'item_status_pending' => 'Pending',
+    'item_status_approved' => 'Approved',
+    'item_status_rejected' => 'Rejected',
+
+    'slider_priority_normal' => 'Normal',
+    'slider_priority_high' => 'High',
+    'slider_priority_top' => 'Top',
+
+
+
+
+
 ];

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Services\BusinessAccount\BusinessAccountService;
 use App\Http\Requests\BusinessAccount\StoreBusinessAccountRequest;
 use App\Models\BusinessAccount;
+use App\Http\Requests\BusinessAccount\UpdateBusinessAccountRequest;
 
 class BusinessAccountController extends Controller
 {
@@ -38,11 +39,40 @@ class BusinessAccountController extends Controller
     }
 
     public function destroy(Request $request, BusinessAccount $businessAccount): JsonResponse
-    {
-        $this->businessAccountService->delete($request->user(), $businessAccount->id);
+{
+    $this->businessAccountService->delete(
+        $request->user(),
+        $businessAccount->id
+    );
 
-        return response()->json([
-            'message' => 'Business account deleted successfully.',
-        ]);
-    }
+    return response()->json([
+        'message' => 'Business account deleted successfully.',
+        'data' => null,
+    ]);
+}
+
+
+
+    public function update(UpdateBusinessAccountRequest $request, BusinessAccount $businessAccount): JsonResponse
+{
+    $businessAccount = $this->businessAccountService->update(
+        $request->user(),
+        $businessAccount,
+        $request->validated()
+    );
+
+    return response()->json([
+        'message' => 'Business account updated successfully.',
+        'data' => [
+            'business_account' => $businessAccount,
+        ],
+    ]);
+}
+
+
+
+
+
+
+
 }

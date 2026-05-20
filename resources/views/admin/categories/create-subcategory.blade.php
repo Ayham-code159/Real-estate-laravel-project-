@@ -5,11 +5,10 @@
 @section('content')
     <x-page-title
         :title="__('messages.create_subcategory')"
-        subtitle="Add a subcategory under the selected category."
     >
         <x-slot:actions>
             <a href="{{ route('admin.categories.show', $category) }}" class="btn btn-outline">
-                ← Back
+                ← {{ __('messages.back') }}
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -19,7 +18,6 @@
             <div>
                 <h2 class="section-title">{{ $category->name }}</h2>
                 <p class="section-subtitle">
-                    This subcategory will belong to this category.
                 </p>
             </div>
 

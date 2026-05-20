@@ -74,6 +74,7 @@
     <x-card class="subtle-panel">
         <form id="fieldForm" method="POST" action="{{ route('admin.categories.fields.store', $subcategory) }}">
             @csrf
+            <input type="hidden" name="sort_order" value="0">
 
             <div class="grid grid-2">
                 <div class="form-group">
@@ -91,24 +92,7 @@
                     @error('label_en')
                         <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
                     @enderror
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label">{{ __('messages.display_order') }}
-                    </label>
-                    <input
-                        type="number"
-                        name="sort_order"
-                        class="form-input"
-                        value="{{ old('sort_order', 0) }}"
-                        min="0"
-                    >
-
-
-                    @error('sort_order')
-                        <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
-                    @enderror
-                </div>
             </div>
 
             <div class="grid grid-2">

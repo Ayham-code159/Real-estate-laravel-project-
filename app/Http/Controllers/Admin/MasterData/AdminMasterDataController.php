@@ -11,6 +11,10 @@ use App\Http\Requests\Admin\MasterData\StoreBusinessTypeRequest;
 use App\Http\Requests\Admin\MasterData\UpdateBusinessTypeRequest;
 use App\Http\Requests\Admin\MasterData\StoreServiceSubcategoryRequest;
 use App\Http\Requests\Admin\MasterData\UpdateServiceSubcategoryRequest;
+use App\Models\City;
+use Illuminate\Http\Request;
+
+
 
 class AdminMasterDataController extends Controller
 {
@@ -63,6 +67,96 @@ class AdminMasterDataController extends Controller
             ->route('admin.master-data.business-types.index')
             ->with('success', 'Business account type deleted successfully.');
     }
+
+    public function cities()
+{
+    $cities = City::query()
+        ->withCount('businessAccounts')
+        ->latest()
+        ->get();
+
+    return view('admin.cities.index', compact('cities'));
+}
+
+public function showCity(City $city)
+{
+    $city->loadCount('businessAccounts');
+
+    return view('admin.cities.show', compact('city'));
+}
+
+public function storeCity(Request $request): RedirectResponse
+{
+    $validated = $request->validate([
+        'name_en' => ['required', 'string', 'max:255', 'unique:cities,name_en'],
+        'name_ar' => ['required', 'string', 'max:255', 'unique:cities,name_ar'],
+    ]);
+
+    City::create([
+        'name' => $validated['name_en'],
+        'name_en' => $validated['name_en'],
+        'name_ar' => $validated['name_ar'],
+    ]);
+
+    return back()->with(
+        'success',
+        __('messages.city_created_successfully')
+    );
+}
+
+public function updateCity(Request $request, City $city): RedirectResponse
+{
+    $validated = $request->validate([
+        'name_en' => [
+            'required',
+            'string',
+            'max:255',
+            'unique:cities,name_en,' . $city->id,
+        ],
+
+        'name_ar' => [
+            'required',
+            'string',
+            'max:255',
+            'unique:cities,name_ar,' . $city->id,
+        ],
+    ]);
+
+    $city->update([
+        'name' => $validated['name_en'],
+        'name_en' => $validated['name_en'],
+        'name_ar' => $validated['name_ar'],
+    ]);
+
+    return back()->with(
+        'success',
+        __('messages.city_updated_successfully')
+    );
+}
+
+public function destroyCity(Request $request, City $city): RedirectResponse
+{
+    $request->validate([
+        'confirmation_name' => [
+            'required',
+            'same:expected_name',
+        ],
+        'expected_name' => ['required'],
+    ]);
+
+    $city->delete();
+
+    return redirect()
+        ->route('admin.cities.index')
+        ->with(
+            'success',
+            __('messages.city_deleted_successfully')
+        );
+}
+
+
+
+
 
     public function services()
     {

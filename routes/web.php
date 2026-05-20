@@ -49,6 +49,9 @@ Route::prefix('admin')->group(function () {
 
         Route::get('/business-accounts/{businessAccount}', [AdminBusinessAccountController::class, 'show'])
             ->name('admin.business-accounts.show');
+
+        Route::delete('/business-accounts/{businessAccount}', [AdminBusinessAccountController::class, 'destroy'])
+            ->name('admin.business-accounts.destroy');
     });
 
     Route::middleware(['auth:admin', 'admin.permission:manage_users'])->group(function () {
@@ -78,6 +81,26 @@ Route::prefix('admin')->group(function () {
         Route::delete('/master-data/business-types/{businessType}', [AdminMasterDataController::class, 'destroyBusinessType'])
             ->name('admin.master-data.business-types.destroy');
     });
+
+
+    Route::middleware(['auth:admin', 'admin.permission:manage_cities'])->group(function () {
+
+        Route::get('/master-data/cities', [AdminMasterDataController::class, 'cities'])
+            ->name('admin.cities.index');
+
+        Route::get('/master-data/cities/{city}', [AdminMasterDataController::class, 'showCity'])
+            ->name('admin.cities.show');
+
+        Route::post('/master-data/cities', [AdminMasterDataController::class, 'storeCity'])
+            ->name('admin.cities.store');
+
+        Route::put('/master-data/cities/{city}', [AdminMasterDataController::class, 'updateCity'])
+            ->name('admin.cities.update');
+
+        Route::delete('/master-data/cities/{city}', [AdminMasterDataController::class, 'destroyCity'])
+            ->name('admin.cities.destroy');
+
+        });
 
     Route::middleware(['auth:admin', 'admin.permission:manage_categories'])->group(function () {
         Route::get('/categories', [CategoryManagementController::class, 'index'])->name('admin.categories.index');

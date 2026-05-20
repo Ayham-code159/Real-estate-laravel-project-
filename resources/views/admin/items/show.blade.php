@@ -4,12 +4,12 @@
 
 @section('content')
     <x-page-title
-        title="Item Details"
-        subtitle="Review item information and update moderation status."
+        title="{{ __('messages.item_details') }}"
+
     >
         <x-slot:actions>
             <a href="{{ route('admin.items.index') }}" class="btn btn-outline">
-                ← Back
+                ← {{ __('messages.back') }}
             </a>
         </x-slot:actions>
     </x-page-title>
@@ -33,7 +33,7 @@
 
         @if($item->main_photo_url)
             <div style="margin-bottom: 24px;">
-                <h3 style="margin: 0 0 14px; font-size: 20px;">Main Photo</h3>
+                <h3 style="margin: 0 0 14px; font-size: 20px;">{{ __('messages.main_photo') }}</h3>
 
                 <div class="card" style="overflow: hidden; background: rgba(255,255,255,0.72);">
                     <img
@@ -47,7 +47,7 @@
 
         @if(!empty($item->sub_photo_urls))
             <div style="margin-bottom: 24px;">
-                <h3 style="margin: 0 0 14px; font-size: 20px;">Sub Photos</h3>
+                <h3 style="margin: 0 0 14px; font-size: 20px;">{{ __('messages.sub_photos') }}</h3>
 
                 <div class="grid grid-3">
                     @foreach($item->sub_photo_urls as $photo)
@@ -67,59 +67,59 @@
 
         <div class="info-list">
             <div class="info-row">
-                <div class="info-label">Title</div>
+                <div class="info-label">{{ __('messages.title') }}</div>
                 <div class="info-value">{{ $item->title }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Description</div>
+                <div class="info-label">{{ __('messages.description') }}</div>
                 <div class="info-value">{{ $item->description ?? 'No description' }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Owner</div>
+                <div class="info-label">{{ __('messages.owner') }}</div>
                 <div class="info-value">{{ $item->businessAccount?->user?->full_name ?? 'N/A' }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Business Account</div>
+                <div class="info-label">{{ __('messages.business_account') }}</div>
                 <div class="info-value">{{ $item->businessAccount?->business_name ?? 'N/A' }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Category</div>
+                <div class="info-label">{{ __('messages.category') }}</div>
                 <div class="info-value">{{ $item->category?->name ?? 'N/A' }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Subcategory</div>
+                <div class="info-label">{{ __('messages.subcategory') }}</div>
                 <div class="info-value">{{ $item->subcategory?->name ?? 'N/A' }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Item Type</div>
+                <div class="info-label">{{ __('messages.item_type') }}</div>
                 <div class="info-value">{{ ucfirst($item->item_type) }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Price USD</div>
+                <div class="info-label">{{ __('messages.price_usd') }}</div>
                 <div class="info-value">${{ number_format((float) $item->price_usd, 2) }}</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Price SYP</div>
+                <div class="info-label">{{ __('messages.price_syp') }}</div>
                 <div class="info-value">{{ number_format((float) $item->price_syp, 2) }} SYP</div>
             </div>
 
             <div class="info-row">
-                <div class="info-label">Location</div>
+                <div class="info-label">{{ __('messages.location') }}</div>
                 <div class="info-value">
                     {{ $item->location_label ?? 'N/A' }}
 
                     @if($item->google_maps_url)
                         <div style="margin-top: 10px;">
                             <a href="{{ $item->google_maps_url }}" target="_blank" class="btn btn-outline">
-                                🗺 Open Map
+                                🗺 {{ __('messages.open_map') }}
                             </a>
                         </div>
                     @endif
@@ -127,7 +127,7 @@
             </div>
 
             <div class="info-row">
-                <div class="info-label">Dynamic Values</div>
+                <div class="info-label">{{ __('messages.dynamic_values') }}</div>
                 <div class="info-value" style="text-align: left;">
                     @if(!empty($item->dynamic_values))
                         <div class="grid" style="gap: 10px;">
@@ -149,7 +149,7 @@
                             @endforeach
                         </div>
                     @else
-                        <span>No dynamic values</span>
+                        <span>{{ __('messages.no_dynamic_values') }}</span>
                     @endif
                 </div>
             </div>
@@ -165,9 +165,9 @@
 
     <x-card class="subtle-panel" style="margin-bottom: 24px;">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">Moderation</h2>
+            <h2 class="section-title">{{ __('messages.moderation') }}</h2>
             <p class="section-subtitle">
-                Approve or reject this item.
+
             </p>
         </div>
 
@@ -177,18 +177,18 @@
 
             <div class="grid grid-2" style="align-items: end;">
                 <div>
-                    <label class="form-label">Status</label>
+                    <label class="form-label">{{ __('messages.status') }}</label>
                     <select name="status" class="form-input">
                         @foreach(\App\Models\Item::statuses() as $value => $label)
                             <option value="{{ $value }}" {{ $item->status == $value ? 'selected' : '' }}>
-                                {{ $label }}
+                                {{ __('messages.item_status_' . strtolower($label)) }}
                             </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
-                    <label class="form-label">Rejection Reason</label>
+                    <label class="form-label">{{ __('messages.rejection_reason') }}</label>
                     <input
                         type="text"
                         name="rejection_reason"
@@ -202,16 +202,15 @@
             <div style="margin-top: 18px;">
                 <x-button type="submit" variant="primary">
                     <span>💾</span>
-                    <span>Update Status</span>
+                    <span>{{ __('messages.update_status') }}</span>
                 </x-button>
             </div>
         </form>
     </x-card>
 
     <x-card class="subtle-panel">
-        <h2 class="section-title">Danger Zone</h2>
+        <h2 class="section-title">{{ __('messages.danger_zone') }}</h2>
         <p class="section-subtitle" style="margin-bottom: 18px;">
-            Delete this item completely.
         </p>
 
         <form method="POST"
@@ -222,7 +221,7 @@
 
             <x-button type="submit" variant="danger">
                 <span>🗑</span>
-                <span>Delete Item</span>
+                <span>{{ __('messages.delete_item') }}</span>
             </x-button>
         </form>
     </x-card>

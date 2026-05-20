@@ -56,14 +56,14 @@
             </div>
 
             <div class="info-row">
-                <div class="info-label">Location</div>
+                <div class="info-label">{{ __('messages.location') }}</div>
                 <div class="info-value">
                     {{ $businessAccount->location_label ?? __('messages.not_available') }}
 
                     @if($businessAccount->google_maps_url)
                         <div style="margin-top: 10px;">
                             <a href="{{ $businessAccount->google_maps_url }}" target="_blank" class="btn btn-outline">
-                                🗺 Open in Google Maps
+                                🗺 {{ __('messages.open_map') }}
                             </a>
                         </div>
                     @endif

@@ -28,8 +28,8 @@ class AdminBusinessAccountController extends Controller
             'user',
             'businessType',
             'city',
-            'serviceListings.service',
-            'serviceListings.subcategory',
+            'items.category',
+            'items.subcategory',
         ]);
 
         return view('admin.business-accounts.show', compact('businessAccount'));
@@ -45,5 +45,14 @@ class AdminBusinessAccountController extends Controller
         $this->businessAccountService->updateStatus($businessAccount, $validated);
 
         return back()->with('success', 'Business account status updated successfully.');
+    }
+
+    public function destroy(BusinessAccount $businessAccount): RedirectResponse
+    {
+        $this->businessAccountService->deleteBusinessAccount($businessAccount);
+
+        return redirect()
+            ->route('admin.business-accounts.index')
+            ->with('success', 'Business account and all related items deleted successfully.');
     }
 }

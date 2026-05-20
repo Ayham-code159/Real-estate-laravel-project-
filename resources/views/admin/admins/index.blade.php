@@ -179,13 +179,14 @@
             <div class="admins-permission-title">{{ __('messages.permissions') }}</div>
 
             <div class="admins-mini-stats">
-                <span class="admins-mini-stat">👑 {{ $counts['super_admins'] ?? 0 }} {{ __('messages.super_admins') }}</span>
+                <span class="admins-mini-stat">👑 {{ $counts['super_admins'] ?? 0 }} {{ __('messages.super_admin') }}</span>
                 <span class="admins-mini-stat">👥 {{ $counts['manage_users_admins'] ?? 0 }} {{ __('messages.users') }}</span>
                 <span class="admins-mini-stat">🏢 {{ $counts['manage_business_accounts_admins'] ?? 0 }} {{ __('messages.business_accounts') }}</span>
                 <span class="admins-mini-stat">🏷️ {{ $counts['manage_business_types_admins'] ?? 0 }} {{ __('messages.business_types') }}</span>
                 <span class="admins-mini-stat">🗂️ {{ $counts['manage_categories_admins'] ?? 0 }} {{ __('messages.categories') }}</span>
                 <span class="admins-mini-stat">📦 {{ $counts['manage_items_admins'] ?? 0 }} {{ __('messages.items') }}</span>
                 <span class="admins-mini-stat">🎞️ {{ $counts['manage_sliders_admins'] ?? 0 }} {{ __('messages.sliders') }}</span>
+                <span class="admins-mini-stat">🏙️ {{ $counts['manage_cities_admins'] ?? 0 }} {{ __('messages.cities') }}</span>
             </div>
         </div>
     </div>
@@ -258,13 +259,15 @@
                             <div class="admin-field-label">{{ __('messages.permission_level') }}</div>
 
                             @if($admin->isSuperAdmin())
-                                <span class="badge badge-danger">Super Admin</span>
+                                <span class="badge badge-danger">{{ __('messages.super_admin') }}</span>
                             @else
                                 <div class="admin-permission-badges">
-                                    @forelse($admin->permissionLabels() as $permission)
-                                        <span class="badge badge-primary">{{ $permission }}</span>
+                                  @forelse($admin->permissionTranslationKeys() as $permissionKey)
+                                    <span class="badge badge-primary">
+                                        {{ __('messages.' . $permissionKey) }}
+                                    </span>
                                     @empty
-                                        <span class="badge badge-warning">Basic Admin</span>
+                                        <span class="badge badge-warning">{{ __('messages.basic_admin') }}</span>
                                     @endforelse
                                 </div>
                             @endif

@@ -63,14 +63,9 @@
         <div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center;">
             <div>
                 <h2 class="section-title">{{ $field->label_en }}</h2>
-                <p class="section-subtitle">
-                    Subcategory: <strong>{{ $field->subcategory->name }}</strong> •
-                    Category: <strong>{{ $field->subcategory->category->name }}</strong>
-                </p>
 
-                <p class="text-muted" style="margin-top: 8px;">
-                    Internal code: <strong>{{ $field->field_key }}</strong>
-                </p>
+
+
             </div>
 
             <span class="badge badge-primary">
@@ -83,6 +78,7 @@
         <form id="fieldForm" method="POST" action="{{ route('admin.categories.fields.update', $field) }}">
             @csrf
             @method('PUT')
+            <input type="hidden" name="sort_order" value="{{ $field->sort_order }}">
 
             <div class="grid grid-2">
                 <div class="form-group">
@@ -101,21 +97,7 @@
                     @enderror
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Display Order</label>
-                    <input
-                        type="number"
-                        name="sort_order"
-                        class="form-input"
-                        value="{{ old('sort_order', $field->sort_order) }}"
-                        min="0"
-                    >
 
-
-                    @error('sort_order')
-                        <div class="alert alert-danger" style="margin-top: 10px;">{{ $message }}</div>
-                    @enderror
-                </div>
             </div>
 
             <div class="grid grid-2">
@@ -256,7 +238,7 @@
             </div>
 
             <div id="selectRules" class="form-group" style="display: none;">
-                <label class="form-label">{{ __('messages.choises') }}</label>
+                <label class="form-label">{{ __('messages.choices') }}</label>
                 <textarea
                     id="optionsText"
                     class="form-input"

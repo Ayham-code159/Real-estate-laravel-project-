@@ -23,6 +23,7 @@ class AdminSeeder extends Seeder
                 'can_manage_categories' => true,
                 'can_manage_items' => true,
                 'can_manage_sliders' => true,
+                'can_manage_cities'=>true,
             ]
         );
     }

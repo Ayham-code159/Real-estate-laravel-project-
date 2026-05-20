@@ -10,13 +10,18 @@ class ItemRating extends Model
     protected $fillable = [
         'item_request_id',
         'item_id',
-
         'buyer_user_id',
         'seller_user_id',
-
         'rating',
         'review',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'rating' => 'integer',
+        ];
+    }
 
     public function itemRequest(): BelongsTo
     {

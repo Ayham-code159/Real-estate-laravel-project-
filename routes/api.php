@@ -17,6 +17,8 @@ use App\Http\Controllers\Api\ItemRequest\BuyerItemRequestController;
 use App\Http\Controllers\Api\ItemRequest\SellerItemRequestController;
 use App\Http\Controllers\Api\Payment\PaymentController;
 use App\Http\Controllers\Api\Payment\StripeWebhookController;
+use App\Http\Controllers\Api\Item\ItemFavoriteController;
+use App\Http\Controllers\Api\User\UserProfileController;
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 
@@ -56,6 +58,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('business-accounts')->group(function () {
         Route::get('/', [BusinessAccountController::class, 'index']);
         Route::post('/', [BusinessAccountController::class, 'store']);
+        Route::put('/{businessAccount}', [BusinessAccountController::class, 'update']);
         Route::delete('/{businessAccount}', [BusinessAccountController::class, 'destroy']);
     });
 
@@ -117,18 +120,31 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/{item}', [ItemController::class, 'destroy']);
         Route::post('/{item}/sub-photos', [ItemController::class, 'addSubPhotos']);
         Route::post('/{item}/main-photo', [ItemController::class, 'replaceMainPhoto']);
+
+        Route::post('/{item}/favorite', [ItemFavoriteController::class, 'store']);
+        Route::delete('/{item}/favorite', [ItemFavoriteController::class, 'destroy']);
     });
+
+    Route::get('/favorites/items', [ItemFavoriteController::class, 'index']);
 
     Route::prefix('item-requests')->group(function () {
         Route::post('/', [BuyerItemRequestController::class, 'store']);
         Route::get('/my', [BuyerItemRequestController::class, 'myRequests']);
         Route::get('/my/search-by-seller-business-account', [BuyerItemRequestController::class, 'searchBySellerBusinessAccount']);
         Route::post('/{itemRequestId}/rate', [BuyerItemRequestController::class, 'rate']);
+        Route::put('/{itemRequestId}/rating', [BuyerItemRequestController::class, 'updateRating']);
     });
+    Route::get('/items/{item}/average-rating', [BuyerItemRequestController::class, 'averageRating']);
 
     Route::prefix('seller/item-requests')->group(function () {
         Route::get('/', [SellerItemRequestController::class, 'receivedRequests']);
         Route::get('/search-by-buyer-business-account', [SellerItemRequestController::class, 'searchByBuyerBusinessAccount']);
         Route::put('/{itemRequestId}/status', [SellerItemRequestController::class, 'updateStatus']);
+    });
+
+    Route::prefix('profile')->group(function () {
+        Route::put('/', [UserProfileController::class, 'updateProfile']);
+        Route::put('/password', [UserProfileController::class, 'updatePassword']);
+        Route::delete('/', [UserProfileController::class, 'deleteAccount']);
     });
 });

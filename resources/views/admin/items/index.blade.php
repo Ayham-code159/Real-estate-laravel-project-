@@ -42,16 +42,13 @@
     </style>
 
     <x-page-title
-        title="Items"
-        subtitle="Review user items and manage their moderation status."
+        title="{{ __('messages.items') }}"
     />
 
     <x-card class="subtle-panel">
         <div style="margin-bottom: 20px;">
-            <h2 class="section-title">All Items</h2>
-            <p class="section-subtitle">
-                Showing 10 items per page.
-            </p>
+            <h2 class="section-title">{{ __('messages.all_items') }}</h2>
+
         </div>
 
         @forelse($items as $item)
@@ -59,12 +56,12 @@
                 <div class="card-body">
                     <div class="grid grid-4" style="align-items: center;">
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Title</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.title') }}</div>
                             <div style="font-weight: 800;">{{ $item->title }}</div>
                         </div>
 
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Owner / Business</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.business_account_name') }}</div>
                             <div style="font-weight: 800;">
                                 {{ $item->businessAccount?->user?->full_name ?? 'N/A' }}
                             </div>
@@ -74,7 +71,7 @@
                         </div>
 
                         <div>
-                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">Price</div>
+                            <div class="text-muted" style="font-size: 13px; margin-bottom: 6px;">{{ __('messages.price') }}</div>
                             <div style="font-weight: 800;">
                                 ${{ number_format((float) $item->price_usd, 2) }}
                             </div>
@@ -89,7 +86,7 @@
                             </span>
 
                             <a href="{{ route('admin.items.show', $item) }}" class="btn btn-primary">
-                                👁 View Details
+                                👁 {{ __('messages.view_details') }}
                             </a>
                         </div>
                     </div>

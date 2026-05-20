@@ -71,4 +71,40 @@ class BusinessAccountService
 
         $businessAccount->delete();
     }
+
+    public function update(User $user, BusinessAccount $businessAccount, array $data): BusinessAccount
+{
+    if ($businessAccount->user_id !== $user->id) {
+        throw ValidationException::withMessages([
+            'business_account' => ['Business account not found or does not belong to you.'],
+        ]);
+    }
+
+    $alreadyHasSameType = $user->businessAccounts()
+        ->where('business_type_id', (int) $data['business_type_id'])
+        ->where('id', '!=', $businessAccount->id)
+        ->exists();
+
+    if ($alreadyHasSameType) {
+        throw ValidationException::withMessages([
+            'business_type_id' => ['You already have a business account with this type.'],
+        ]);
+    }
+
+    $businessNameEn = trim($data['business_name_en']);
+    $businessNameAr = isset($data['business_name_ar']) ? trim((string) $data['business_name_ar']) : null;
+
+    $businessAccount->update([
+        'business_type_id' => (int) $data['business_type_id'],
+        'city_id' => (int) $data['city_id'],
+        'business_name' => $businessNameEn,
+        'business_name_en' => $businessNameEn,
+        'business_name_ar' => $businessNameAr ?: null,
+        'latitude' => $data['latitude'] ?? null,
+        'longitude' => $data['longitude'] ?? null,
+        'location_label' => isset($data['location_label']) ? trim((string) $data['location_label']) : null,
+    ]);
+
+    return $businessAccount->fresh(['businessType', 'city']);
+}
 }

@@ -155,7 +155,7 @@ return [
 
     'admins_page_subtitle' => 'إدارة حسابات المشرفين والصلاحيات ومستويات الوصول إلى المنصة.',
     'total_admins' => 'إجمالي المشرفين',
-    'super_admins' => 'المشرفون الأعلى',
+    'super_admin' => 'المشرف الأعلى',
     'manage_users_admins' => 'مشرفو إدارة المستخدمين',
     'manage_business_accounts_admins' => 'مشرفو إدارة الحسابات التجارية',
     'all_admins' => 'جميع المشرفين',
@@ -406,7 +406,7 @@ return [
     'delete_field' => 'حذف الحقل',
     'danger_zone' => 'منطقة الخطر',
 
-    'all_categories' => 'كل التصنيفات',
+    'add_categories' => 'اضافة تصنيف',
     'subcategories' => 'التصنيفات الفرعية',
     'dynamic_fields' => 'الحقول الديناميكية',
     'fields_count' => 'عدد الحقول',
@@ -428,12 +428,12 @@ return [
     'dynamic_field_deleted_successfully' => 'تم حذف الحقل الديناميكي بنجاح.',
     'delete_this_category_with_its_subcategories'=>'حذف التصنيف مع التصنيفات الفرعية الخاصة به',
 
-    'items' => 'العناصر',
-    'item_details' => 'تفاصيل العنصر',
-    'all_items' => 'كل العناصر',
-    'item_moderation_subtitle' => 'مراجعة عناصر المستخدمين وإدارة حالة الموافقة.',
-    'showing_10_items_per_page' => 'يتم عرض 10 عناصر في كل صفحة.',
-    'no_items_yet' => 'لا توجد عناصر بعد',
+    'items' => 'الخدمات',
+    'item_details' => 'تفاصيل الخدمة',
+    'all_items' => 'كل الخدمات',
+    'item_moderation_subtitle' => 'مراجعة خدمات المستخدمين وإدارة حالة الموافقة.',
+    'showing_10_items_per_page' => 'يتم عرض 10 خدمات في كل صفحة.',
+    'no_items_yet' => 'لا توجد خدمات بعد',
     'items_created_by_users_will_appear_here' => 'العناصر التي ينشئها المستخدمون ستظهر هنا.',
     'title' => 'العنوان',
     'owner_business' => 'المالك / الحساب التجاري',
@@ -444,7 +444,7 @@ return [
     'business_account' => 'الحساب التجاري',
     'category' => 'التصنيف',
     'subcategory' => 'التصنيف الفرعي',
-    'item_type' => 'نوع العنصر',
+    'item_type' => 'نوع الخدمة',
     'price_usd' => 'السعر بالدولار',
     'price_syp' => 'السعر بالليرة السورية',
     'location' => 'الموقع',
@@ -489,6 +489,7 @@ return [
 
     'no_sliders' => 'لا يوجد سلايدر حالياً',
     'no_sliders_description' => 'العناصر المقبولة ستظهر هنا تلقائياً.',
+    'slider_details'=>'تفاصيل السلايدر',
 
     'activate_deactivate' => 'تفعيل / تعطيل',
 
@@ -531,7 +532,7 @@ return [
     'manage_business_accounts' => 'إدارة حسابات الأعمال',
     'manage_business_types' => 'إدارة أنواع الأعمال',
     'manage_categories' => 'إدارة التصنيفات',
-    'manage_items' => 'إدارة العناصر',
+    'manage_items' => 'إدارة الخدمات',
     'manage_sliders' => 'إدارة السلايدر',
     'super_admin' => 'مدير أعلى',
     'basic_admin' => 'مدير عادي',
@@ -569,7 +570,6 @@ return [
     'reset' => 'إعادة تعيين',
 
     'categories' => 'التصنيفات',
-    'items' => 'العناصر',
     'sliders' => 'السلايدر',
     'business_types' => 'أنواع الأعمال',
     'business_accounts' => 'حسابات الأعمال',
@@ -578,5 +578,98 @@ return [
     'navigation' => 'التنقل',
     'settings' => 'الإعدادات',
     'items_count'=>'عدد الخدمات',
+    'show_item'=>'عرض الخدمة',
+    'click_count'=>'عدد مرات الضغط',
+    'photos'=>'الصور',
+    'main_photo'=>'الصورة الرئيسية',
+    'sub_photos'=>'الصور الفرعية',
+    'slider_settings'=>'اعدادات السلايدر',
+
+    'priority'=>'الأهمية',
+    'high'=>'عالية',
+    'normal'=>'عادية',
+    'top'=>'قصوة',
+    'admin_note'=>'ملاحظة الأدمن',
+    'delete_slider'=>'حذف السلايدر',
+    'update_slider'=>'تعديل السلايدر',
+
+    'welcome_back'=>'مرحبا مجددا',
+
+    'manage_business_types_in_the_system'=>'ادارة انواع الحسابات التجارية في التطبيق',
+    'recent_pending_items'=>'الخدمات التي تحتاج الى مراجعة',
+    'approved_items'=>'الخدمات التي تمت الموافقة عليها',
+    'rejected_items'=>'الخدمات التي تم رفضها',
+    'pending_accounts'=>'الحسابات قيد المراجعة',
+    'pending_review_items'=>'الخدمات قيد المراجعة',
+    'quick_actions'=>'وصول سريع',
+    'pending_items'=>'الخدمات قيد المراجعة',
+    'active_sliders'=>'السلايدرات النشطة',
+    'no_pending_items'=>'لا يوجد خدمات تحتاج للمراجعة',
+
+    'total_items'=>'اجمالي الخدمات',
+
+    'cities' => 'المدن',
+
+    'default_roles_subtitle' => 'اختر دورًا جاهزًا ثم قم بتخصيص الصلاحيات إذا لزم الأمر.',
+    'permissions_subtitle' => 'اختر الصلاحيات التي يمكن لهذا المسؤول الوصول إليها.',
+    'cities' => 'المدن',
+
+    'cities_management' => 'إدارة المدن',
+    'cities_management_subtitle' => 'إدارة جميع المدن داخل المنصة.',
+    'all_cities' => 'جميع المدن',
+    'city_details' => 'تفاصيل المدينة',
+    'city_details_subtitle' => 'عرض وإدارة معلومات المدينة.',
+    'add_city' => 'إضافة مدينة',
+    'edit_city' => 'تعديل المدينة',
+    'delete_city' => 'حذف المدينة',
+    'city_name_english' => 'اسم المدينة بالإنجليزية',
+    'city_name_arabic' => 'اسم المدينة بالعربية',
+    'related_business_accounts' => 'الحسابات المرتبطة',
+    'delete_city_warning' => 'حذف هذه المدينة سيؤدي إلى إزالتها نهائيًا من النظام.',
+    'confirm_city_delete' => 'يرجى كتابة اسم المدينة لتأكيد الحذف.',
+    'city_deleted_successfully' => 'تم حذف المدينة بنجاح.',
+    'city_created_successfully' => 'تم إنشاء المدينة بنجاح.',
+    'city_updated_successfully' => 'تم تحديث المدينة بنجاح.',
+    'view_details' => 'عرض التفاصيل',
+
+
+    'manage_users' => 'إدارة المستخدمين',
+    'manage_business_accounts' => 'إدارة حسابات الأعمال',
+    'manage_business_types' => 'إدارة أنواع الأعمال',
+    'manage_categories' => 'إدارة التصنيفات',
+    'manage_items' => 'إدارة الخدمات',
+    'manage_sliders' => 'إدارة السلايدر',
+    'manage_cities' => 'إدارة المدن',
+
+    'business_account_status_pending' => 'قيد الانتظار',
+    'business_account_status_approved' => 'مقبول',
+    'business_account_status_rejected' => 'مرفوض',
+
+
+    'delete_business_account_warning' => 'سيؤدي حذف حساب العمل هذا إلى حذف جميع العناصر التي تم إنشاؤها ضمنه.',
+    'delete_business_account' => 'حذف حساب العمل',
+    'delete_business_account_warning_details' => 'بعد الحذف، لا يمكن التراجع عن هذا الإجراء. سيتم حذف جميع العناصر المرتبطة.',
+    'delete_business_account_modal_title' => 'حذف :name',
+    'business_account_items_delete_count' => 'سيتم حذف :count عنصر مع هذا الحساب.',
+    'confirm_delete_by_typing' => 'للتأكيد، اكتب ":name" في الحقل أدناه',
+    'delete_this_business_account' => 'حذف حساب العمل هذا',
+
+    'delete_this_business_type_will_also_delete__all_business_accounts_that_use_it'=>'حذف هذا النوع من حسابات الأعمال سيؤدي الى حذف جميع الحسابات المرتبطة به',
+    'deleting_this_category_will_also_delete_all_related_subcategories'=>'حذف هذا التصنيف الرئيسي سيؤدي الى حذف جميع التصنيفات الفرعية المرتبطة به',
+    'business_account_name'=>'اسم حساب الأعمال',
+
+    'item_status_pending' => 'قيد الانتظار',
+    'item_status_approved' => 'مقبول',
+    'item_status_rejected' => 'مرفوض',
+
+    'slider_priority_normal' => 'عادي',
+    'slider_priority_high' => 'مرتفع',
+    'slider_priority_top' => 'الأعلى',
+
+
+
+
+
+
 
 ];
