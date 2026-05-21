@@ -664,6 +664,8 @@ return [
     'slider_priority_high' => 'High',
     'slider_priority_top' => 'Top',
 
+    'welcome_back'=>'Welcome back'
+
 
 
 
